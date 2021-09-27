@@ -9,6 +9,8 @@ It allows to create and design matplotlib plots and figures from QML.
 It is based on a PySide2 QObject implementation of a python object wrapper.
 The Python object wrapper wraps a python instance and provides string based access to the PyObject's attributes and functions.
 
+![QML matplotlib bridge](/images/Screenshot_QML_Matplotlib.png)
+
 ### How to use it
 
 To use the Matplotlib Python bridge ensure that you have set the app_init.py as the init script in the Analyzer4D application.
