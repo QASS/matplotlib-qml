@@ -1,7 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 
-import "./1.0"
 import Matplotlib 1.0
 import "./Matplotlib"
 

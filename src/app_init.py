@@ -9,6 +9,9 @@ QtQml.qmlRegisterType(FigureCanvasQtQuickAgg, "Matplotlib", 1, 0, "FigureCanvas"
 class SimpleGraph(FigureCanvasQtQuickAgg):
 	@QtCore.Slot(list, list)
 	@QtCore.Slot(list, list, 'QVariantMap')
+	@QtCore.Slot('QVariantList')
+	@QtCore.Slot('QVariantList', 'QVariantList')
+	@QtCore.Slot('QVariantList', 'QVariantList', 'QVariantMap')
 	def add_plot(self, x, y, kwargs = {}):
 		print(kwargs)
 		l, = self.axes.plot(x, y, **kwargs)
@@ -16,6 +19,7 @@ class SimpleGraph(FigureCanvasQtQuickAgg):
 		self.figure.canvas.draw()
 	
 	@QtCore.Slot(int, list, list)
+	@QtCore.Slot('int', 'QVariantList', 'QVariantList')
 	def update_data(self, idx, x, y):
 		self.plots[idx].set_xdata(x)
 		self.plots[idx].set_ydata(y)
@@ -53,8 +57,8 @@ class PyObjectWrapper(QtQuick.QQuickItem):
 		return self.obj
 	
 	@QtCore.Slot(str)
-	@QtCore.Slot(str, list)
-	@QtCore.Slot(str, list, 'QVariantMap')
+	@QtCore.Slot(str, 'QVariantList')
+	@QtCore.Slot(str, 'QVariantList', 'QVariantMap')
 	def call(self, func, args=[], kwargs={}):
 		print('func: ', func)
 		f = eval(func)
@@ -98,8 +102,8 @@ class GraphPane(FigureCanvasQtQuickAgg):
 		return self.obj
 	
 	@QtCore.Slot(str)
-	@QtCore.Slot(str, list)
-	@QtCore.Slot(str, list, 'QVariantMap')
+	@QtCore.Slot(str, 'QVariantList')
+	@QtCore.Slot(str, 'QVariantList', 'QVariantMap')
 	def call(self, func, args=[], kwargs={}):
 		print('func: ', func)
 		f = eval(func)
