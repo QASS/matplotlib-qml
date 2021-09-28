@@ -13,6 +13,11 @@ The Python object wrapper wraps a python instance and provides string based acce
 
 ### How to use it
 
+Install the python packages matplotlib-backend-qtquick:
+```
+pip install matplotlib-backend-qtquick --user
+```
+
 To use the Matplotlib Python bridge ensure that you have set the app_init.py as the init script in the Analyzer4D application.
 app_init.py contains the wrapper's implementation and some simple ready to use classes such as SimpleGraph.
 
