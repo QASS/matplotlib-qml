@@ -1,15 +1,15 @@
 ### Table of Content
-[Axes Functions from Matplotlib](#axes functions from matplotlib implemented)
-[How to use](#how to use)
-[How to write a Plugin](#how to write a plugin)
-[Implemented Propertys](#implemented propertys)
-..* [Line](#line)
-..* [Scatter](#scatter)
-..* [HLine](#hline)
-..* [VLine](#vline)
-..* [HSpan](#hspan)
-..* [VSpan](#vspan)
-..* [Imshow](#imshow)
+1. [Axes Functions from Matplotlib]<a name="axes-functions-from-matplotlib-implemented"/>
+2. [How to use]<a name="how-to-use"/>
+3. [How to write a Plugin]<a name="how-to-write-a-plugin"/>
+4. [Implemented Propertys]<a name="implemented propertys"/>
+        * [Line](#line)
+        * [Scatter](#scatter)
+        * [HLine](#hline)
+        * [VLine](#vline)
+        * [HSpan](#hspan)
+        * [VSpan](#vspan)
+        * [Imshow](#imshow)
 
 # ToDos
 
