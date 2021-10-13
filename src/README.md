@@ -1,16 +1,3 @@
-### Table of Content
-[Axes Functions from Matplotlib](#axes functions from matplotlib implemented)
-[How to use](#how to use)
-[How to write a Plugin](#how to write a plugin)
-[Implemented Propertys](#implemented propertys)
-..* [Line](#line)
-..* [Scatter](#scatter)
-..* [HLine](#hline)
-..* [VLine](#vline)
-..* [HSpan](#hspan)
-..* [VSpan](#vspan)
-..* [Imshow](#imshow)
-
 # ToDos
 
 - [x] implement possible QML Interface from Python
@@ -142,7 +129,6 @@
 
 # How to use
 
-## For testing on windows
 create venv for python
 ```
 python -m venv <name_of_venv>
@@ -160,13 +146,6 @@ Now run:
 ```
 py main.py
 ```
-## For integrating in the Analyzer4D Software
-In this case you don't need to create a venv or any of that. Just make sure you have all the requirements from the `requirements.txt` installed on your user:
-```
-pip install -r --user requirements.txt
-```
-
-After that in the Analyzer you need to navigate to `Preferences/Python` and provide the path to the `init.py` Skript in the `/src/` folder. After that you need to restart the Analyzer Software since this Skript will be only executed at startup. If you make any changes to plugins of yours you will need to restart the Analyzer Software in order fro them to take effect.
 
 # How to write a plugin
 
@@ -189,7 +168,7 @@ The factory register function allows to set the following arguments:
 | QMLComponentName| String     		| False         | Component name in QML default = \_\_name\_\_ From the Python class		|
 
 In QML the component is then used like:
-```javascript
+```
 import QMLModuleName 1.0
 
 MyClass {
@@ -198,89 +177,4 @@ MyClass {
 ```
 
 The Plugin Class must implement the methods `init`. It might also want to inherit one of the base classes like `LineObject2D`, `PlotObject2D` or `GraphObject2D` which already provide propertys for 2D Plots.
-Each object inheriting from `PlotObject2D` (so far I will most likely change that to a lower tier class) will receive an Event Handler from the axes which is handed down from the figure `self._event_handler`. You can use this Event Handler to emit Events whenever the data lying in the plot object changes:
-```python
-self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
-```
-Available Events can be found in the `EventTypes` class which contains all the constants.
-
-
-# Implemented Propertys
-The default propertys are the same as in Matplotlib. These Propertys only refer to the QML Interface. If theres also a JS Interface then you can use the same functionality as in Matplotlib. Note that you need to provide Python `kwargs` as a JS object:
-```javascript
-// This is a QML example
-my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
-```
-
-## Line
-..* linestyle
-..* linewidth
-..* label
-..* color
-..* xData
-..* yData
-..* alpha
-
-## Scatter
-..* marker
-..* label
-..* color
-..* xData
-..* yData
-..* alpha
-
-## HLine
-..* linestyle
-..* linewidth
-..* label
-..* color
-..* xData (Array with two entrys (min_x, max_x))
-..* yData (Array with two entrys (y, y))
-..* alpha
-..* y 
-..* xMin (Same as setting the xData but more intuitive)
-..* xMax (Same as setting the xData but more intuitive)
-
-## VLine
-..* linestyle
-..* linewidth
-..* label
-..* color
-..* xData (Array with two entrys (x, x))
-..* yData (Array with two entrys (y_min, y_max))
-..* alpha
-..* x 
-..* yMin (Same as setting the yData but more intuitive)
-..* yMax (Same as setting the yData but more intuitive)
-
-## HSpan
-..* label
-..* color
-..* xData (DO NOT USE)
-..* yData (DO NOT USE)
-..* alpha
-..* yMin
-..* yMax
-..* xMin
-..* xMax
-..* faceColor
-..* edgeColor
-
-## VSpan
-..* label
-..* color
-..* xData (DO NOT USE)
-..* yData (DO NOT USE)
-..* alpha
-..* yMin
-..* yMax
-..* xMin
-..* xMax
-..* faceColor
-..* edgeColor
-
-## Imshow
-..* x
-..* cMap
-..* aspect
-..* interpolation
+Each object inheriting from `PlotObject2D` (so far I will most likely change that to a lower tier class) will receive an Event Handler from the axes which is handed down from the figure. You can use this Event Handler to emit Events whenever the data lying in the plot object changes. Available Events can be found in the `EventTypes` class which contains all the constants.
