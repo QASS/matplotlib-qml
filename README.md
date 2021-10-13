@@ -1,8 +1,8 @@
 ### Table of Content
-1. [Axes Functions from Matplotlib]<a name="axes-functions-from-matplotlib-implemented"/>
-2. [How to use]<a name="how-to-use"/>
-3. [How to write a Plugin]<a name="how-to-write-a-plugin"/>
-4. [Implemented Propertys]<a name="implemented propertys"/>
+1. [Axes Functions from Matplotlib](#axesfunctions)
+2. [How to use](#how-to-use)
+3. [How to write a Plugin](#how-to-write-a-plugin)
+4. [Implemented Propertys](#implemented-propertys)
         * [Line](#line)
         * [Scatter](#scatter)
         * [HLine](#hline)
@@ -19,7 +19,7 @@
 - [x] implement JS interface to achieve the same behaviour (as in Matplotlib)
 - [ ] test if it is possible to generate the same behaviour
 
-## Axes Functions from Matplotlib implemented
+## Axes Functions from Matplotlib implemented <a name="axesfunctions"/>
 ### Basic
 - [x] Axes.plot (QML / JS)
 - [ ] Axes.errorbar
@@ -140,7 +140,7 @@
 
 
 
-# How to use
+# How to use <a name="how-to-use"/>
 
 ## For testing on windows
 create venv for python
@@ -168,7 +168,7 @@ pip install -r --user requirements.txt
 
 After that in the Analyzer you need to navigate to `Preferences/Python` and provide the path to the `init.py` Skript in the `/src/` folder. After that you need to restart the Analyzer Software since this Skript will be only executed at startup. If you make any changes to plugins of yours you will need to restart the Analyzer Software in order fro them to take effect.
 
-# How to write a plugin
+# How to write a plugin <a name="how-to-write-a-plugin"/>
 
 On application start the `plugin_loader` will attempt to load all modules in the `/plugins/` directory. Each modules needs to implement a `init` function that registers the plugin to the program. The init function receives a `factory` as an argument which mus receive the `class` and the QML module name to register the class in:
 ```python
@@ -205,7 +205,7 @@ self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
 Available Events can be found in the `EventTypes` class which contains all the constants.
 
 
-# Implemented Propertys
+# Implemented Propertys <a name="implemented-propertys"/>
 The default propertys are the same as in Matplotlib. These Propertys only refer to the QML Interface. If theres also a JS Interface then you can use the same functionality as in Matplotlib. Note that you need to provide Python `kwargs` as a JS object:
 ```javascript
 // This is a QML example
@@ -213,74 +213,74 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 ```
 
 ## Line
-..* linestyle
-..* linewidth
-..* label
-..* color
-..* xData
-..* yData
-..* alpha
+* linestyle
+* linewidth
+* label
+* color
+* xData
+* yData
+* alpha
 
 ## Scatter
-..* marker
-..* label
-..* color
-..* xData
-..* yData
-..* alpha
+* marker
+* label
+* color
+* xData
+* yData
+* alpha
 
 ## HLine
-..* linestyle
-..* linewidth
-..* label
-..* color
-..* xData (Array with two entrys (min_x, max_x))
-..* yData (Array with two entrys (y, y))
-..* alpha
-..* y 
-..* xMin (Same as setting the xData but more intuitive)
-..* xMax (Same as setting the xData but more intuitive)
+* linestyle
+* linewidth
+* label
+* color
+* xData (Array with two entrys (min_x, max_x))
+* yData (Array with two entrys (y, y))
+* alpha
+* y 
+* xMin (Same as setting the xData but more intuitive)
+* xMax (Same as setting the xData but more intuitive)
 
 ## VLine
-..* linestyle
-..* linewidth
-..* label
-..* color
-..* xData (Array with two entrys (x, x))
-..* yData (Array with two entrys (y_min, y_max))
-..* alpha
-..* x 
-..* yMin (Same as setting the yData but more intuitive)
-..* yMax (Same as setting the yData but more intuitive)
+* linestyle
+* linewidth
+* label
+* color
+* xData (Array with two entrys (x, x))
+* yData (Array with two entrys (y_min, y_max))
+* alpha
+* x 
+* yMin (Same as setting the yData but more intuitive)
+* yMax (Same as setting the yData but more intuitive)
 
 ## HSpan
-..* label
-..* color
-..* xData (DO NOT USE)
-..* yData (DO NOT USE)
-..* alpha
-..* yMin
-..* yMax
-..* xMin
-..* xMax
-..* faceColor
-..* edgeColor
+* label
+* color
+* xData (DO NOT USE)
+* yData (DO NOT USE)
+* alpha
+* yMin
+* yMax
+* xMin
+* xMax
+* faceColor
+* edgeColor
 
 ## VSpan
-..* label
-..* color
-..* xData (DO NOT USE)
-..* yData (DO NOT USE)
-..* alpha
-..* yMin
-..* yMax
-..* xMin
-..* xMax
-..* faceColor
-..* edgeColor
+* label
+* color
+* xData (DO NOT USE)
+* yData (DO NOT USE)
+* alpha
+* yMin
+* yMax
+* xMin
+* xMax
+* faceColor
+* edgeColor
 
 ## Imshow
-..* x
-..* cMap
-..* aspect
-..* interpolation
+* x
+* cMap
+* aspect
+* interpolation
