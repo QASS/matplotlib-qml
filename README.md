@@ -3,6 +3,8 @@
 2. [How to use](#how-to-use)
 3. [How to write a Plugin](#how-to-write-a-plugin)
 4. [Implemented Propertys](#implemented-propertys)
+        * [Plot](#plot)
+        * [Axis](#axis)
         * [Line](#line)
         * [Scatter](#scatter)
         * [HLine](#hline)
@@ -10,6 +12,7 @@
         * [HSpan](#hspan)
         * [VSpan](#vspan)
         * [Imshow](#imshow)
+
 
 # ToDos
 
@@ -211,6 +214,25 @@ The default propertys are the same as in Matplotlib. These Propertys only refer 
 // This is a QML example
 my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 ```
+## Plot
+* faceColor
+
+## Axis
+* projection
+* polar
+* sharex
+* sharey
+* grid
+* xAxisLabel
+* xAxisTickColor
+* xAxisLabelColor
+* yAxisLabel
+* yAxisTickColor
+* yAxisLabelColor
+* gridColor
+* gridLinestyle
+* gridLinewidth
+* gridAlpha
 
 ## Line
 * linestyle
