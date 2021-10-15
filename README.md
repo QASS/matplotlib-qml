@@ -229,6 +229,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * gridColor
 * gridLinestyle
 * gridLinewidth
+* gridAlpha
 
 ## Line
 * linestyle
