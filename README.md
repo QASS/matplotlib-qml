@@ -3,6 +3,8 @@
 2. [How to use](#how-to-use)
 3. [How to write a Plugin](#how-to-write-a-plugin)
 4. [Implemented Propertys](#implemented-propertys)
+        * [Plot](#plot)
+        * [Axis](#axis)
         * [Line](#line)
         * [Scatter](#scatter)
         * [HLine](#hline)
@@ -10,8 +12,7 @@
         * [HSpan](#hspan)
         * [VSpan](#vspan)
         * [Imshow](#imshow)
-        * [Plot](#plot)
-        * [Axis](#axis)
+
 
 # ToDos
 
