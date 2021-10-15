@@ -10,6 +10,8 @@
         * [HSpan](#hspan)
         * [VSpan](#vspan)
         * [Imshow](#imshow)
+        * [Plot](#plot)
+        * [Axis](#axis)
 
 # ToDos
 
