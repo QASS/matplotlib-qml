@@ -153,6 +153,7 @@ class Axis(QQuickItem):
     """Wrapper for matplotlib.pyplot.Axes"""
     def __init__(self, parent = None):
         super().__init__(parent)
+        self._ax = None
         self._projection = "rectilinear"
         self._polar = False
         self._sharex = False
@@ -164,6 +165,9 @@ class Axis(QQuickItem):
         self._y_axis_label = ""
         self._y_axis_tick_color = "black"
         self._y_axis_label_color = "black"
+        self._grid_color = "grey"
+        self._grid_linestyle = "-"
+        self._grid_linewidth = 1
 
 
     def init(self, ax, event_handler):
@@ -177,12 +181,14 @@ class Axis(QQuickItem):
         self._event_handler = event_handler
         # Register for data change event and rescale the axis
         self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self._refresh)
+        # Register for changes to the axis object
+        self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self._apply_axis_settings)
         self._ax = ax
         # plot all children
         self._init_children(ax, event_handler)
         
         # apply all the axis settings
-        self._apply_axis_settings(ax)
+        self._apply_axis_settings()
         
 
     def _init_children(self, ax, event_handler):
@@ -192,15 +198,16 @@ class Axis(QQuickItem):
             child.add_event_handler(event_handler)
             child.init(ax)
 
-    def _apply_axis_settings(self, ax):
-        ax.grid(self._grid)
-        ax.set_axisbelow(True)
-        ax.set_xlabel(self._x_axis_label)
-        ax.tick_params(axis = "x", colors = self._x_axis_tick_color)
-        ax.xaxis.label.set_color(self._x_axis_label_color)
-        ax.set_ylabel(self._y_axis_label)
-        ax.tick_params(axis = "y", colors = self._y_axis_tick_color)
-        ax.yaxis.label.set_color(self._y_axis_label_color)
+    def _apply_axis_settings(self):
+        if self._grid:
+            self._ax.grid(color = self._grid_color, linestyle = self._grid_linestyle, linewidth = self._grid_linewidth)
+        self._ax.set_axisbelow(True)
+        self._ax.set_xlabel(self._x_axis_label)
+        self._ax.tick_params(axis = "x", colors = self._x_axis_tick_color)
+        self._ax.xaxis.label.set_color(self._x_axis_label_color)
+        self._ax.set_ylabel(self._y_axis_label)
+        self._ax.tick_params(axis = "y", colors = self._y_axis_tick_color)
+        self._ax.yaxis.label.set_color(self._y_axis_label_color)
 
     def _refresh(self):
         """Rescales the axis to fit the current data lying on the axis. This is meant to be called by
@@ -276,66 +283,112 @@ class Axis(QQuickItem):
 
     def set_projection(self, projection):
         self._projection = projection
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_polar(self):
         return self._polar
 
     def set_polar(self, polar):
         self._polar = polar
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_sharex(self):
         return self._sharex
 
     def set_sharex(self, sharex):
         self._sharex = sharex
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_sharey(self):
         return self._sharey
 
     def set_sharey(self, sharey):
         self._sharey = sharey
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_grid(self):
         return self._grid
 
     def set_grid(self, grid):
         self._grid = grid
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_x_axis_tick_color(self):
         return self._x_axis_tick_color
 
     def set_x_axis_tick_color(self, color):
         self._x_axis_tick_color = color
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_x_axis_label_color(self):
         return self._x_axis_label_color
 
     def set_x_axis_label_color(self, color):
         self._x_axis_label_color = color
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_x_axis_label(self):
         return self._x_axis_label
 
     def set_x_axis_label(self, color):
         self._x_axis_label = color
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_y_axis_tick_color(self):
         return self._y_axis_tick_color
 
     def set_y_axis_tick_color(self, color):
         self._y_axis_tick_color = color
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_y_axis_label_color(self):
         return self._y_axis_label_color
 
     def set_y_axis_label_color(self, color):
         self._y_axis_label_color = color
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_y_axis_label(self):
         return self._y_axis_label
 
     def set_y_axis_label(self, color):
         self._y_axis_label = color
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_grid_color(self):
+        return self._grid_color
+
+    def set_grid_color(self, color):
+        self._grid_color = color
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_grid_linestyle(self):
+        return self._grid_linestyle
+
+    def set_grid_linestyle(self, linestyle):
+        self._grid_linestyle = linestyle
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_grid_linewidth(self):
+        return self._grid_linewidth
+
+    def set_grid_linewidth(self, linewidth):
+        self._grid_linewidth = linewidth
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     projection = Property(str, get_projection, set_projection) 
     polar = Property(bool, get_polar, set_polar)
@@ -348,3 +401,6 @@ class Axis(QQuickItem):
     yAxisLabel = Property(str, get_y_axis_label, set_y_axis_label)
     yAxisTickColor = Property(str, get_y_axis_tick_color, set_y_axis_tick_color)
     yAxisLabelColor = Property(str, get_y_axis_label_color, set_y_axis_label_color)
+    gridColor = Property(str, get_grid_color, set_grid_color)
+    gridLinestyle = Property(str, get_grid_linestyle, set_grid_linestyle)
+    gridLinewidth = Property(int, get_grid_linewidth, set_grid_linewidth)
