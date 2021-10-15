@@ -16,7 +16,9 @@ def get_plugins():
 	:rtype: List[str]
 	"""
 	modules = []
-	for module in os.listdir("./plugins"):
+	curr_file_path = os.path.dirname(os.path.abspath(__file__))
+	print('path', curr_file_path)
+	for module in os.listdir(curr_file_path + "/plugins"):
 		if module.startswith("__") or ".py" not in module:
 			continue
 		# append to module list and strip file ending
@@ -35,6 +37,3 @@ def load_plugins(plugins: List[str]):
 	for plugin_name in plugins:
 		plugin = import_module(plugin_name)
 		plugin.init(factory)
-
-if __name__ == "__main__":
-	print(get_plugins())
