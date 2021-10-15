@@ -168,6 +168,7 @@ class Axis(QQuickItem):
         self._grid_color = "grey"
         self._grid_linestyle = "-"
         self._grid_linewidth = 1
+        self._grid_alpha = 1.0
 
 
     def init(self, ax, event_handler):
@@ -200,7 +201,8 @@ class Axis(QQuickItem):
 
     def _apply_axis_settings(self):
         if self._grid:
-            self._ax.grid(color = self._grid_color, linestyle = self._grid_linestyle, linewidth = self._grid_linewidth)
+            self._ax.grid(color = self._grid_color, linestyle = self._grid_linestyle, 
+            linewidth = self._grid_linewidth, alpha = self._grid_alpha)
         self._ax.set_axisbelow(True)
         self._ax.set_xlabel(self._x_axis_label)
         self._ax.tick_params(axis = "x", colors = self._x_axis_tick_color)
@@ -390,6 +392,14 @@ class Axis(QQuickItem):
         if self._ax is not None:
             self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
+    def get_grid_alpha(self):
+        return self._grid_alpha
+
+    def set_grid_alpha(self, alpha):
+        self._grid_alpha = alpha
+        if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
     projection = Property(str, get_projection, set_projection) 
     polar = Property(bool, get_polar, set_polar)
     sharex = Property(bool, get_sharex, set_sharex)
@@ -404,3 +414,4 @@ class Axis(QQuickItem):
     gridColor = Property(str, get_grid_color, set_grid_color)
     gridLinestyle = Property(str, get_grid_linestyle, set_grid_linestyle)
     gridLinewidth = Property(int, get_grid_linewidth, set_grid_linewidth)
+    gridAlpha = Property(float, get_grid_alpha, set_grid_alpha)
