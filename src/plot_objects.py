@@ -72,10 +72,13 @@ class Figure(FigureCanvasQtQuickAgg):
         self._rows = 1
         self._columns = 1
         self._event_handler = EventHandler()
-        self._axes = []
     
     @Slot()
     def init(self):
+        """Clears the whole figure and iterates over every child that is of instance :class:`Plot`.
+        On each child the `init` function will be called providing the axis instance and the event_handler of the figure.
+        This function should be called in When the Figure Component is Completed in QML.
+        """
         self.figure.clear()
         for idx, child in enumerate(child for child in self.children() if isinstance(child, Plot)):
             ax = self.figure.add_subplot(self._rows, self._columns, idx + 1) 
@@ -86,11 +89,6 @@ class Figure(FigureCanvasQtQuickAgg):
         # before the axis can rescale
         self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
-
-
-    @Slot()
-    def print_children(self):
-        print(self.children())
 
     def redraw(self):
         self.figure.canvas.draw()
@@ -126,12 +124,15 @@ class Plot(QQuickItem):
     """Container to allow useful implementation of mutliple axis."""
     def __init__(self, parent = None):
         super().__init__(parent)
+        self._facecolor = "white"
 
     def init(self, ax, event_handler):
         """Retrieves all children of type :class:`Axis` and calls the draw method on them
         If the Plot object has multiple children it will hand them their own axis object """
+        ax.set_facecolor(self._facecolor)
         axis_ = (child for child in self.children() if isinstance(child, Axis))
         for idx, axis in enumerate(axis_):
+            # The first axis defines the main attributes of the plot and thus needs to be handled differently
             if idx == 0:
                 axis.init(ax, event_handler)
                 ax.legend()
@@ -139,6 +140,14 @@ class Plot(QQuickItem):
             new_ax = ax.twinx()
             axis.init(new_ax, event_handler)
             new_ax.legend()
+
+    def get_facecolor(self):
+        return self._facecolor
+
+    def set_facecolor(self, color):
+        self._facecolor = color
+
+    faceColor = Property(str, get_facecolor, set_facecolor)
 
 class Axis(QQuickItem):
     """Wrapper for matplotlib.pyplot.Axes"""
