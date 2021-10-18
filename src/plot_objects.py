@@ -122,7 +122,7 @@ class Figure(FigureCanvasQtQuickAgg):
     def set_tight_layout(self, tight_layout):
         self._tight_layout = tight_layout
         if self._event_handler:
-            self._event_handler.emit(FIGURE_DATA_CHANGED)
+            self._event_handler.emit(EventTypes.FIGURE_DATA_CHANGED)
 
 
     faceColorChanged = Signal(str)
@@ -147,7 +147,9 @@ class Plot(QQuickItem):
             # The first axis defines the main attributes of the plot and thus needs to be handled differently
             if idx == 0:
                 axis.init(ax, event_handler)
-                ax.legend()
+                handles, labels = ax.get_legend_handles_labels()
+                if labels:
+                    ax.legend()
                 continue
             new_ax = ax.twinx()
             axis.init(new_ax, event_handler)
