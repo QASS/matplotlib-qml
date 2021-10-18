@@ -147,13 +147,18 @@ class Plot(QQuickItem):
             # The first axis defines the main attributes of the plot and thus needs to be handled differently
             if idx == 0:
                 axis.init(ax, event_handler)
+                # check wether the axis object contains any labels to display
                 handles, labels = ax.get_legend_handles_labels()
                 if labels:
                     ax.legend()
                 continue
             new_ax = ax.twinx()
             axis.init(new_ax, event_handler)
-            new_ax.legend()
+            # need to check the new axis as well
+            # TODO this can be done with less code
+            handles, labels = new_ax.get_legend_handles_labels()
+            if labels:
+                new_ax.legend()
 
     def get_facecolor(self):
         return self._facecolor

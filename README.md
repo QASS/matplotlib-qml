@@ -172,6 +172,33 @@ pip install -r --user requirements.txt
 
 After that in the Analyzer you need to navigate to `Preferences/Python` and provide the path to the `init.py` Skript in the `/src/` folder. After that you need to restart the Analyzer Software since this Skript will be only executed at startup. If you make any changes to plugins of yours you will need to restart the Analyzer Software in order fro them to take effect.
 
+## Using the Figure in QML
+The Figure can be used like any other QML Type but needs to call it's `init()` method during `Component.onCompleted`:
+```javascript
+import Matplotlib 1.0
+
+Figure {
+        anchors.fill: parent
+        Component.onCompleted: {
+                init()
+        }
+        // Axis and Plots here
+}
+```
+Sometimes it happens that the figure dimensions squash the figure together, which produces clipping or overlapping of labels or even subplots. Matplotlib implemented the `tight_layout` function to readjust the axis positions to fit everything nicely. You can use this functionality by setting the `tightLayout` Property which is a boolean:
+```javascript
+import Matplotlib 1.0
+
+Figure {
+        anchors.fill: parent
+        tightLayout: true
+        Component.onCompleted: {
+                init()
+        }
+        // Axis and Plots here
+}
+```
+
 # How to write a plugin <a name="how-to-write-a-plugin"/>
 
 On application start the `plugin_loader` will attempt to load all modules in the `/plugins/` directory. Each modules needs to implement a `init` function that registers the plugin to the program. The init function receives a `factory` as an argument which mus receive the `class` and the QML module name to register the class in:
