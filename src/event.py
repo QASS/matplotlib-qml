@@ -4,6 +4,7 @@ from collections import defaultdict
 class EventTypes:
 	PLOT_DATA_CHANGED = "PLOT_DATA_CHANGED"
 	AXIS_DATA_CHANGED = "AXIS_DATA_CHANGED"
+	FIGURE_DATA_CHANGED = "FIGURE_DATA_CHANGED"
 
 class EventHandler:
 	def __init__(self):

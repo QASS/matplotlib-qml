@@ -3,6 +3,7 @@
 2. [How to use](#how-to-use)
 3. [How to write a Plugin](#how-to-write-a-plugin)
 4. [Implemented Propertys](#implemented-propertys)
+        * [Figure](#figure)
         * [Plot](#plot)
         * [Axis](#axis)
         * [Line](#line)
@@ -214,6 +215,13 @@ The default propertys are the same as in Matplotlib. These Propertys only refer 
 // This is a QML example
 my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 ```
+
+## Figure
+* faceColor
+* rows
+* columns
+* tightLayout
+
 ## Plot
 * faceColor
 
