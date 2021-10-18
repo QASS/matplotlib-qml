@@ -71,6 +71,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._facecolor = "white"
         self._rows = 1
         self._columns = 1
+        self._tight_layout = False
         self._event_handler = EventHandler()
     
     @Slot()
@@ -85,10 +86,14 @@ class Figure(FigureCanvasQtQuickAgg):
             ax.set_autoscale_on(True)
             ax.autoscale_view(True,True,True)
             child.init(ax, self._event_handler)
+        # call tight_layout function to prevent axis label clipping
+        if self._tight_layout:
+            self.figure.tight_layout()
         # This must register in the end because otherwise the plot will be drawn
         # before the axis can rescale
         self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
+        self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
 
     def redraw(self):
         self.figure.canvas.draw()
@@ -98,7 +103,6 @@ class Figure(FigureCanvasQtQuickAgg):
 
     def get_facecolor(self):
         return self._facecolor
-
 
     def get_rows(self):
         return self._rows
@@ -111,7 +115,14 @@ class Figure(FigureCanvasQtQuickAgg):
 
     def set_columns(self, columns):
         self._columns = columns
-
+        
+    def get_tight_layout(self):
+        return self._tight_layout
+    
+    def set_tight_layout(self, tight_layout):
+        self._tight_layout = tight_layout
+        if self._event_handler:
+            self._event_handler.emit(FIGURE_DATA_CHANGED)
 
 
     faceColorChanged = Signal(str)
@@ -119,6 +130,7 @@ class Figure(FigureCanvasQtQuickAgg):
     faceColor = Property(str, get_facecolor, set_facecolor, notify=faceColorChanged)
     rows = Property(int, get_rows, set_rows)
     columns = Property(int, get_columns, set_columns)
+    tightLayout = Property(bool, get_tight_layout, set_tight_layout)
 
 class Plot(QQuickItem):
     """Container to allow useful implementation of mutliple axis."""
