@@ -6,8 +6,6 @@ from factory import module_items
 import plugin_loader
 
 
-
-
 def main():
     factory.register(Figure, "Matplotlib")
     factory.register(Line, "Matplotlib")
@@ -24,6 +22,7 @@ def main():
 
     factory.register_at_qml(module_items)
 
+main()
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
