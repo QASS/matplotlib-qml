@@ -237,6 +237,17 @@ class Axis(QQuickItem):
         self._ax.autoscale_view(True,True,True)
         self._ax.legend()
 
+
+    @Slot(float, float, bool, bool)
+    @Slot(float, float)
+    def set_xlim(self, left=None, right=None, emit=True, auto=False):
+        self._ax.set_xlim(left, right, emit, auto)
+        
+    @Slot(float, float, bool, bool)
+    @Slot(float, float)
+    def set_ylim(self, left=None, right=None, emit=True, auto=False):
+        self._ax.set_ylim(left, right, emit, auto)
+
     @property
     def projection(self):
         return self._projection
