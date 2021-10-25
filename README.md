@@ -15,6 +15,9 @@
         * [Imshow](#imshow)
 
 
+# Known Issues
+* If you use multiple Axis QML objects nested inside a Plot then they influence the autoscaling. A temporary fix is to give them the same `autoscale` property value.
+
 # ToDos
 
 - [x] implement possible QML Interface from Python
