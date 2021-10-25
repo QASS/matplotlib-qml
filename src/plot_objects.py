@@ -189,6 +189,10 @@ class Axis(QQuickItem):
         self._grid_linewidth = 1
         self._grid_alpha = 1.0
 
+        self._autoscale = "both"
+        self._xlim = [None, None] # left, right
+        self._ylim = [None, None] # top, bottom
+
 
     def init(self, ax, event_handler):
         """Iterate over every children and call the plot method on those children
@@ -229,12 +233,24 @@ class Axis(QQuickItem):
         self._ax.set_ylabel(self._y_axis_label)
         self._ax.tick_params(axis = "y", colors = self._y_axis_tick_color)
         self._ax.yaxis.label.set_color(self._y_axis_label_color)
+        self._ax.set_xlim(*self._xlim, emit = True)
+        self._ax.set_ylim(*self._ylim, emit = True)
+        self.set_autoscale(self._autoscale)
 
     def _refresh(self):
         """Rescales the axis to fit the current data lying on the axis. This is meant to be called by
-        an EventHandler"""
-        self._ax.relim()
-        self._ax.autoscale_view(True,True,True)
+        an EventHandler.
+        The autoscaling is driven by the property "autoscale".
+        """
+        autoscale_behaviour = {
+            "" : {"scalex" : False, "scaley" : False},
+            "x" : {"scalex" : True, "scaley" : False},
+            "y" : {"scalex" : False, "scaley" : True},
+            "both" : {"scalex" : True, "scaley" : True},
+        }
+        # print(autoscale_behaviour[self._autoscale])
+        self._ax.relim()        
+        self._ax.autoscale_view(**autoscale_behaviour[self._autoscale])
         handles, labels = self._ax.get_legend_handles_labels()
         if labels:
             self._ax.legend()
@@ -242,25 +258,13 @@ class Axis(QQuickItem):
 
     @Slot(float, float, bool, bool)
     @Slot(float, float)
-    def set_xlim(self, left=None, right=None, emit=True, auto=False):
-        self._ax.set_xlim(left, right, emit, auto)
+    def set_xlim(self, xmin=None, xmax=None, emit=True, auto=False):
+        self._ax.set_xlim(xmin, xmax, emit, auto)
         
     @Slot(float, float, bool, bool)
     @Slot(float, float)
-    def set_ylim(self, left=None, right=None, emit=True, auto=False):
-        self._ax.set_ylim(left, right, emit, auto)
-
-    @property
-    def projection(self):
-        return self._projection
-
-    @property
-    def sharex(self):
-        return self._sharex
-
-    @property
-    def sharey(self):
-        return self._sharey
+    def set_ylim(self, ymin=None, ymax=None, emit=True, auto=False):
+        self._ax.set_ylim(ymin, ymax, emit, auto)
 
     @Slot()
     def reset(self):
@@ -432,6 +436,67 @@ class Axis(QQuickItem):
         if self._ax is not None:
             self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
+    def get_autoscale(self):
+        return self._autoscale
+
+    def set_autoscale(self, autoscale : str):
+        """Takes care of organizing which dimension is to be autoscaled. Valid arguments are ("both", "x", "y", "")
+        False will turn off auto scaling.
+        The function will deactivate autoscaling for all axis before applying the new autoscaling 
+        setting. The previous setting will ALWAYS be overwritten!
+        """
+        if autoscale not in ("both", "x", "y", ""):
+            raise ValueError("Autoscale can only be either 'both', 'x', 'y' or an empty string!")
+        self._autoscale = autoscale
+        if self._ax is not None:
+            # First deactivate autoscaling on both axis
+            self._ax.autoscale(enable = False)
+            # If autoscale is false we deactivated autoscaling already and we can return 
+            if self._autoscale == "":
+                return
+            # Now turn autoscaling on for the desired axis
+            self._ax.autoscale(enable = True, axis = self._autoscale)
+
+    def get_xmin(self):
+        xmin, xmax = self._xlim
+        return xmin
+
+    def set_xmin(self, xmin: float):
+        self._xlim[0] = xmin
+        if self._ax is not None:
+            self._ax.set_xlim(*self._xlim, auto = None)
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_xmax(self):
+        xmin, xmax = self._xlim
+        return xmax
+
+    def set_xmax(self, xmax: float):
+        self._xlim[1] = xmax
+        if self._ax is not None:
+            self._ax.set_xlim(*self._xlim, auto = None)
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_ymin(self):
+        ymin, ymax = self._ylim
+        return ymin
+
+    def set_ymin(self, ymin: float):
+        self._ylim[0] = ymin
+        if self._ax is not None:
+            self._ax.set_xlim(*self._ylim, auto = None)
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_ymax(self):
+        ymin, ymax = self._ylim
+        return ymax
+
+    def set_ymax(self, ymax: float):
+        self._ylim[1] = ymax
+        if self._ax is not None:
+            self._ax.set_ylim(*self._xlim, auto = None)
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
     projection = Property(str, get_projection, set_projection) 
     polar = Property(bool, get_polar, set_polar)
     sharex = Property(bool, get_sharex, set_sharex)
@@ -447,3 +512,8 @@ class Axis(QQuickItem):
     gridLinestyle = Property(str, get_grid_linestyle, set_grid_linestyle)
     gridLinewidth = Property(int, get_grid_linewidth, set_grid_linewidth)
     gridAlpha = Property(float, get_grid_alpha, set_grid_alpha)
+    autoscale = Property(str, get_autoscale, set_autoscale)
+    xMin = Property(float, get_xmin, set_xmin)
+    xMax = Property(float, get_xmax, set_xmax)
+    yMin = Property(float, get_ymin, set_ymin)
+    yMax = Property(float, get_ymax, set_ymax)
