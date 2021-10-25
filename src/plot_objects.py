@@ -235,7 +235,9 @@ class Axis(QQuickItem):
         an EventHandler"""
         self._ax.relim()
         self._ax.autoscale_view(True,True,True)
-        self._ax.legend()
+        handles, labels = self._ax.get_legend_handles_labels()
+        if labels:
+            self._ax.legend()
 
 
     @Slot(float, float, bool, bool)
