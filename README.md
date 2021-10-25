@@ -268,6 +268,12 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * gridLinestyle
 * gridLinewidth
 * gridAlpha
+* autoscale (can be "both", "x", "y", "". Overwrites axis limits)
+* xMin
+* xMax
+* yMin
+* yMax
+
 
 ## Line
 * linestyle
