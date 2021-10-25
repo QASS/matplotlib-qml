@@ -173,6 +173,7 @@ class Axis(QQuickItem):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._ax = None
+        self._event_handler = None
         self._projection = "rectilinear"
         self._polar = False
         self._sharex = False
@@ -235,25 +236,31 @@ class Axis(QQuickItem):
         self._ax.yaxis.label.set_color(self._y_axis_label_color)
         self._ax.set_xlim(*self._xlim, emit = True)
         self._ax.set_ylim(*self._ylim, emit = True)
-        self.set_autoscale(self._autoscale)
+        self._apply_auto_scale(self._autoscale)
 
     def _refresh(self):
         """Rescales the axis to fit the current data lying on the axis. This is meant to be called by
         an EventHandler.
         The autoscaling is driven by the property "autoscale".
         """
-        autoscale_behaviour = {
-            "" : {"scalex" : False, "scaley" : False},
-            "x" : {"scalex" : True, "scaley" : False},
-            "y" : {"scalex" : False, "scaley" : True},
-            "both" : {"scalex" : True, "scaley" : True},
-        }
-        # print(autoscale_behaviour[self._autoscale])
         self._ax.relim()        
-        self._ax.autoscale_view(**autoscale_behaviour[self._autoscale])
+        self._ax.autoscale_view()
         handles, labels = self._ax.get_legend_handles_labels()
         if labels:
             self._ax.legend()
+
+    def _apply_auto_scale(self, autoscale):
+        if autoscale not in ("both", "x", "y", ""):
+            raise ValueError("Autoscale can only be either 'both', 'x', 'y' or an empty string!")
+        self._autoscale = autoscale
+        if self._ax is not None:
+            # First deactivate autoscaling on both axis
+            self._ax.autoscale(enable = False)
+            # If autoscale is false we deactivated autoscaling already and we can return 
+            if self._autoscale == "":
+                return
+            # Now turn autoscaling on for the desired axis
+            self._ax.autoscale(enable = True, axis = self._autoscale)
 
 
     @Slot(float, float, bool, bool)
@@ -445,17 +452,9 @@ class Axis(QQuickItem):
         The function will deactivate autoscaling for all axis before applying the new autoscaling 
         setting. The previous setting will ALWAYS be overwritten!
         """
-        if autoscale not in ("both", "x", "y", ""):
-            raise ValueError("Autoscale can only be either 'both', 'x', 'y' or an empty string!")
-        self._autoscale = autoscale
-        if self._ax is not None:
-            # First deactivate autoscaling on both axis
-            self._ax.autoscale(enable = False)
-            # If autoscale is false we deactivated autoscaling already and we can return 
-            if self._autoscale == "":
-                return
-            # Now turn autoscaling on for the desired axis
-            self._ax.autoscale(enable = True, axis = self._autoscale)
+        self._apply_auto_scale(autoscale)           
+        if self._event_handler is not None:     
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_xmin(self):
         xmin, xmax = self._xlim
