@@ -1,5 +1,6 @@
 from PySide2.QtQuick import QQuickItem
 from PySide2.QtCore import QObject, Signal, Slot, Property
+from copy import copy
 
 from plot_objects import Base, Figure
 from event import EventTypes
@@ -81,7 +82,7 @@ class GraphObject2D(PlotObject2D):
         # TODO update the plot objects here
 
     def set_xdata(self, xdata: list):
-        self._xdata = xdata
+        self._xdata = copy(xdata)
         if self._plot_obj is not None:
             self._plot_obj.set_xdata(self._xdata)
             # only emit the event if both shapes are correct
@@ -93,7 +94,7 @@ class GraphObject2D(PlotObject2D):
         return self._xdata
 
     def set_ydata(self, ydata: list):
-        self._ydata = ydata
+        self._ydata = copy(ydata)
         if self._plot_obj is not None:
             self._plot_obj.set_ydata(self._ydata)
             # only emit the event if both shapes are correct
