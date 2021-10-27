@@ -15,6 +15,9 @@
         * [Imshow](#imshow)
 
 
+# Known Issues
+* If you use multiple Axis QML objects nested inside a Plot then they influence the autoscaling. A temporary fix is to give them the same `autoscale` property value.
+
 # ToDos
 
 - [x] implement possible QML Interface from Python
@@ -268,6 +271,12 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * gridLinestyle
 * gridLinewidth
 * gridAlpha
+* autoscale (can be "both", "x", "y", "". Overwrites axis limits)
+* xMin
+* xMax
+* yMin
+* yMax
+
 
 ## Line
 * linestyle

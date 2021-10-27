@@ -17,7 +17,6 @@ def get_plugins():
 	"""
 	modules = []
 	curr_file_path = os.path.dirname(os.path.abspath(__file__))
-	print('path', curr_file_path)
 	for module in os.listdir(curr_file_path + "/plugins"):
 		if module.startswith("__") or ".py" not in module:
 			continue
