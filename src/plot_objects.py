@@ -327,6 +327,38 @@ class Axis(QQuickItem):
         self._ax.axvspan(x_min, x_max, **kwargs)
         self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
 
+    @Slot(str, "QVariantMap")
+    def tick_params(self, axis, kwargs):
+        """setter for everything regarding the tick params of the axis. This will also 
+        modify the corresponding propertys.
+        
+        :param axis: A string that identifies the axes to operate on
+        :type axis: str
+        :param kwargs: A dictionary (JS Object) with all the kwargs from the Axes.tick_params implementation from Matplotlib
+        :type kwargs: dict | JS Object
+        """
+        self._ax.tick_params(axis = axis, **kwargs)
+        # Update the Property variables so they are not lost
+        # I'm using conditional assignments here to reduce code size
+        # in principle a value is only assigned if the axis was set and if there is a value in kwargs
+        self._x_axis_tick_color = kwargs.get("color", self._x_axis_tick_color) if axis == "both" or axis == "x" else self._x_axis_tick_color
+        self._y_axis_tick_color = kwargs.get("color", self._y_axis_tick_color) if axis == "both" or axis == "y" else self._y_axis_tick_color
+        self._x_axis_label_fontsize = kwargs.get("labelsize", self._x_axis_label_fontsize) if axis == "both" or axis == "x" else self._x_axis_label_fontsize
+        self._y_axis_label_fontsize = kwargs.get("labelsize", self._y_axis_label_fontsize) if axis == "both" or axis == "y" else self._y_axis_label_fontsize
+        self._x_axis_label_color = kwargs.get("labelcolor", self._x_axis_label_color) if axis == "both" or axis == "x" else self._x_axis_label_color
+        self._y_axis_label_color = kwargs.get("labelcolor", self._y_axis_label_color) if axis == "both" or axis == "y" else self._y_axis_label_color
+        self._x_axis_tick_color = kwargs.get("colors", self._x_axis_tick_color) if axis == "both" or axis == "x" else self._x_axis_tick_color
+        self._y_axis_tick_color = kwargs.get("colors", self._y_axis_tick_color) if axis == "both" or axis == "y" else self._y_axis_tick_color
+        self._x_axis_label_color = kwargs.get("colors", self._x_axis_label_color) if axis == "both" or axis == "x" else self._x_axis_label_color
+        self._y_axis_label_color = kwargs.get("colors", self._y_axis_label_color) if axis == "both" or axis == "y" else self._y_axis_label_color
+        self._grid_color = kwargs.get("grid_color", self._grid_color)
+        self._grid_alpha = kwargs.get("grid_alpha", self._grid_alpha)
+        self._grid_linewidth = kwargs.get("grid_linewidth", self._grid_linewidth)
+        self._grid_linestyle = kwargs.get("grid_linestyle", self._grid_linestyle)
+        
+        # Emit the rerender event
+        self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
 
     def get_projection(self):
         return self._projection
