@@ -387,6 +387,56 @@ class Imshow(Base):
     cMap = Property(str, get_cmap, set_cmap)
     aspect = Property(str, get_aspect, set_aspect)
     interpolation = Property(str, get_interpolation, set_interpolation)
-        
 
+
+class Bar(PlotObject2D):
+    """Wrapper for matplotlib.axes.Axes.bar
+    The Bar Plot renders as a BarContainer object which inherits from tuple. Every Bar is a 
+    Rectangle Patch object which is living inside the BarContainer (which is a tuple)
+    Since tuples are immutable we need to reinstantiate a new bar plot every time which results in
+    performance loss"""
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self._x = []
+        self._height = []
+        self._width = 0.8
+        self._colors = [] # If bars should have different colors
+        self._orientation = "vertical"
+
+    def init(self, ax):
+        # plot_obj will be of type BarContainer
+        if self._colors:
+            self._plot_obj = ax.bar(self.x, self._height, color = self._colors, width = self._width)
+        else:
+            self._plot_obj = ax.bar(self.x, self._height, color = self._color, width = self._width)
+        
+    def get_x(self):
+        return self._x
+
+    def set_x(self, x):
+        self._x = x
+
+    def get_height(self):
+        return self._height
+
+    def set_height(self, height):
+        self._height = height
+
+    def get_width(self):
+        return self._width
+
+    def set_width(self, width):
+        self._width = width
+        if self._plot_obj is not None:
+            self._plot_obj.remove()  
     
+    def get_colors(self):
+        return self._colors
+
+    def set_colors(self, colors):
+        self._colors = colors
+
+    x = Property("QVariantList", get_x, set_x)
+    height = Property("QVariantList", get_height, set_height)
+    width = Property(float, get_width, set_width)
+    colors = Property("QVariantList", get_colors, set_colors)
