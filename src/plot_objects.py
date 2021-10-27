@@ -180,9 +180,11 @@ class Axis(QQuickItem):
         self._sharey = False
         self._grid = False
         self._x_axis_label = ""
+        self._x_axis_label_fontsize = 12
         self._x_axis_tick_color = "black"
         self._x_axis_label_color = "black"
         self._y_axis_label = ""
+        self._y_axis_label_fontsize = 12
         self._y_axis_tick_color = "black"
         self._y_axis_label_color = "black"
         self._grid_color = "grey"
@@ -224,14 +226,17 @@ class Axis(QQuickItem):
             child.init(ax)
 
     def _apply_axis_settings(self):
+        """Apply the axes settings. This usually only needs to happen when the plot initializes
+        The first time since the axes object will be modified in the setters of the different Propertys
+        or Slots."""
         if self._grid:
             self._ax.grid(color = self._grid_color, linestyle = self._grid_linestyle, 
             linewidth = self._grid_linewidth, alpha = self._grid_alpha)
         self._ax.set_axisbelow(True)
-        self._ax.set_xlabel(self._x_axis_label)
+        self._ax.set_xlabel(self._x_axis_label, fontsize = self._x_axis_label_fontsize)
         self._ax.tick_params(axis = "x", colors = self._x_axis_tick_color)
         self._ax.xaxis.label.set_color(self._x_axis_label_color)
-        self._ax.set_ylabel(self._y_axis_label)
+        self._ax.set_ylabel(self._y_axis_label, fontsize = self._y_axis_label_fontsize)
         self._ax.tick_params(axis = "y", colors = self._y_axis_tick_color)
         self._ax.yaxis.label.set_color(self._y_axis_label_color)
         self._ax.set_xlim(*self._xlim, emit = True)
@@ -322,6 +327,38 @@ class Axis(QQuickItem):
         self._ax.axvspan(x_min, x_max, **kwargs)
         self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
 
+    @Slot(str, "QVariantMap")
+    def tick_params(self, axis, kwargs):
+        """setter for everything regarding the tick params of the axis. This will also 
+        modify the corresponding propertys.
+        
+        :param axis: A string that identifies the axes to operate on
+        :type axis: str
+        :param kwargs: A dictionary (JS Object) with all the kwargs from the Axes.tick_params implementation from Matplotlib
+        :type kwargs: dict | JS Object
+        """
+        self._ax.tick_params(axis = axis, **kwargs)
+        # Update the Property variables so they are not lost
+        # I'm using conditional assignments here to reduce code size
+        # in principle a value is only assigned if the axis was set and if there is a value in kwargs
+        self._x_axis_tick_color = kwargs.get("color", self._x_axis_tick_color) if axis == "both" or axis == "x" else self._x_axis_tick_color
+        self._y_axis_tick_color = kwargs.get("color", self._y_axis_tick_color) if axis == "both" or axis == "y" else self._y_axis_tick_color
+        self._x_axis_label_fontsize = kwargs.get("labelsize", self._x_axis_label_fontsize) if axis == "both" or axis == "x" else self._x_axis_label_fontsize
+        self._y_axis_label_fontsize = kwargs.get("labelsize", self._y_axis_label_fontsize) if axis == "both" or axis == "y" else self._y_axis_label_fontsize
+        self._x_axis_label_color = kwargs.get("labelcolor", self._x_axis_label_color) if axis == "both" or axis == "x" else self._x_axis_label_color
+        self._y_axis_label_color = kwargs.get("labelcolor", self._y_axis_label_color) if axis == "both" or axis == "y" else self._y_axis_label_color
+        self._x_axis_tick_color = kwargs.get("colors", self._x_axis_tick_color) if axis == "both" or axis == "x" else self._x_axis_tick_color
+        self._y_axis_tick_color = kwargs.get("colors", self._y_axis_tick_color) if axis == "both" or axis == "y" else self._y_axis_tick_color
+        self._x_axis_label_color = kwargs.get("colors", self._x_axis_label_color) if axis == "both" or axis == "x" else self._x_axis_label_color
+        self._y_axis_label_color = kwargs.get("colors", self._y_axis_label_color) if axis == "both" or axis == "y" else self._y_axis_label_color
+        self._grid_color = kwargs.get("grid_color", self._grid_color)
+        self._grid_alpha = kwargs.get("grid_alpha", self._grid_alpha)
+        self._grid_linewidth = kwargs.get("grid_linewidth", self._grid_linewidth)
+        self._grid_linestyle = kwargs.get("grid_linestyle", self._grid_linestyle)
+        
+        # Emit the rerender event
+        self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
 
     def get_projection(self):
         return self._projection
@@ -387,6 +424,15 @@ class Axis(QQuickItem):
         if self._ax is not None:
             self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
+    def get_x_axis_label_fontsize(self):
+        return self._x_axis_label_fontsize
+
+    def set_x_axis_label_fontsize(self, fontsize):
+        self._x_axis_label_fontsize = fontsize
+        if self._ax is not None:
+            self._ax.set_xlabel(self._x_axis_label, fontsize = self._x_axis_label_fontsize)
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
     def get_y_axis_tick_color(self):
         return self._y_axis_tick_color
 
@@ -409,6 +455,15 @@ class Axis(QQuickItem):
     def set_y_axis_label(self, color):
         self._y_axis_label = color
         if self._ax is not None:
+            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_y_axis_label_fontsize(self):
+        return self._y_axis_label_fontsize
+
+    def set_y_axis_label_fontsize(self, fontsize):
+        self._y_axis_label_fontsize = fontsize
+        if self._ax is not None:
+            self._ax.set_ylabel(self._y_axis_label, fontsize = self._y_axis_label_fontsize)
             self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
 
     def get_grid_color(self):
@@ -481,6 +536,7 @@ class Axis(QQuickItem):
         return ymin
 
     def set_ymin(self, ymin: float):
+        """Sets the lower (bottom) y limit of the axes object"""
         self._ylim[0] = ymin
         if self._ax is not None:
             self._ax.set_xlim(*self._ylim, auto = None)
@@ -491,6 +547,7 @@ class Axis(QQuickItem):
         return ymax
 
     def set_ymax(self, ymax: float):
+        """Sets the upper (top) y limit of the axes object"""
         self._ylim[1] = ymax
         if self._ax is not None:
             self._ax.set_ylim(*self._xlim, auto = None)
@@ -502,9 +559,11 @@ class Axis(QQuickItem):
     sharey = Property(bool, get_sharey, set_sharey)
     grid = Property(bool, get_grid, set_grid)
     xAxisLabel = Property(str, get_x_axis_label, set_x_axis_label)
+    xAxisLabelFontSize = Property(int, get_x_axis_label_fontsize, set_x_axis_label_fontsize)
     xAxisTickColor = Property(str, get_x_axis_tick_color, set_x_axis_tick_color)
     xAxisLabelColor = Property(str, get_x_axis_label_color, set_x_axis_label_color)
     yAxisLabel = Property(str, get_y_axis_label, set_y_axis_label)
+    yAxisLabelFontSize = Property(int, get_y_axis_label_fontsize, set_y_axis_label_fontsize)
     yAxisTickColor = Property(str, get_y_axis_tick_color, set_y_axis_tick_color)
     yAxisLabelColor = Property(str, get_y_axis_label_color, set_y_axis_label_color)
     gridColor = Property(str, get_grid_color, set_grid_color)

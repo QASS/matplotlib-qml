@@ -17,6 +17,7 @@
 
 # Known Issues
 * If you use multiple Axis QML objects nested inside a Plot then they influence the autoscaling. A temporary fix is to give them the same `autoscale` property value.
+* The reset Method of the Axis object is not working as intended
 
 # ToDos
 
@@ -128,14 +129,14 @@
 - [ ] Axes.get_frame_on
 - [ ] Axes.set_axisbelow
 - [ ] Axes.get_axisbelow
-- [x] Axes.grid (QML)
+- [x] Axes.grid (QML, JS(tick_params))
 - [x] Axes.get_facecolor (QML)
 - [x] Axes.set_facecolor (QML)
 
 ### Labels, Titles, Legend
-- [x] Axes.set_xlabel (QML)
+- [x] Axes.set_xlabel (QML, JS(tick_params))
 - [x] Axes.get_xlabel (QML)
-- [x] Axes.set_ylabel (QML)
+- [x] Axes.set_ylabel (QML, JS(tick_params))
 - [x] Axes.get_ylabel (QML)
 - [ ] Axes.set_title
 - [ ] Axes.get_title
@@ -262,9 +263,11 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * sharey
 * grid
 * xAxisLabel
+* xAxisFontSize
 * xAxisTickColor
 * xAxisLabelColor
 * yAxisLabel
+* yAxisFontSize
 * yAxisTickColor
 * yAxisLabelColor
 * gridColor
