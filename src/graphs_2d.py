@@ -77,7 +77,7 @@ class GraphObject2D(PlotObject2D):
         from numpy import random, arange
         self.set_ydata(random.rand(length) * upper_limit)
         self.set_xdata(arange(len(self._ydata)))
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
         # self._plot_obj.figure.canvas.draw()
         # TODO update the plot objects here
 
@@ -87,7 +87,7 @@ class GraphObject2D(PlotObject2D):
             self._plot_obj.set_xdata(self._xdata)
             # only emit the event if both shapes are correct
             if len(self._xdata) == len(self._ydata):
-                self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+                self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
 
     def get_xdata(self):
@@ -99,7 +99,7 @@ class GraphObject2D(PlotObject2D):
             self._plot_obj.set_ydata(self._ydata)
             # only emit the event if both shapes are correct
             if len(self._xdata) == len(self._ydata):
-                self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+                self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_ydata(self):
         return self._ydata
@@ -182,7 +182,7 @@ class HLine(LineObject2D):
         self._y = y
         if self._plot_obj is not None:
             self._plot_obj.set_ydata([self._y] * 2)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xmin(self):
         return self._xmin
@@ -193,7 +193,7 @@ class HLine(LineObject2D):
             xdata = self._plot_obj.get_xdata()
             xdata[0] = self._xmin
             self._plot_obj.set_xdata(xdata)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xmax(self):
         return self._xmax
@@ -204,7 +204,7 @@ class HLine(LineObject2D):
             xdata = self._plot_obj.get_xdata()
             xdata[1] = self._xmax
             self._plot_obj.set_xdata(xdata)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     y = Property(float, get_y, set_y)
     xMin = Property(float, get_xmin, set_xmin)
@@ -250,7 +250,7 @@ class SpanObject2D(GraphObject2D):
             xy[0][1] = self._ymin
             xy[3][1] = self._ymin
             #self._plot_obj.set_xy(xy)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_ymax(self):
         return self._ymax
@@ -264,7 +264,7 @@ class SpanObject2D(GraphObject2D):
             xy[1][1] = self._ymax
             xy[2][1] = self._ymax
             #self._plot_obj.set_xy(xy)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xmin(self):
         return self._xmin
@@ -277,7 +277,7 @@ class SpanObject2D(GraphObject2D):
             xy[0][0] = self._xmin
             xy[1][0] = self._xmin
             #self._plot_obj.set_xy(xy)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xmax(self):
         return self._xmax
@@ -290,7 +290,7 @@ class SpanObject2D(GraphObject2D):
             xy[2][0] = self._xmax
             xy[3][0] = self._xmax
             #self._plot_obj.set_xy(xy)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
@@ -353,7 +353,7 @@ class Imshow(Base):
         if self._plot_obj is not None:
             # this does not update the normalization
             self._plot_obj.set_data(self._x)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_cmap(self):
         return self._cmap
@@ -363,7 +363,7 @@ class Imshow(Base):
         if self._plot_obj is not None:
             # this does not update the normalization
             self._plot_obj.set_cmap(self._cmap)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_aspect(self):
         return self._aspect
@@ -372,7 +372,7 @@ class Imshow(Base):
         self._aspect = aspect
         if self._plot_obj is not None:
             self._plot_obj.set_aspect(self._aspect)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_interpolation(self):
         return self._interpolation
@@ -381,7 +381,7 @@ class Imshow(Base):
         self._interpolation = interpolation
         if self._plot_obj is not None:
             self._plot_obj.set_interpolation(self._interpolation)
-            self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     x = Property("QVariantList", get_x, set_x)
     cMap = Property(str, get_cmap, set_cmap)
