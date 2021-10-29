@@ -122,7 +122,7 @@ class Figure(FigureCanvasQtQuickAgg):
     def set_tight_layout(self, tight_layout):
         self._tight_layout = tight_layout
         if self._event_handler:
-            self._event_handler.emit(EventTypes.FIGURE_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
 
     faceColorChanged = Signal(str)
@@ -284,14 +284,14 @@ class Axis(QQuickItem):
         Plot objects defined as children of the Axis in QML"""
         self._ax.clear()
         self.init(self._ax, self._event_handler)
-        self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     @Slot("QVariantList", "QVariantList")
     @Slot("QVariantList", "QVariantList", "QVariantMap")
     def plot(self, x, y, kwargs = {}):
         """JS Interface for matpltolib.pyplot.axes.Axes.plot"""
         self._ax.plot(x, y, **kwargs)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot("QVariantList", "QVariantList")
     @Slot("QVariantList", "QVariantList", "QVariantMap")
@@ -301,31 +301,31 @@ class Axis(QQuickItem):
         if not "marker" in kwargs:
             kwargs["marker"] = "o"
         self._ax.plot(x, y, linestyle = " ", **kwargs)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot(float)
     @Slot(float, "QVariantMap")
     def hline(self, y, kwargs = {}):
         self._ax.axhline(y, **kwargs)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot(float)
     @Slot(float, "QVariantMap")
     def vline(self, x, kwargs = {}):
         self._ax.axvline(x, **kwargs)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot(float, float)
     @Slot(float, float, "QVariantMap")
     def hspan(self, y_min, y_max, kwargs = {}):
         self._ax.axhspan(y_min, y_max, **kwargs)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot(float, float)
     @Slot(float, float, "QVariantMap")
     def vspan(self, x_min, x_max, kwargs = {}):
         self._ax.axvspan(x_min, x_max, **kwargs)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot(str, "QVariantMap")
     def tick_params(self, axis, kwargs):
@@ -357,7 +357,7 @@ class Axis(QQuickItem):
         self._grid_linestyle = kwargs.get("grid_linestyle", self._grid_linestyle)
         
         # Emit the rerender event
-        self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
 
     def get_projection(self):
@@ -366,7 +366,7 @@ class Axis(QQuickItem):
     def set_projection(self, projection):
         self._projection = projection
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_polar(self):
         return self._polar
@@ -374,7 +374,7 @@ class Axis(QQuickItem):
     def set_polar(self, polar):
         self._polar = polar
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_sharex(self):
         return self._sharex
@@ -382,7 +382,7 @@ class Axis(QQuickItem):
     def set_sharex(self, sharex):
         self._sharex = sharex
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_sharey(self):
         return self._sharey
@@ -390,7 +390,7 @@ class Axis(QQuickItem):
     def set_sharey(self, sharey):
         self._sharey = sharey
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_grid(self):
         return self._grid
@@ -398,7 +398,7 @@ class Axis(QQuickItem):
     def set_grid(self, grid):
         self._grid = grid
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_x_axis_tick_color(self):
         return self._x_axis_tick_color
@@ -406,7 +406,7 @@ class Axis(QQuickItem):
     def set_x_axis_tick_color(self, color):
         self._x_axis_tick_color = color
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_x_axis_label_color(self):
         return self._x_axis_label_color
@@ -414,7 +414,7 @@ class Axis(QQuickItem):
     def set_x_axis_label_color(self, color):
         self._x_axis_label_color = color
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_x_axis_label(self):
         return self._x_axis_label
@@ -422,7 +422,7 @@ class Axis(QQuickItem):
     def set_x_axis_label(self, color):
         self._x_axis_label = color
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_x_axis_label_fontsize(self):
         return self._x_axis_label_fontsize
@@ -431,7 +431,7 @@ class Axis(QQuickItem):
         self._x_axis_label_fontsize = fontsize
         if self._ax is not None:
             self._ax.set_xlabel(self._x_axis_label, fontsize = self._x_axis_label_fontsize)
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_y_axis_tick_color(self):
         return self._y_axis_tick_color
@@ -439,7 +439,7 @@ class Axis(QQuickItem):
     def set_y_axis_tick_color(self, color):
         self._y_axis_tick_color = color
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_y_axis_label_color(self):
         return self._y_axis_label_color
@@ -447,7 +447,7 @@ class Axis(QQuickItem):
     def set_y_axis_label_color(self, color):
         self._y_axis_label_color = color
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_y_axis_label(self):
         return self._y_axis_label
@@ -455,7 +455,7 @@ class Axis(QQuickItem):
     def set_y_axis_label(self, color):
         self._y_axis_label = color
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_y_axis_label_fontsize(self):
         return self._y_axis_label_fontsize
@@ -464,7 +464,7 @@ class Axis(QQuickItem):
         self._y_axis_label_fontsize = fontsize
         if self._ax is not None:
             self._ax.set_ylabel(self._y_axis_label, fontsize = self._y_axis_label_fontsize)
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_grid_color(self):
         return self._grid_color
@@ -472,7 +472,7 @@ class Axis(QQuickItem):
     def set_grid_color(self, color):
         self._grid_color = color
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_grid_linestyle(self):
         return self._grid_linestyle
@@ -480,7 +480,7 @@ class Axis(QQuickItem):
     def set_grid_linestyle(self, linestyle):
         self._grid_linestyle = linestyle
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_grid_linewidth(self):
         return self._grid_linewidth
@@ -488,7 +488,7 @@ class Axis(QQuickItem):
     def set_grid_linewidth(self, linewidth):
         self._grid_linewidth = linewidth
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_grid_alpha(self):
         return self._grid_alpha
@@ -496,7 +496,7 @@ class Axis(QQuickItem):
     def set_grid_alpha(self, alpha):
         self._grid_alpha = alpha
         if self._ax is not None:
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_autoscale(self):
         return self._autoscale
@@ -509,7 +509,7 @@ class Axis(QQuickItem):
         """
         self._apply_auto_scale(autoscale)           
         if self._event_handler is not None:     
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_xmin(self):
         xmin, xmax = self._xlim
@@ -519,7 +519,7 @@ class Axis(QQuickItem):
         self._xlim[0] = xmin
         if self._ax is not None:
             self._ax.set_xlim(*self._xlim, auto = None)
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_xmax(self):
         xmin, xmax = self._xlim
@@ -529,7 +529,7 @@ class Axis(QQuickItem):
         self._xlim[1] = xmax
         if self._ax is not None:
             self._ax.set_xlim(*self._xlim, auto = None)
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_ymin(self):
         ymin, ymax = self._ylim
@@ -540,7 +540,7 @@ class Axis(QQuickItem):
         self._ylim[0] = ymin
         if self._ax is not None:
             self._ax.set_xlim(*self._ylim, auto = None)
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_ymax(self):
         ymin, ymax = self._ylim
@@ -551,7 +551,7 @@ class Axis(QQuickItem):
         self._ylim[1] = ymax
         if self._ax is not None:
             self._ax.set_ylim(*self._xlim, auto = None)
-            self._event_handler.emit(EventTypes.AXIS_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     projection = Property(str, get_projection, set_projection) 
     polar = Property(bool, get_polar, set_polar)
