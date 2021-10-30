@@ -22,18 +22,18 @@ class EventHandler:
 	variable_timer each time.
 	:type set_timer_interval: int, optional
 	"""
-	def __init__(self, variable_timer_interval = 20, set_timer_interval = 100):
+	def __init__(self, short_timer_interval = 20, long_timer_interval = 100):
 		self._subscribers = defaultdict(list) 
 		self._event_schedule = set()
-		self._variable_timer_interval = variable_timer_interval
-		self._set_timer_interval = set_timer_interval
-		self._variable_timer, self._set_timer = QTimer(), QTimer()
+		self._short_timer_interval = short_timer_interval
+		self._long_timer_interval = long_timer_interval
+		self._short_timer, self._long_timer = QTimer(), QTimer()
 		self._init_timers()
 		
 	def _init_timers(self):
-		self._variable_timer.timeout.connect(self._emit_events)
-		self._set_timer.timeout.connect(self._emit_events)
-		self._set_timer.start(self._set_timer_interval)
+		self._short_timer.timeout.connect(self._emit_events)
+		self._long_timer.timeout.connect(self._emit_events)
+		self._long_timer.start(self._long_timer_interval)
 		
 
 	def register(self, event_type, func):
@@ -55,9 +55,9 @@ class EventHandler:
 			self.emit(event)
 		self._event_schedule.clear()
 		# stop the variable timer after all events have been handled to reduce overhead
-		self._variable_timer.stop()
+		self._short_timer.stop()
 
 	def schedule(self, event_type):
 		self._event_schedule.add(event_type)
 		# Start the variable timer whenever an event comes in
-		self._variable_timer.start(self._variable_timer_interval)
+		self._short_timer.start(self._short_timer_interval)
