@@ -72,7 +72,9 @@ class Figure(FigureCanvasQtQuickAgg):
         self._rows = 1
         self._columns = 1
         self._tight_layout = False
-        self._event_handler = EventHandler()
+        self._short_timer_interval = 20
+        self._long_timer_interval = 100
+        
     
     @Slot()
     def init(self):
@@ -81,6 +83,7 @@ class Figure(FigureCanvasQtQuickAgg):
         This function should be called in When the Figure Component is Completed in QML.
         """
         self.figure.clear()
+        self._event_handler = EventHandler(short_timer_interval = self._short_timer_interval, long_timer_interval = self._long_timer_interval)
         for idx, child in enumerate(child for child in self.children() if isinstance(child, Plot)):
             ax = self.figure.add_subplot(self._rows, self._columns, idx + 1) 
             ax.set_autoscale_on(True)
@@ -124,6 +127,18 @@ class Figure(FigureCanvasQtQuickAgg):
         if self._event_handler:
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
+    def get_short_timer_interval(self):
+        return self._short_timer_interval
+
+    def set_short_timer_interval(self, interval):
+        self._short_timer_interval = interval
+
+    def get_long_timer_interval(self):
+        return self._long_timer_interval
+
+    def set_long_timer_interval(self, interval):
+        self._long_timer_interval = interval
+
 
     faceColorChanged = Signal(str)
 
@@ -131,6 +146,8 @@ class Figure(FigureCanvasQtQuickAgg):
     rows = Property(int, get_rows, set_rows)
     columns = Property(int, get_columns, set_columns)
     tightLayout = Property(bool, get_tight_layout, set_tight_layout)
+    shortTimerInterval = Property(int, get_short_timer_interval, set_short_timer_interval)
+    longTimerInterval = Property(int, get_long_timer_interval, set_long_timer_interval)
 
 class Plot(QQuickItem):
     """Container to allow useful implementation of mutliple axis."""
