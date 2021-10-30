@@ -214,7 +214,7 @@ or you can directly emit an event:
 ```python
 self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
 ```
-Note that you create a lot of overhead if you emit events directly too often.
+Note that you create a lot of overhead if you emit events directly too often. The cycle length of each timer can be adjusted in the `Figure` Propertys `shortTimerInterval` and `longTimerInterval`. They will default to `shortTimerInterval = 20` and `longTimerInterval = 100` (values in ms) if not provided.
 
 # How to write a plugin <a name="how-to-write-a-plugin"/>
 
@@ -265,6 +265,8 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * rows
 * columns
 * tightLayout
+* shortTimerInterval
+* LongTimerInterval
 
 ## Plot
 * faceColor
