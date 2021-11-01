@@ -266,7 +266,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * columns
 * tightLayout
 * shortTimerInterval
-* LongTimerInterval
+* longTimerInterval
 
 ## Plot
 * faceColor
