@@ -173,8 +173,9 @@ In this case you don't need to create a venv or any of that. Just make sure you 
 ```
 pip install -r --user requirements.txt
 ```
+If this doesn't work you need to install the dependencies one by one. Usually it's only the `matplotlib-backend-qtquick` thats missing on the Optimizer.
 
-After that in the Analyzer you need to navigate to `Preferences/Python` and provide the path to the `init.py` Skript in the `/src/` folder. After that you need to restart the Analyzer Software since this Skript will be only executed at startup. If you make any changes to plugins of yours you will need to restart the Analyzer Software in order fro them to take effect.
+After that in the Analyzer you need to navigate to `Preferences/Python` and provide the path to the `init_matplotlib_bridge.py` Skript in the `/src/` folder. Make sure to add the `/src/` folder to the sysPath Extensions otherwise you will run into import errors. After that you need to restart the Analyzer Software since this Skript will be only executed at startup. If you make any changes to plugins of yours you will need to restart the Analyzer Software in order for them to take effect.
 
 ## Using the Figure in QML
 The Figure can be used like any other QML Type but needs to call it's `init()` method during `Component.onCompleted`:
@@ -246,9 +247,10 @@ MyClass {
 ```
 
 The Plugin Class must implement the methods `init`. It might also want to inherit one of the base classes like `LineObject2D`, `PlotObject2D` or `GraphObject2D` which already provide propertys for 2D Plots.
-Each object inheriting from `PlotObject2D` (so far I will most likely change that to a lower tier class) will receive an Event Handler from the axes which is handed down from the figure `self._event_handler`. You can use this Event Handler to emit Events whenever the data lying in the plot object changes:
+Each object inheriting from `PlotObject2D` (so far I will most likely change that to a lower tier class) will receive an Event Handler from the axes which is handed down from the figure `self._event_handler`. You can use this Event Handler to emit or schedule Events whenever the data lying in the plot object changes:
 ```python
-self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED) # emit events directly
+self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED) # schedule events for next cycle
 ```
 Available Events can be found in the `EventTypes` class which contains all the constants.
 
