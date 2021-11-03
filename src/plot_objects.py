@@ -284,6 +284,9 @@ class Axis(QQuickItem):
             # Now turn autoscaling on for the desired axis
             self._ax.autoscale(enable = True, axis = self._autoscale)
 
+    @property
+    def ax(self):
+        return self._ax
 
     @Slot(float, float, bool, bool)
     @Slot(float, float)
