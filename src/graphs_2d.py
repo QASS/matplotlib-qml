@@ -2,7 +2,7 @@ from PySide2.QtQuick import QQuickItem
 from PySide2.QtCore import QObject, Signal, Slot, Property
 from copy import copy
 
-from plot_objects import Base, Figure
+from plot_objects import Base, Figure, Axis
 from event import EventTypes
 
 
@@ -409,18 +409,34 @@ class Bar(PlotObject2D):
             self._plot_obj = ax.bar(self.x, self._height, color = self._colors, width = self._width)
         else:
             self._plot_obj = ax.bar(self.x, self._height, color = self._color, width = self._width)
-        
+
+    def _get_axis(self):
+        axis = self.parent()
+        if isinstance(axis, Axis):
+            return axis.ax
+        raise TypeError(f"The parent should be of type Axis but was of type {type(axis)}")
+
+    def _reinstantiate(self):
+        """The Bar plot needs to be recreated each time we make a change"""
+        self._plot_obj.remove()  
+        self.init(self._get_axis())
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
     def get_x(self):
         return self._x
 
     def set_x(self, x):
         self._x = x
+        if self._plot_obj is not None:
+            self._reinstantiate()
 
     def get_height(self):
         return self._height
 
     def set_height(self, height):
         self._height = height
+        if self._plot_obj is not None:
+            self._reinstantiate()
 
     def get_width(self):
         return self._width
@@ -428,15 +444,26 @@ class Bar(PlotObject2D):
     def set_width(self, width):
         self._width = width
         if self._plot_obj is not None:
-            self._plot_obj.remove()  
+            self._reinstantiate()
+
+    def get_color(self):
+        return self._color
+
+    def set_color(self, color):
+        self._color = color
+        if self._plot_obj is not None:
+            self._reinstantiate()
     
     def get_colors(self):
         return self._colors
 
     def set_colors(self, colors):
         self._colors = colors
+        if self._plot_obj is not None:
+            self._reinstantiate()
 
     x = Property("QVariantList", get_x, set_x)
     height = Property("QVariantList", get_height, set_height)
     width = Property(float, get_width, set_width)
+    color = Property(str, get_color, set_color)
     colors = Property("QVariantList", get_colors, set_colors)
