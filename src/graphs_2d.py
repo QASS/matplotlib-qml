@@ -2,6 +2,8 @@ from PySide2.QtQuick import QQuickItem
 from PySide2.QtCore import QObject, Signal, Slot, Property
 from copy import copy
 
+import numpy as np
+
 from plot_objects import Base, Figure, Axis
 from event import EventTypes
 
@@ -402,25 +404,47 @@ class Bar(PlotObject2D):
         self._width = 0.8
         self._colors = [] # If bars should have different colors
         self._orientation = "vertical"
+        self._tick_labels = None
+        self._edgecolor = None
 
     def init(self, ax):
+        """Subscribe for the Bar Plot Changed Event in order to schedule a new instance
+        creation of a bar plot object and create a plot object on the axis"""
+        self._event_handler.register(EventTypes.BAR_PLOT_CHANGED, self._reinstantiate)
+        self._create_plot_obj(ax)
+
+
+    def _create_plot_obj(self, ax):
         # plot_obj will be of type BarContainer
         if self._colors:
-            self._plot_obj = ax.bar(self.x, self._height, color = self._colors, width = self._width)
+            self._plot_obj = ax.bar(self.x, self._height, color = self._colors, 
+            width = self._width, tick_label = self._tick_labels, edgecolor = self._edgecolor)
         else:
-            self._plot_obj = ax.bar(self.x, self._height, color = self._color, width = self._width)
+            self._plot_obj = ax.bar(self.x, self._height, color = self._color, 
+            width = self._width, tick_label = self._tick_labels, edgecolor = self._edgecolor)
 
     def _get_axis(self):
+        """Retrieve the ax object from the axis parent
+        
+        :raises: ValueError if the parent has the wrong type 
+        """
         axis = self.parent()
         if isinstance(axis, Axis):
             return axis.ax
         raise TypeError(f"The parent should be of type Axis but was of type {type(axis)}")
 
     def _reinstantiate(self):
-        """The Bar plot needs to be recreated each time we make a change"""
-        self._plot_obj.remove()  
-        self.init(self._get_axis())
+        """The Bar plot needs to be recreated each time we make a change. This method is called
+        by the event_handler and will schedule a plot data change event to redraw the figure"""
+        self._plot_obj.remove()  # remove the object from the axis
+        self._create_plot_obj(self._get_axis())
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    @Slot(int)
+    @Slot(int, float)
+    def randomData(self, length, upper_limit = 1.0):
+        self.set_x(np.arange(length))
+        self.set_height(np.random.rand(length) * upper_limit)
 
     def get_x(self):
         return self._x
@@ -428,7 +452,8 @@ class Bar(PlotObject2D):
     def set_x(self, x):
         self._x = x
         if self._plot_obj is not None:
-            self._reinstantiate()
+            if len(self._x) == len(self._height):
+                self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     def get_height(self):
         return self._height
@@ -436,7 +461,8 @@ class Bar(PlotObject2D):
     def set_height(self, height):
         self._height = height
         if self._plot_obj is not None:
-            self._reinstantiate()
+            if len(self._x) == len(self._height):
+                self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     def get_width(self):
         return self._width
@@ -444,7 +470,7 @@ class Bar(PlotObject2D):
     def set_width(self, width):
         self._width = width
         if self._plot_obj is not None:
-            self._reinstantiate()
+            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     def get_color(self):
         return self._color
@@ -452,7 +478,7 @@ class Bar(PlotObject2D):
     def set_color(self, color):
         self._color = color
         if self._plot_obj is not None:
-            self._reinstantiate()
+            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
     
     def get_colors(self):
         return self._colors
@@ -460,7 +486,15 @@ class Bar(PlotObject2D):
     def set_colors(self, colors):
         self._colors = colors
         if self._plot_obj is not None:
-            self._reinstantiate()
+            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
+
+    def get_tick_labels(self):
+        return self._tick_labels
+
+    def set_tick_labels(self, tick_labels):
+        self._tick_labels = tick_labels
+        if self._plot_obj is not None:
+            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     x = Property("QVariantList", get_x, set_x)
     height = Property("QVariantList", get_height, set_height)
