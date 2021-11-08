@@ -33,6 +33,9 @@ class PlotObject2D(Base):
 
     def set_label(self, label):
         self._label = label
+        if self._plot_obj is not None:
+            self._plot_obj.set_label(self._label)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_alpha(self):
         return self._alpha
