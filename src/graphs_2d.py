@@ -184,7 +184,7 @@ class Scatter(GraphObject2D):
     def set_markeredgewidth(self, width):
         self._markeredgewidth = width
         if self._plot_obj is not None:
-            self._plot_obj.set_markeredgewidth(self._markersize)
+            self._plot_obj.set_markeredgewidth(self._markeredgewidth)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_markeredgecolor(self):
@@ -193,7 +193,7 @@ class Scatter(GraphObject2D):
     def set_markeredgecolor(self, color):
         self._markeredgecolor = color
         if self._plot_obj is not None:
-            self._plot_obj.set_markeredgecolor(self._markersize)
+            self._plot_obj.set_markeredgecolor(self._markeredgecolor)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_markerfacecolor(self):
@@ -202,7 +202,7 @@ class Scatter(GraphObject2D):
     def set_markerfacecolor(self, color):
         self._markerfacecolor = color
         if self._plot_obj is not None:
-            self._plot_obj.set_markerfacecolor(self._markersize)
+            self._plot_obj.set_markerfacecolor(self._markerfacecolor)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     marker = Property(str, get_marker, set_marker)
