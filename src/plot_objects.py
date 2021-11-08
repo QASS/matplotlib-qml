@@ -147,12 +147,16 @@ class Figure(FigureCanvasQtQuickAgg):
 
     def set_short_timer_interval(self, interval):
         self._short_timer_interval = interval
+        if self._event_handler is not None:
+            self._event_handler.set_short_timer_interval(self._short_timer_interval)
 
     def get_long_timer_interval(self):
         return self._long_timer_interval
 
     def set_long_timer_interval(self, interval):
         self._long_timer_interval = interval
+        if self._event_handler is not None:
+            self._event_handler.set_long_timer_interval(self._long_timer_interval)
 
 
     faceColorChanged = Signal(str)
