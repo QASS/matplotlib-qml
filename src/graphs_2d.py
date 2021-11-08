@@ -302,6 +302,9 @@ class SpanObject2D(GraphObject2D):
 
     def set_edgecolor(self, edgecolor):
         self._edgecolor = edgecolor
+        if self._plot_obj is not None:
+            self._plot_obj.set_edgecolor(self._edgecolor)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_ymin(self):
         return self._ymin
