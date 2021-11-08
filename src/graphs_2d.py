@@ -149,18 +149,67 @@ class Scatter(GraphObject2D):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._marker = None
+        self._markersize = None
+        self._markeredgewidth = None
+        self._markeredgecolor = None
+        self._markerfacecolor = None
 
     def init(self, ax):
         self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs,
-            marker = self._marker, linestyle = " ")
+            marker = self._marker, markersize = self._markersize, linestyle = " ", 
+            markeredgewidth = self._markeredgewidth, markeredgecolor = self._markeredgecolor,
+            markerfacecolor = self._markerfacecolor)
 
     def get_marker(self):
         return self._marker
 
     def set_marker(self, marker):
         self._marker = marker
+        if self._plot_obj is not None:
+            self._plot_obj.set_marker(marker)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_markersize(self):
+        return self._markersize
+
+    def set_markersize(self, markersize):
+        self._markersize = markersize
+        if self._plot_obj is not None:
+            self._plot_obj.set_markersize(self._markersize)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_markeredgewidth(self):
+        return self._markeredgewidth
+
+    def set_markeredgewidth(self, width):
+        self._markeredgewidth = width
+        if self._plot_obj is not None:
+            self._plot_obj.set_markeredgewidth(self._markeredgewidth)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_markeredgecolor(self):
+        return self._markeredgecolor
+
+    def set_markeredgecolor(self, color):
+        self._markeredgecolor = color
+        if self._plot_obj is not None:
+            self._plot_obj.set_markeredgecolor(self._markeredgecolor)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_markerfacecolor(self):
+        return self._markerfacecolor
+
+    def set_markerfacecolor(self, color):
+        self._markerfacecolor = color
+        if self._plot_obj is not None:
+            self._plot_obj.set_markerfacecolor(self._markerfacecolor)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     marker = Property(str, get_marker, set_marker)
+    markersize = Property(float, get_markersize, set_markersize)
+    markerEdgeWidth = Property(float, get_markeredgewidth, set_markeredgewidth)
+    markerEdgeColor = Property(str, get_markeredgecolor, set_markeredgecolor)
+    markerFaceColor = Property(str, get_markerfacecolor, set_markerfacecolor)
 
 class HLine(LineObject2D):
     """wrapper for matplotlib.axes.Axes.axhline"""
