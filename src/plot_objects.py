@@ -99,6 +99,17 @@ class Figure(FigureCanvasQtQuickAgg):
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
 
+    @Slot("QVariantMap")
+    def tightLayout(self, kwargs = {}): # TODO make the breaking change to enable the slot and disable the property
+        """Calling the tight_layout method on the figure
+        
+        kwargs can contain the following Keywords arguments
+        pad = 1.08, h_pad=None, w_pad=None, rect=None
+        """
+        self.figure.tight_layout(**kwargs)
+        if self._event_handler is not None:
+            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
+
     def redraw(self):
         self.figure.canvas.draw()
 
@@ -127,7 +138,8 @@ class Figure(FigureCanvasQtQuickAgg):
     
     def set_tight_layout(self, tight_layout):
         self._tight_layout = tight_layout
-        if self._event_handler:
+        if self._event_handler and self._tight_layout:
+            self.figure.tight_layout()
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
     def get_short_timer_interval(self):
