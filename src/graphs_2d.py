@@ -293,6 +293,9 @@ class SpanObject2D(GraphObject2D):
 
     def set_facecolor(self, facecolor: str):
         self._facecolor = facecolor
+        if self._plot_obj is not None:
+            self._plot_obj.set_facecolor(self._facecolor)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_edgecolor(self):
         return self._edgecolor
