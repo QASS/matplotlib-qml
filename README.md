@@ -314,6 +314,10 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * xData
 * yData
 * alpha
+* markersize
+* markerEdgeWidth
+* markerEdgeColor
+* markerFaceColor
 
 ## HLine
 * linestyle
