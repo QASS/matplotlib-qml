@@ -51,6 +51,9 @@ class PlotObject2D(Base):
 
     def set_color(self, color):
         self._color = color
+        if self._plot_obj is not None:
+            self._plot_obj.set_color(self._color)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def init(self, ax):
         raise NotImplementedError("This method needs to be implemented by the programmer!")
