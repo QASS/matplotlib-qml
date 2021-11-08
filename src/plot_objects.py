@@ -74,6 +74,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._tight_layout = False
         self._short_timer_interval = 20
         self._long_timer_interval = 100
+        self._event_handler = None
         
     
     @Slot()
@@ -103,6 +104,8 @@ class Figure(FigureCanvasQtQuickAgg):
 
     def set_facecolor(self, color: str):
         self.figure.set_facecolor(color)
+        if self._event_handler is not None:
+            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
     def get_facecolor(self):
         return self._facecolor
