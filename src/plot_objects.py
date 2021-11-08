@@ -74,6 +74,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._tight_layout = False
         self._short_timer_interval = 20
         self._long_timer_interval = 100
+        self._event_handler = None
         
     
     @Slot()
@@ -98,11 +99,24 @@ class Figure(FigureCanvasQtQuickAgg):
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
 
+    @Slot("QVariantMap")
+    def tightLayout(self, kwargs = {}): # TODO make the breaking change to enable the slot and disable the property
+        """Calling the tight_layout method on the figure
+        
+        kwargs can contain the following Keywords arguments
+        pad = 1.08, h_pad=None, w_pad=None, rect=None
+        """
+        self.figure.tight_layout(**kwargs)
+        if self._event_handler is not None:
+            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
+
     def redraw(self):
         self.figure.canvas.draw()
 
     def set_facecolor(self, color: str):
         self.figure.set_facecolor(color)
+        if self._event_handler is not None:
+            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
     def get_facecolor(self):
         return self._facecolor
@@ -124,7 +138,8 @@ class Figure(FigureCanvasQtQuickAgg):
     
     def set_tight_layout(self, tight_layout):
         self._tight_layout = tight_layout
-        if self._event_handler:
+        if self._event_handler and self._tight_layout:
+            self.figure.tight_layout()
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
     def get_short_timer_interval(self):
@@ -132,12 +147,16 @@ class Figure(FigureCanvasQtQuickAgg):
 
     def set_short_timer_interval(self, interval):
         self._short_timer_interval = interval
+        if self._event_handler is not None:
+            self._event_handler.set_short_timer_interval(self._short_timer_interval)
 
     def get_long_timer_interval(self):
         return self._long_timer_interval
 
     def set_long_timer_interval(self, interval):
         self._long_timer_interval = interval
+        if self._event_handler is not None:
+            self._event_handler.set_long_timer_interval(self._long_timer_interval)
 
 
     faceColorChanged = Signal(str)
@@ -154,10 +173,13 @@ class Plot(QQuickItem):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._facecolor = "white"
+        self._ax = None
 
     def init(self, ax, event_handler):
         """Retrieves all children of type :class:`Axis` and calls the draw method on them
         If the Plot object has multiple children it will hand them their own axis object """
+        self._ax = ax
+        self._event_handler = event_handler
         ax.set_facecolor(self._facecolor)
         axis_ = (child for child in self.children() if isinstance(child, Axis))
         for idx, axis in enumerate(axis_):
@@ -182,6 +204,9 @@ class Plot(QQuickItem):
 
     def set_facecolor(self, color):
         self._facecolor = color
+        if self._ax is not None:
+            self._ax.set_facecolor(self._facecolor)
+            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
     faceColor = Property(str, get_facecolor, set_facecolor)
 

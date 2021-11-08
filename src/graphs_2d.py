@@ -33,18 +33,27 @@ class PlotObject2D(Base):
 
     def set_label(self, label):
         self._label = label
+        if self._plot_obj is not None:
+            self._plot_obj.set_label(self._label)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_alpha(self):
         return self._alpha
 
     def set_alpha(self, alpha):
         self._alpha = alpha
+        if self._plot_obj is not None:
+            self._plot_obj.set_alpha(self._alpha)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_color(self):
         return self._color
 
     def set_color(self, color):
         self._color = color
+        if self._plot_obj is not None:
+            self._plot_obj.set_color(self._color)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def init(self, ax):
         raise NotImplementedError("This method needs to be implemented by the programmer!")
@@ -78,8 +87,6 @@ class GraphObject2D(PlotObject2D):
         self.set_ydata(random.rand(length) * upper_limit)
         self.set_xdata(arange(len(self._ydata)))
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-        # self._plot_obj.figure.canvas.draw()
-        # TODO update the plot objects here
 
     def set_xdata(self, xdata: list):
         self._xdata = copy(xdata)
@@ -126,12 +133,19 @@ class LineObject2D(GraphObject2D):
 
     def set_linestyle(self, linestyle):
         self._linestyle = linestyle
+        if self._plot_obj is not None:
+            self._plot_obj.set_linestyle(self._linestyle)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        
 
     def get_linewidth(self):
         return self._linewidth
 
     def set_linewidth(self, linewidth: float):
         self._linewidth = linewidth
+        if self._plot_obj is not None:
+            self._plot_obj.set_linewidth(self._linewidth)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     linestyle = Property(str, get_linestyle, set_linestyle)
     linewidth = Property(float, get_linewidth, set_linewidth)
@@ -279,12 +293,18 @@ class SpanObject2D(GraphObject2D):
 
     def set_facecolor(self, facecolor: str):
         self._facecolor = facecolor
+        if self._plot_obj is not None:
+            self._plot_obj.set_facecolor(self._facecolor)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_edgecolor(self):
         return self._edgecolor
 
     def set_edgecolor(self, edgecolor):
         self._edgecolor = edgecolor
+        if self._plot_obj is not None:
+            self._plot_obj.set_edgecolor(self._edgecolor)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_ymin(self):
         return self._ymin
