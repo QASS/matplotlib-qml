@@ -87,8 +87,6 @@ class GraphObject2D(PlotObject2D):
         self.set_ydata(random.rand(length) * upper_limit)
         self.set_xdata(arange(len(self._ydata)))
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-        # self._plot_obj.figure.canvas.draw()
-        # TODO update the plot objects here
 
     def set_xdata(self, xdata: list):
         self._xdata = copy(xdata)
@@ -135,6 +133,10 @@ class LineObject2D(GraphObject2D):
 
     def set_linestyle(self, linestyle):
         self._linestyle = linestyle
+        if self._plot_obj is not None:
+            self._plot_obj.set_linestyle(self._linestyle)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        
 
     def get_linewidth(self):
         return self._linewidth
