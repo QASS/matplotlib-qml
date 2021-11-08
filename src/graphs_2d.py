@@ -143,6 +143,9 @@ class LineObject2D(GraphObject2D):
 
     def set_linewidth(self, linewidth: float):
         self._linewidth = linewidth
+        if self._plot_obj is not None:
+            self._plot_obj.set_linewidth(self._linewidth)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     linestyle = Property(str, get_linestyle, set_linestyle)
     linewidth = Property(float, get_linewidth, set_linewidth)
