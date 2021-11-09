@@ -484,7 +484,9 @@ class Bar(PlotObject2D):
 
 
     def _create_plot_obj(self, ax):
-        # plot_obj will be of type BarContainer
+        """Creates a BarContainer Plot object which will be wrapped in this class
+        since propertys can only have one distinct type there's a need to check different
+        cases for some matplotlib arguments like color which can be a list or just a string."""
         if self._colors:
             self._plot_obj = ax.bar(self.x, self._height, color = self._colors, 
             width = self._width, tick_label = self._tick_labels, edgecolor = self._edgecolor)
@@ -561,7 +563,13 @@ class Bar(PlotObject2D):
         return self._tick_labels
 
     def set_tick_labels(self, tick_labels):
+        """The tick labels need to be set to None if no tick labels are provided
+        Otherwise this will cause a shape mismatch during object reinstantiation"""
+        # TODO: reset the xticks with the axis
+        if len(tick_labels) == 0:
+            tick_labels = None            
         self._tick_labels = tick_labels
+        print(self._tick_labels)
         if self._plot_obj is not None:
             self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
@@ -570,3 +578,4 @@ class Bar(PlotObject2D):
     width = Property(float, get_width, set_width)
     color = Property(str, get_color, set_color)
     colors = Property("QVariantList", get_colors, set_colors)
+    tickLabels = Property("QVariantList", get_tick_labels, set_tick_labels)
