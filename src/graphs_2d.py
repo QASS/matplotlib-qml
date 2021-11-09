@@ -222,7 +222,7 @@ class Scatter(GraphObject2D):
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     marker = Property(str, get_marker, set_marker)
-    markersize = Property(float, get_markersize, set_markersize)
+    markerSize = Property(float, get_markersize, set_markersize)
     markerEdgeWidth = Property(float, get_markeredgewidth, set_markeredgewidth)
     markerEdgeColor = Property(str, get_markeredgecolor, set_markeredgecolor)
     markerFaceColor = Property(str, get_markerfacecolor, set_markerfacecolor)
