@@ -5,8 +5,7 @@ from copy import copy
 import numpy as np
 
 from plot_objects import Base, Figure, Axis
-from event import EventTypes
-from src.event import EventHandler
+from event import EventTypes, EventHandler
 
 
 
@@ -571,7 +570,6 @@ class Bar(PlotObject2D):
         if len(tick_labels) == 0:
             tick_labels = None            
         self._tick_labels = tick_labels
-        print(self._tick_labels)
         if self._plot_obj is not None:
             self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
