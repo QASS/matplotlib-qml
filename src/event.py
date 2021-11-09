@@ -50,6 +50,24 @@ class EventHandler:
 		"""
 		for subscriber_function in self._subscribers.get(event_type, []):
 			subscriber_function()
+	
+	def set_short_timer_interval(self, interval):
+		"""Updates the short timer interval to the provided interval and restarts the timer
+		
+		:param interval: The new timer interval in ms
+		:type interval: int
+		"""
+		self._short_timer_interval = interval
+		self._short_timer.start(interval)
+
+	def set_long_timer_interval(self, interval):
+		"""Updates the short timer interval to the provided interval and restarts the timer
+		
+		:param interval: The new timer interval in ms
+		:type interval: int
+		"""
+		self._long_timer_interval = interval
+		self._long_timer.start(interval)
 
 	def _emit_events(self):
 		events = self._event_schedule.copy()
