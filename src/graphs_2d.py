@@ -5,8 +5,7 @@ from copy import copy
 import numpy as np
 
 from plot_objects import Base, Figure, Axis
-from event import EventTypes
-from src.event import EventHandler
+from event import EventTypes, EventHandler
 
 
 
