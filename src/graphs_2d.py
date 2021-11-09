@@ -570,7 +570,6 @@ class Bar(PlotObject2D):
         if len(tick_labels) == 0:
             tick_labels = None            
         self._tick_labels = tick_labels
-        print(self._tick_labels)
         if self._plot_obj is not None:
             self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
