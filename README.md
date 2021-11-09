@@ -14,6 +14,7 @@
    * [VSpan](#vspan)
    * [Imshow](#imshow)
    * [Bar](#bar)
+5. [Documentation](#documentation)
 
 
 # Known Issues
