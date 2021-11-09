@@ -3,16 +3,17 @@
 2. [How to use](#how-to-use)
 3. [How to write a Plugin](#how-to-write-a-plugin)
 4. [Implemented Propertys](#implemented-propertys)
-        * [Figure](#figure)
-        * [Plot](#plot)
-        * [Axis](#axis)
-        * [Line](#line)
-        * [Scatter](#scatter)
-        * [HLine](#hline)
-        * [VLine](#vline)
-        * [HSpan](#hspan)
-        * [VSpan](#vspan)
-        * [Imshow](#imshow)
+   * [Figure](#figure)
+   * [Plot](#plot)
+   * [Axis](#axis)
+   * [Line](#line)
+   * [Scatter](#scatter)
+   * [HLine](#hline)
+   * [VLine](#vline)
+   * [HSpan](#hspan)
+   * [VSpan](#vspan)
+   * [Imshow](#imshow)
+   * [Bar](#bar)
 
 
 # Known Issues
@@ -374,3 +375,11 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * cMap
 * aspect
 * interpolation
+
+## Bar
+* x
+* height
+* width
+* color
+* colors
+* tickLabels (might move to Axis soon)
