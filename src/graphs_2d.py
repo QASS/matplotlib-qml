@@ -6,6 +6,7 @@ import numpy as np
 
 from plot_objects import Base, Figure, Axis
 from event import EventTypes
+from src.event import EventHandler
 
 
 
@@ -475,11 +476,12 @@ class Bar(PlotObject2D):
         self._orientation = "vertical"
         self._tick_labels = None
         self._edgecolor = None
+        self._bar_event_handler = EventHandler()
 
     def init(self, ax):
         """Subscribe for the Bar Plot Changed Event in order to schedule a new instance
         creation of a bar plot object and create a plot object on the axis"""
-        self._event_handler.register(EventTypes.BAR_PLOT_CHANGED, self._reinstantiate)
+        self._bar_event_handler.register(EventTypes.BAR_PLOT_CHANGED, self._reinstantiate)
         self._create_plot_obj(ax)
 
 
@@ -524,7 +526,7 @@ class Bar(PlotObject2D):
         self._x = x
         if self._plot_obj is not None:
             if len(self._x) == len(self._height):
-                self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
+                self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     def get_height(self):
         return self._height
@@ -533,7 +535,7 @@ class Bar(PlotObject2D):
         self._height = height
         if self._plot_obj is not None:
             if len(self._x) == len(self._height):
-                self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
+                self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     def get_width(self):
         return self._width
@@ -541,7 +543,7 @@ class Bar(PlotObject2D):
     def set_width(self, width):
         self._width = width
         if self._plot_obj is not None:
-            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
+            self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     def get_color(self):
         return self._color
@@ -549,7 +551,7 @@ class Bar(PlotObject2D):
     def set_color(self, color):
         self._color = color
         if self._plot_obj is not None:
-            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
+            self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
     
     def get_colors(self):
         return self._colors
@@ -557,7 +559,7 @@ class Bar(PlotObject2D):
     def set_colors(self, colors):
         self._colors = colors
         if self._plot_obj is not None:
-            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
+            self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     def get_tick_labels(self):
         return self._tick_labels
@@ -571,7 +573,7 @@ class Bar(PlotObject2D):
         self._tick_labels = tick_labels
         print(self._tick_labels)
         if self._plot_obj is not None:
-            self._event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
+            self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
     x = Property("QVariantList", get_x, set_x)
     height = Property("QVariantList", get_height, set_height)
