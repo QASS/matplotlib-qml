@@ -6,6 +6,7 @@ class EventTypes:
 	PLOT_DATA_CHANGED = "PLOT_DATA_CHANGED"
 	AXIS_DATA_CHANGED = "AXIS_DATA_CHANGED"
 	FIGURE_DATA_CHANGED = "FIGURE_DATA_CHANGED"
+	BAR_PLOT_CHANGED = "BAR_PLOT_CHANGED"
 
 class EventHandler:
 	"""This class handles all the events that can be emitted when changing the configuratio
@@ -69,9 +70,10 @@ class EventHandler:
 		self._long_timer.start(interval)
 
 	def _emit_events(self):
-		for event in self._event_schedule:
-			self.emit(event)
+		events = self._event_schedule.copy()
 		self._event_schedule.clear()
+		for event in events:
+			self.emit(event)
 		# stop the variable timer after all events have been handled to reduce overhead
 		self._short_timer.stop()
 
