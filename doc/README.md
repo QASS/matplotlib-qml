@@ -19,30 +19,48 @@ Figure {
 #### faceColor (String)
 The `faceColor` Property modifies the color of the figure only.
 The default is `"white"`.
+**Python methods:**
+| Name				 	| Parameters	   		| Return Type	|
+| --------------------- |:---------------------:|--------------:|
+|get_facecolor()		| -						| String		|
+|set_facecolor()		| facecolor : String	| None			|
 
-### rows (Integer)
+
+#### rows (Integer)
 The amount of plots in one column. The Plots will fill up a row before moving into the next row.
+This is set only during the init phase of the figure and can't be modified later.
 The default is `1`.
 
 
-### columns (Integer)
+#### columns (Integer)
 The amount of plots in one row. The Plots will fill up a row before moving into the next row.
+This is set only during the init phase of the figure and can't be modified later.
 The default is `1`.
 
 
-### tightLayout (Boolean) (DEPRECATED)
+#### tightLayout (Boolean) (DEPRECATED)
 Readjust the plot and label positions in the figure to better fit the bounding box. This will soon be replaced by a Slot which allows a lot more flexibility.
 The default is `false`.
 
-### shortTimerInterval (Integer)
+#### shortTimerInterval (Integer)
 The Figure updates are driven by an event system. The short timer is responsible to propagate single standalone changes but is reset anytime an event is emitted to group changes in the figure together. 
 The provided value is the timer in milliseconds.
 The default is `20`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|--------------:|
+|get_short_timer_interval()	| -						| Integer		|
+|set_short_timer_interval()	| interval : Integer	| None			|
 
-### longTimerInterval (Integer)
+#### longTimerInterval (Integer)
 The long timer is the maximum time between updates in the Figure. If you constantly modify the figure it will update after one cycle of this timer.
 The provided value is the timer in milliseconds.
 The default is `100`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|--------------:|
+|get_long_timer_interval()	| -						| Integer		|
+|set_long_timer_interval()	| interval : Integer	| None			|
 
 ## Plot
 * faceColor
