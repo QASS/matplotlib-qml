@@ -32,9 +32,14 @@ class EventHandler:
 		self._init_timers()
 		
 	def _init_timers(self):
+		"""Connect the timers to the correct functions, set the timer interval and adjust
+		them to be single shot only"""
 		self._short_timer.timeout.connect(self._emit_events)
-		self._long_timer.timeout.connect(self._emit_events)
-		self._long_timer.start(self._long_timer_interval)
+		self._short_timer.setInterval(self._short_timer_interval)
+		self._short_timer.setSingleShot(True)
+		self._long_timer.timeout.connect(self._emit_events)	
+		self._long_timer.setInterval(self._long_timer_interval)
+		self._long_timer.setSingleShot(True)	
 		
 
 	def register(self, event_type, func):
@@ -52,32 +57,35 @@ class EventHandler:
 			subscriber_function()
 	
 	def set_short_timer_interval(self, interval):
-		"""Updates the short timer interval to the provided interval and restarts the timer
+		"""Updates the short timer interval to the provided interval
 		
 		:param interval: The new timer interval in ms
 		:type interval: int
 		"""
 		self._short_timer_interval = interval
-		self._short_timer.start(interval)
+		self._short_timer.setInterval(self._short_timer_interval)
 
 	def set_long_timer_interval(self, interval):
-		"""Updates the short timer interval to the provided interval and restarts the timer
+		"""Updates the short timer interval to the provided interval
 		
 		:param interval: The new timer interval in ms
 		:type interval: int
 		"""
 		self._long_timer_interval = interval
-		self._long_timer.start(interval)
+		self._long_timer.setInterval(self._long_timer_interval)
 
 	def _emit_events(self):
+		"""Copy the current event schedule and emit the events"""
 		events = self._event_schedule.copy()
 		self._event_schedule.clear()
 		for event in events:
 			self.emit(event)
-		# stop the variable timer after all events have been handled to reduce overhead
-		self._short_timer.stop()
 
 	def schedule(self, event_type):
+		"""Schedule an event to be handled in the next timer interval"""
 		self._event_schedule.add(event_type)
 		# Start the variable timer whenever an event comes in
-		self._short_timer.start(self._short_timer_interval)
+		self._short_timer.start()
+		if self._long_timer.isActive():
+			return
+		self._long_timer.start()
