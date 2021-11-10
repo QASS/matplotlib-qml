@@ -384,3 +384,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * color
 * colors
 * tickLabels (might move to Axis soon)
+
+# Documentation
+
+Check out the [docs](doc/README.md) folder
