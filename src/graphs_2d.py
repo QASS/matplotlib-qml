@@ -17,7 +17,7 @@ class PlotObject2D(Base):
         self._alpha = 1.0
         self._color = None
         self._label = ""
-        
+
 
     @property
     def matplotlib_2d_kwargs(self):
@@ -61,7 +61,7 @@ class PlotObject2D(Base):
     def init(self, ax):
         raise NotImplementedError("This method needs to be implemented by the programmer!")
 
-    
+
     alpha = Property(float, get_alpha, set_alpha)
     color = Property(str, get_color, set_color)
     label = Property(str, get_label, set_label)
@@ -127,10 +127,10 @@ class LineObject2D(GraphObject2D):
     @property
     def matplotlib_2d_kwargs(self):
         attributes = super().matplotlib_2d_kwargs
-        attributes["linestyle"] = self._linestyle 
+        attributes["linestyle"] = self._linestyle
         attributes["linewidth"] = self._linewidth
         return attributes
-    
+
     def get_linestyle(self):
         return self._linestyle
 
@@ -139,7 +139,7 @@ class LineObject2D(GraphObject2D):
         if self._plot_obj is not None:
             self._plot_obj.set_linestyle(self._linestyle)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-        
+
 
     def get_linewidth(self):
         return self._linewidth
@@ -173,7 +173,7 @@ class Scatter(GraphObject2D):
 
     def init(self, ax):
         self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs,
-            marker = self._marker, markersize = self._markersize, linestyle = " ", 
+            marker = self._marker, markersize = self._markersize, linestyle = " ",
             markeredgewidth = self._markeredgewidth, markeredgecolor = self._markeredgecolor,
             markerfacecolor = self._markerfacecolor)
 
@@ -235,10 +235,10 @@ class HLine(LineObject2D):
         self._y = 0
         self._xmin = 0.0
         self._xmax = 1.0
-    
+
     def init(self, ax):
         """Initializes an object of type Line2D"""
-        self._plot_obj = ax.axhline(self._y, **self.matplotlib_2d_kwargs, 
+        self._plot_obj = ax.axhline(self._y, **self.matplotlib_2d_kwargs,
                 xmin = self._xmin, xmax = self._xmax)
 
     def get_y(self):
@@ -385,7 +385,7 @@ class VSpan(SpanObject2D):
         """initializes an object of type Polygon"""
         self._plot_obj = ax.axvspan(self._xmin, self._xmax, **self.matplotlib_2d_kwargs,
                 ymin = self._ymin, ymax = self._ymax)
-    
+
 
 class HSpan(SpanObject2D):
     """wrapper for matplotlib.axes.Axes.axhspan
@@ -397,10 +397,10 @@ class HSpan(SpanObject2D):
         self._xmin = 0.0
         self._xmax = 1.0
         self._ax = None
-        
+
     def init(self, ax):
         # This will be of type Polygon
-        self._plot_obj = ax.axhspan(self._ymin, self._ymax, **self.matplotlib_2d_kwargs, 
+        self._plot_obj = ax.axhspan(self._ymin, self._ymax, **self.matplotlib_2d_kwargs,
                 xmin = self._xmin, xmax = self._xmax)
 
 class Imshow(Base):
@@ -416,7 +416,7 @@ class Imshow(Base):
 
     def init(self, ax):
         self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect)
-    
+
     def get_x(self):
         return self._x
 
@@ -463,7 +463,7 @@ class Imshow(Base):
 
 class Bar(PlotObject2D):
     """Wrapper for matplotlib.axes.Axes.bar
-    The Bar Plot renders as a BarContainer object which inherits from tuple. Every Bar is a 
+    The Bar Plot renders as a BarContainer object which inherits from tuple. Every Bar is a
     Rectangle Patch object which is living inside the BarContainer (which is a tuple)
     Since tuples are immutable we need to reinstantiate a new bar plot every time which results in
     performance loss"""
@@ -490,16 +490,16 @@ class Bar(PlotObject2D):
         since propertys can only have one distinct type there's a need to check different
         cases for some matplotlib arguments like color which can be a list or just a string."""
         if self._colors:
-            self._plot_obj = ax.bar(self.x, self._height, color = self._colors, 
+            self._plot_obj = ax.bar(self.x, self._height, color = self._colors,
             width = self._width, tick_label = self._tick_labels, edgecolor = self._edgecolor)
         else:
-            self._plot_obj = ax.bar(self.x, self._height, color = self._color, 
+            self._plot_obj = ax.bar(self.x, self._height, color = self._color,
             width = self._width, tick_label = self._tick_labels, edgecolor = self._edgecolor)
 
     def _get_axis(self):
         """Retrieve the ax object from the axis parent
-        
-        :raises: ValueError if the parent has the wrong type 
+
+        :raises: ValueError if the parent has the wrong type
         """
         axis = self.parent()
         if isinstance(axis, Axis):
@@ -552,7 +552,7 @@ class Bar(PlotObject2D):
         self._color = color
         if self._plot_obj is not None:
             self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
-    
+
     def get_colors(self):
         return self._colors
 
@@ -569,7 +569,7 @@ class Bar(PlotObject2D):
         Otherwise this will cause a shape mismatch during object reinstantiation"""
         # TODO: reset the xticks with the axis
         if len(tick_labels) == 0:
-            tick_labels = None            
+            tick_labels = None
         self._tick_labels = tick_labels
         print(self._tick_labels)
         if self._plot_obj is not None:

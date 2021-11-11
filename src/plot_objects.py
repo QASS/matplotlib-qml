@@ -52,12 +52,12 @@ class Base(QObject):
     #     return search(self)
 
 
-class Figure(FigureCanvasQtQuickAgg):    
+class Figure(FigureCanvasQtQuickAgg):
     """Root object for all QML matplotlib objects. Every other object that is a wrapper for
     Matplotlib must have a child relationship to an object of this class.
-    The Figure and all of it's component can be customized with code from the Figure level. 
+    The Figure and all of it's component can be customized with code from the Figure level.
     The first time something on those components can be called is in the onCompleted Event of the Figure instance.
-    
+
     In order to make sure the Figure is drawn, the onCOmpleted event must call Figure.init()::
         Figure {
             //Components here
@@ -75,8 +75,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._short_timer_interval = 20
         self._long_timer_interval = 100
         self._event_handler = None
-        
-    
+
     @Slot()
     def init(self):
         """Clears the whole figure and iterates over every child that is of instance :class:`Plot`.
@@ -86,7 +85,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self.figure.clear()
         self._event_handler = EventHandler(short_timer_interval = self._short_timer_interval, long_timer_interval = self._long_timer_interval)
         for idx, child in enumerate(child for child in self.children() if isinstance(child, Plot)):
-            ax = self.figure.add_subplot(self._rows, self._columns, idx + 1) 
+            ax = self.figure.add_subplot(self._rows, self._columns, idx + 1)
             ax.set_autoscale_on(True)
             ax.autoscale_view(True,True,True)
             child.init(ax, self._event_handler)
@@ -102,7 +101,7 @@ class Figure(FigureCanvasQtQuickAgg):
     @Slot("QVariantMap")
     def tightLayout(self, kwargs = {}): # TODO make the breaking change to enable the slot and disable the property
         """Calling the tight_layout method on the figure
-        
+
         kwargs can contain the following Keywords arguments
         pad = 1.08, h_pad=None, w_pad=None, rect=None
         """
@@ -132,10 +131,10 @@ class Figure(FigureCanvasQtQuickAgg):
 
     def set_columns(self, columns):
         self._columns = columns
-        
+
     def get_tight_layout(self):
         return self._tight_layout
-    
+
     def set_tight_layout(self, tight_layout):
         self._tight_layout = tight_layout
         if self._event_handler and self._tight_layout:
@@ -243,7 +242,7 @@ class Axis(QQuickItem):
         """Iterate over every children and call the plot method on those children
         The children define how they are plotted and are provided with an axis object
         they can modify. The QML children will be plotted first.
-        
+
         :param ax: A Matplotlib axis object
         :type ax: Matplotlib.pyplot.Axes
         """
@@ -255,10 +254,10 @@ class Axis(QQuickItem):
         self._ax = ax
         # plot all children
         self._init_children(ax, event_handler)
-        
+
         # apply all the axis settings
         self._apply_axis_settings()
-        
+
 
     def _init_children(self, ax, event_handler):
         children = (child for child in self.children() if isinstance(child, Base)) # TODO change to PlotBase
@@ -290,7 +289,7 @@ class Axis(QQuickItem):
         an EventHandler.
         The autoscaling is driven by the property "autoscale".
         """
-        self._ax.relim()        
+        self._ax.relim()
         self._ax.autoscale_view()
         handles, labels = self._ax.get_legend_handles_labels()
         if labels:
@@ -303,7 +302,7 @@ class Axis(QQuickItem):
         if self._ax is not None:
             # First deactivate autoscaling on both axis
             self._ax.autoscale(enable = False)
-            # If autoscale is false we deactivated autoscaling already and we can return 
+            # If autoscale is false we deactivated autoscaling already and we can return
             if self._autoscale == "":
                 return
             # Now turn autoscaling on for the desired axis
@@ -317,7 +316,7 @@ class Axis(QQuickItem):
     @Slot(float, float)
     def set_xlim(self, xmin=None, xmax=None, emit=True, auto=False):
         self._ax.set_xlim(xmin, xmax, emit, auto)
-        
+
     @Slot(float, float, bool, bool)
     @Slot(float, float)
     def set_ylim(self, ymin=None, ymax=None, emit=True, auto=False):
@@ -325,7 +324,7 @@ class Axis(QQuickItem):
 
     @Slot()
     def reset(self):
-        """Resets an axis. This will reset only the graphs added by the interface and redraw the 
+        """Resets an axis. This will reset only the graphs added by the interface and redraw the
         Plot objects defined as children of the Axis in QML"""
         self._ax.clear()
         self.init(self._ax, self._event_handler)

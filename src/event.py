@@ -9,33 +9,33 @@ class EventTypes:
 	BAR_PLOT_CHANGED = "BAR_PLOT_CHANGED"
 
 class EventHandler:
-	"""This class handles all the events that can be emitted when changing the configuratio
+	"""This class handles all the events that can be emitted when changing the configuration
 	or content of the plot or anything in general. You can subscribe to a specific event
 	with a function and the Event Handler will execute that function whenever the event
 	gets emitted.
-	
+
 	:param variable_timer_interval: This timer is being resetted every time an event comes in
 	to prevent the plot from updating too often. This functionality will group events together
 	but allow single events to be handled faster.
 	:type variable_timer_interval: int, optional
-	:param set_timer_interval: The set timer will handle all events after each timeout to 
-	make sure the plot is updating even though a constant flow of events arrives and resets the 
+	:param set_timer_interval: The set timer will handle all events after each timeout to
+	make sure the plot is updating even though a constant flow of events arrives and resets the
 	variable_timer each time.
 	:type set_timer_interval: int, optional
 	"""
 	def __init__(self, short_timer_interval = 20, long_timer_interval = 100):
-		self._subscribers = defaultdict(list) 
+		self._subscribers = defaultdict(list)
 		self._event_schedule = set()
 		self._short_timer_interval = short_timer_interval
 		self._long_timer_interval = long_timer_interval
 		self._short_timer, self._long_timer = QTimer(), QTimer()
 		self._init_timers()
-		
+
 	def _init_timers(self):
 		self._short_timer.timeout.connect(self._emit_events)
 		self._long_timer.timeout.connect(self._emit_events)
 		self._long_timer.start(self._long_timer_interval)
-		
+
 
 	def register(self, event_type, func):
 		"""Register a function to the Event Handler. This function will be called whenever
@@ -44,16 +44,16 @@ class EventHandler:
 
 	def emit(self, event_type):
 		"""Emit an event directly (synchronously) without waiting for the next update interval
-		
+
 		:param event_type: :class:`EventTypes` constant describing the type of Event
 		:type event_type: str
 		"""
 		for subscriber_function in self._subscribers.get(event_type, []):
 			subscriber_function()
-	
+
 	def set_short_timer_interval(self, interval):
 		"""Updates the short timer interval to the provided interval and restarts the timer
-		
+
 		:param interval: The new timer interval in ms
 		:type interval: int
 		"""
@@ -62,7 +62,7 @@ class EventHandler:
 
 	def set_long_timer_interval(self, interval):
 		"""Updates the short timer interval to the provided interval and restarts the timer
-		
+
 		:param interval: The new timer interval in ms
 		:type interval: int
 		"""
