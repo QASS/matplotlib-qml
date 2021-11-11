@@ -14,14 +14,14 @@ class EventHandler:
 	with a function and the Event Handler will execute that function whenever the event
 	gets emitted.
 	
-	:param variable_timer_interval: This timer is being resetted every time an event comes in
+	:param short_timer_interval: This timer is being resetted every time an event comes in
 	to prevent the plot from updating too often. This functionality will group events together
 	but allow single events to be handled faster.
-	:type variable_timer_interval: int, optional
-	:param set_timer_interval: The set timer will handle all events after each timeout to 
+	:type short_timer_interval: int, optional
+	:param long_timer_interval: The set timer will handle all events after each timeout to 
 	make sure the plot is updating even though a constant flow of events arrives and resets the 
 	variable_timer each time.
-	:type set_timer_interval: int, optional
+	:type long_timer_interval: int, optional
 	"""
 	def __init__(self, short_timer_interval = 20, long_timer_interval = 100):
 		self._subscribers = defaultdict(list) 
