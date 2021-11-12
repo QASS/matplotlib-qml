@@ -224,10 +224,14 @@ class Axis(QQuickItem):
         self._x_axis_label = ""
         self._x_axis_label_fontsize = 12
         self._x_axis_tick_color = "black"
+        self._x_axis_major_ticks = []
+        self._x_axis_minor_ticks = []
         self._x_axis_label_color = "black"
         self._y_axis_label = ""
         self._y_axis_label_fontsize = 12
         self._y_axis_tick_color = "black"
+        self._y_axis_major_ticks = []
+        self._y_axis_minor_ticks = []
         self._y_axis_label_color = "black"
         self._grid_color = "grey"
         self._grid_linestyle = "-"
@@ -284,6 +288,14 @@ class Axis(QQuickItem):
         self._ax.set_xlim(*self._xlim, emit = True)
         self._ax.set_ylim(*self._ylim, emit = True)
         self._apply_auto_scale(self._autoscale)
+        if self._x_axis_major_ticks:
+            self._ax.set_xticks(self._x_axis_major_ticks, minor = False)
+        if self._x_axis_minor_ticks:
+            self._ax.set_xticks(self._x_axis_minor_ticks, minor = True)
+        if self._y_axis_major_ticks:
+            self._ax.set_yticks(self._y_axis_major_ticks, minor = False)
+        if self._y_axis_minor_ticks:
+            self._ax.set_yticks(self._y_axis_minor_ticks, minor = True)
 
     def _refresh(self):
         """Rescales the axis to fit the current data lying on the axis. This is meant to be called by
@@ -453,6 +465,22 @@ class Axis(QQuickItem):
         if self._ax is not None:
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    def get_x_axis_major_ticks(self):
+        return self._x_axis_major_ticks
+
+    def set_x_axis_major_ticks(self, xticks):
+        self._x_axis_major_ticks = xticks
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_x_axis_minor_ticks(self):
+        return self._x_axis_minor_ticks
+
+    def set_x_axis_minor_ticks(self, xticks):
+        self._x_axis_minor_ticks = xticks
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
     def get_x_axis_label_color(self):
         return self._x_axis_label_color
 
@@ -483,6 +511,22 @@ class Axis(QQuickItem):
 
     def set_y_axis_tick_color(self, color):
         self._y_axis_tick_color = color
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_y_axis_major_ticks(self):
+        return self._y_axis_major_ticks
+
+    def set_y_axis_major_ticks(self, yticks):
+        self._y_axis_major_ticks = yticks
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_y_axis_minor_ticks(self):
+        return self._y_axis_minor_ticks
+
+    def set_y_axis_minor_ticks(self, yticks):
+        self._y_axis_minor_ticks = yticks
         if self._ax is not None:
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
@@ -605,11 +649,15 @@ class Axis(QQuickItem):
     grid = Property(bool, get_grid, set_grid)
     xAxisLabel = Property(str, get_x_axis_label, set_x_axis_label)
     xAxisLabelFontSize = Property(int, get_x_axis_label_fontsize, set_x_axis_label_fontsize)
+    xAxisMajorTicks = Property("QVariantList", get_x_axis_major_ticks, set_x_axis_major_ticks)
+    xAxisMinorTicks = Property("QVariantList", get_x_axis_minor_ticks, set_x_axis_minor_ticks)
     xAxisTickColor = Property(str, get_x_axis_tick_color, set_x_axis_tick_color)
     xAxisLabelColor = Property(str, get_x_axis_label_color, set_x_axis_label_color)
     yAxisLabel = Property(str, get_y_axis_label, set_y_axis_label)
     yAxisLabelFontSize = Property(int, get_y_axis_label_fontsize, set_y_axis_label_fontsize)
     yAxisTickColor = Property(str, get_y_axis_tick_color, set_y_axis_tick_color)
+    yAxisMajorTicks = Property("QVariantList", get_y_axis_major_ticks, set_y_axis_major_ticks)
+    yAxisMinorTicks = Property("QVariantList", get_y_axis_minor_ticks, set_y_axis_minor_ticks)
     yAxisLabelColor = Property(str, get_y_axis_label_color, set_y_axis_label_color)
     gridColor = Property(str, get_grid_color, set_grid_color)
     gridLinestyle = Property(str, get_grid_linestyle, set_grid_linestyle)
