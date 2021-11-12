@@ -284,10 +284,14 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * xAxisLabel
 * xAxisLabelFontSize
 * xAxisTickColor
+* xAxisMajorTicks
+* xAxisMinorTicks
 * xAxisLabelColor
 * yAxisLabel
 * yAxisLabelFontSize
 * yAxisTickColor
+* yAxisMajorTicks
+* yAxisMinorTicks
 * yAxisLabelColor
 * gridColor
 * gridLinestyle
