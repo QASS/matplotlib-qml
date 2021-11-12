@@ -110,6 +110,10 @@ class Figure(FigureCanvasQtQuickAgg):
         if self._event_handler is not None:
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
+    def get_matplotlib_figure_object(self):
+        """The supported way of retrieving the wrapped Matplotlib figure object"""
+        return self.figure
+
     def redraw(self):
         self.figure.canvas.draw()
 
@@ -323,6 +327,13 @@ class Axis(QQuickItem):
 
     @property
     def ax(self):
+        return self._ax
+
+    def get_matplotlib_ax_object(self):
+        """The supported way of retrieving the wrapped matplotlib axis
+        
+        :return: Matplotlib Axis object
+        """
         return self._ax
 
     @Slot(float, float, bool, bool)
