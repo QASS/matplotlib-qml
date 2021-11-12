@@ -1,5 +1,9 @@
 # Documentation
 
+## Table of Content
+1. [Figure](#figure)
+2. [Plot](#plot)
+3. [Axis](#axis)
 
 ## Figure
 
@@ -135,17 +139,48 @@ Currently only a placeholder to allow different multiple Axis behaviour in the f
 #### grid (Boolean)
 Wether to draw a grid between the axis Ticks.
 The default is `false`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_grid()					| -						| Boolean		|
+|set_grid()					| grid : Boolean		| None			|
 
-
-#### gridColor
+#### gridColor (String)
 Color of the grid.
 The default is `"grey"`
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_grid_color()			| -						| String		|
+|set_grid_color()			| color : String		| None			|
 
 
-* gridLinestyle
-* gridLinewidth
-* gridAlpha
+#### gridLinestyle (String)
+Linestyle of the grid
+The default is `"-"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_grid_linestyle()		| -						| String		|
+|set_grid_linestyle()		| linestyle : String	| None			|
 
+#### gridLinewidth (Integer)
+Linewidth of the grid.
+The default is `1`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_grid_linestyle()		| -						| String		|
+|set_grid_linestyle()		| linestyle : String	| None			|
+
+#### gridAlpha (Float)
+The alpha value of the grid.
+The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_grid_alpha()			| -						| Float		|
+|set_grid_alpha()			| alpha : Float			| None			|
 
 #### xAxisLabel (String)
 Defines the label on the X-Axis.
