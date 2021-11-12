@@ -8,6 +8,7 @@ from matplotlib_backend_qtquick.backend_qtquick import (
     NavigationToolbar2QtQuick)
 from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
+from matplotlib.ticker import AutoLocator
 from event import EventHandler, EventTypes
 
 class Base(QObject):
@@ -228,14 +229,14 @@ class Axis(QQuickItem):
         self._x_axis_label = ""
         self._x_axis_label_fontsize = 12
         self._x_axis_tick_color = "black"
-        self._x_axis_major_ticks = []
-        self._x_axis_minor_ticks = []
+        self._x_axis_major_ticks = None
+        self._x_axis_minor_ticks = None
         self._x_axis_label_color = "black"
         self._y_axis_label = ""
         self._y_axis_label_fontsize = 12
         self._y_axis_tick_color = "black"
-        self._y_axis_major_ticks = []
-        self._y_axis_minor_ticks = []
+        self._y_axis_major_ticks = None
+        self._y_axis_minor_ticks = None
         self._y_axis_label_color = "black"
         self._grid_color = "grey"
         self._grid_linestyle = "-"
@@ -292,13 +293,13 @@ class Axis(QQuickItem):
         self._ax.set_xlim(*self._xlim, emit = True)
         self._ax.set_ylim(*self._ylim, emit = True)
         self._apply_auto_scale(self._autoscale)
-        if self._x_axis_major_ticks:
+        if self._x_axis_major_ticks is not None: # TODO add AutoLocator to allow resetting of ticks
             self._ax.set_xticks(self._x_axis_major_ticks, minor = False)
-        if self._x_axis_minor_ticks:
+        if self._x_axis_minor_ticks is not None:
             self._ax.set_xticks(self._x_axis_minor_ticks, minor = True)
-        if self._y_axis_major_ticks:
+        if self._y_axis_major_ticks is not None:
             self._ax.set_yticks(self._y_axis_major_ticks, minor = False)
-        if self._y_axis_minor_ticks:
+        if self._y_axis_minor_ticks is not None:
             self._ax.set_yticks(self._y_axis_minor_ticks, minor = True)
 
     def _refresh(self):
@@ -427,6 +428,27 @@ class Axis(QQuickItem):
         # Emit the rerender event
         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    @Slot()
+    def reset_x_ticks(self):
+        """Sets all the ticks on the x axis to the AutoLocator.
+        It will also reset the propertys xAxisMajorTicks and xAxisMinorTicks to None.
+        resulting in them not influencing the axis"""
+        self._ax.xaxis.set_major_locator(AutoLocator())
+        self._ax.xaxis.set_minor_locator(AutoLocator())
+        self._x_axis_major_ticks = None
+        self._x_axis_minor_ticks = None
+        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    @Slot()
+    def reset_y_ticks(self):
+        """Sets all the ticks on the x axis to the AutoLocator.
+        It will also reset the propertys yAxisMajorTicks and yAxisMinorTicks to None.
+        resulting in them not influencing the axis"""
+        self._ax.yaxis.set_major_locator(AutoLocator())
+        self._ax.yaxis.set_minor_locator(AutoLocator())
+        self._y_axis_major_ticks = None
+        self._y_axis_minor_ticks = None
+        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_projection(self):
         return self._projection
