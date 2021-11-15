@@ -9,7 +9,6 @@ from matplotlib_backend_qtquick.backend_qtquick import (
 from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
-from matplotlib.scale import LinearScale, LogScale, SymmetricalLogScale, LogitScale, FuncScale
 from event import EventHandler, EventTypes
 from copy import copy
 
