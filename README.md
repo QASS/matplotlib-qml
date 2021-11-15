@@ -14,6 +14,7 @@
    * [VSpan](#vspan)
    * [Imshow](#imshow)
    * [Bar](#bar)
+5. [Documentation](#documentation)
 
 
 # Known Issues
@@ -387,3 +388,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * color
 * colors
 * tickLabels (might move to Axis soon)
+
+# Documentation
+
+Check out the [docs](doc/README.md) folder
