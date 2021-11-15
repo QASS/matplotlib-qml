@@ -230,7 +230,8 @@ class Axis(QQuickItem):
         super().__init__(parent)
         self._ax = None
         self._event_handler = None
-        self._scale = "linear"
+        self._xscale = "linear"
+        self._yscale = "linear"
         self._projection = "rectilinear"
         self._polar = False
         self._sharex = False
@@ -296,7 +297,8 @@ class Axis(QQuickItem):
         if self._grid:
             self._ax.grid(color = self._grid_color, linestyle = self._grid_linestyle, 
             linewidth = self._grid_linewidth, alpha = self._grid_alpha)
-        self._ax.set_xscale(self._scale)
+        self._ax.set_xscale(self._xscale)
+        self._ax.set_yscale(self._yscale)
         self._ax.set_axisbelow(True)
         self._ax.set_xlabel(self._x_axis_label, fontsize = self._x_axis_label_fontsize)
         self._ax.tick_params(axis = "x", colors = self._x_axis_tick_color)
@@ -479,12 +481,21 @@ class Axis(QQuickItem):
         self._y_axis_minor_ticks = None
         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
-    def get_scale(self):
+    def get_xscale(self):
         return self._scale
 
-    def set_scale(self, scale):
+    def set_xscale(self, xscale):
         """Check if the provided scale is valid and provide linear as fallback if necessary"""
-        self._scale = self.SCALE.get(scale, "linear")
+        self._xscale = self.SCALE.get(xscale, "linear")
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_yscale(self):
+        return self._scale
+
+    def set_yscale(self, yscale):
+        """Check if the provided scale is valid and provide linear as fallback if necessary"""
+        self._yscale = self.SCALE.get(yscale, "linear")
         if self._ax is not None:
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
@@ -713,7 +724,8 @@ class Axis(QQuickItem):
             self._ax.set_ylim(*self._xlim, auto = None)
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
-    scale = Property(str, get_scale, set_scale)
+    xScale = Property(str, get_xscale, set_xscale)
+    yScale = Property(str, get_yscale, set_yscale)
     projection = Property(str, get_projection, set_projection) 
     polar = Property(bool, get_polar, set_polar)
     sharex = Property(bool, get_sharex, set_sharex)
