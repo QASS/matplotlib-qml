@@ -2,8 +2,12 @@
 
 ## Table of Content
 1. [Figure](#figure)
+   *[Propertys](#figure-properties)
 2. [Plot](#plot)
+   *[Propertys](#plot-properties)
 3. [Axis](#axis)
+   *[Propertys](#axis-properties)
+   *[Slots](#axis-slots)
 
 ## Figure
 
@@ -18,7 +22,7 @@ Figure {
 	// Plot etc. here
 }
 ```
-### Properties
+### Properties <a name="figure-properties"/>
 
 #### faceColor (String)
 The `faceColor` Property modifies the color of the figure only.
@@ -87,7 +91,7 @@ Figure {
 }
 ```
 
-### Properties
+### Properties <a name="plot-properties"/>
 
 #### faceColor (String)
 The color of the face of each subplot in a figure (there might only be one plot on the figure).
@@ -99,7 +103,7 @@ The default is `"white"`.
 |set_facecolor()			| interval : Integer	| None			|
 
 
-## Axis
+## Axis 
 If you want to get the Matplotlib Axes object from the wrapper class you can use the `get_matplotlib_ax_object` method on the `Axis` object.
 
 ### Example usage
@@ -117,7 +121,7 @@ Figure {
 }
 ```
 
-### Properties
+### Properties <a name="axis-properties"/>
 
 #### projection (String)
 The projection of the Axis. Check out Matplotlib documentation for available projections. The projection can't be changed during runtime.
@@ -338,7 +342,7 @@ The default is `None`.
 |get_ymax()					| -						| Float			|
 |set_ymax()					| ymax : Float			| None			|
 
-### Slots
+### Slots <a name="axis-slots"/>
 
 #### reset() (NOT WORKING)
 Removes all the Plot Objects that have been added to the axis object via Slots or Python Code. Keeps the objects defined in QML.
