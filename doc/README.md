@@ -344,8 +344,8 @@ The default is `None`.
 
 ### Slots <a name="axis-slots"/>
 
-#### reset() (NOT WORKING)
-Removes all the Plot Objects that have been added to the axis object via Slots or Python Code. Keeps the objects defined in QML.
+#### reset()
+Removes all the Plot Objects that have been added to the axis object via Slots or Python Code. Keeps the objects defined in QML. It explicitly checks the `lines`, `containers` and ìmages` attributes of the Matplotlib Axe object and calls the `remove()` method on those which aren't defined in QML.
 
 #### plot(x, y, kwargs = {})
 Same as `ax.plot()` in Matplotlib, kwargs dictionary is optional but you do need to provide additonal keyword arguments as a dictionary or javascript-object.
