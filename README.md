@@ -276,6 +276,8 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * faceColor
 
 ## Axis
+* xScale
+* yScale
 * projection
 * polar
 * sharex

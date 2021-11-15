@@ -123,6 +123,24 @@ Figure {
 
 ### Properties <a name="axis-properties"/>
 
+#### xScale (String)
+The scale on the X-Axis. See [matplotlib.axes.Axes.set_xscale](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_xscale.html#matplotlib.axes.Axes.set_xscale) for more details. Kwargs are not yet supported.
+The default and fallback if a provided scale is invalid is `linear`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xscale()				| -						| String		|
+|set_xscale()				| scale : String		| None			|
+
+#### yScale (String)
+The scale on the Y-Axis. See [matplotlib.axes.Axes.set_xscale](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_yscale.html#matplotlib.axes.Axes.set_yscale) for more details. Kwargs are not yet supported.
+The default and fallback if a provided scale is invalid is `linear`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_yscale()				| -						| String		|
+|set_yscale()				| scale : String		| None			|
+
 #### projection (String)
 The projection of the Axis. Check out Matplotlib documentation for available projections. The projection can't be changed during runtime.
 The default is `"rectilinear"`.
