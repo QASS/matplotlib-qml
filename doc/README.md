@@ -735,10 +735,42 @@ The default is `1.0`.
 * edgeColor
 
 ## Imshow
-* x
-* cMap
-* aspect
-* interpolation
+
+### Properties <a name="imshow-properties"/>
+
+#### x (Array/List)
+A 2D Array/List describing the data.
+The default is `[]`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_x()					| -						| Array/List	|
+|set_x()					| x : Array/List		| None			|
+
+#### cMap (String)
+The color Map for the Imshow. Those have a lot of variance in colors/contrast. Check out [Matplotlib-CMaps](https://matplotlib.org/stable/tutorials/colors/colormaps.html) for the available types.
+The default is `"viridis"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_cmap()					| -						| String		|
+|set_cmap()					| cmap : String			| None			|
+
+#### aspect (String)
+The default is `"equal"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_cmap()					| -						| String		|
+|set_cmap()					| cmap : String			| None			|
+
+#### interpolation (String)
+The default is `"antialiased"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_interpolation()		| -						| String		|
+|set_interpolation()		| interpolation : String| None			|
 
 ## Bar
 * x
