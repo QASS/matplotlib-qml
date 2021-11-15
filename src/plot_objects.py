@@ -10,12 +10,17 @@ from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
 from event import EventHandler, EventTypes
+from copy import copy
 
 class Base(QObject):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._event_handler = None
         self._plot_obj = None
+
+    @property
+    def plot_object(self):
+        return self._plot_obj
 
     def add_event_handler(self, event_handler):
         self._event_handler = event_handler
@@ -247,6 +252,8 @@ class Axis(QQuickItem):
         self._xlim = [None, None] # left, right
         self._ylim = [None, None] # top, bottom
 
+        self._qml_children = [] # References to all the wrapper objects
+
 
     def init(self, ax, event_handler):
         """Iterate over every children and call the plot method on those children
@@ -275,6 +282,7 @@ class Axis(QQuickItem):
             # add the handler to the child
             child.add_event_handler(event_handler)
             child.init(ax)
+            self._qml_children.append(child)
 
     def _apply_axis_settings(self):
         """Apply the axes settings. This usually only needs to happen when the plot initializes
@@ -351,9 +359,24 @@ class Axis(QQuickItem):
     def reset(self):
         """Resets an axis. This will reset only the graphs added by the interface and redraw the 
         Plot objects defined as children of the Axis in QML"""
-        self._ax.clear()
-        self.init(self._ax, self._event_handler)
-        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+        # get all children plot objects
+        qml_plot_objects = [qml_child.plot_object for qml_child in self._qml_children]
+        # check containers
+        for container in copy(self._ax.containers):
+            if container in qml_plot_objects:
+                continue
+            container.remove()
+        # check images
+        for image in copy(self._ax.images):
+            if image in qml_plot_objects:
+                continue
+            image.remove()
+        # check lines
+        for line in copy(self._ax.lines):
+            if line in qml_plot_objects:
+                continue
+            line.remove()
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot("QVariantList", "QVariantList")
     @Slot("QVariantList", "QVariantList", "QVariantMap")
