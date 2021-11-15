@@ -12,6 +12,10 @@
    * [Properties](#line-properties)
 5. [Scatter](#scatter)
    * [Properties](#scatter-properties)
+6. [HLine](#hline)
+   * [Properties](#hline-properties)
+7. [VLine](#vline)
+   * [Properties](#vline-properties)
 
 ## Figure
 
@@ -631,16 +635,78 @@ The default is `1.0`.
 |set_xmax()					| xmax : Float			| None			|
 
 ## VLine
-* linestyle
-* linewidth
-* label
-* color
-* xData (Array with two entrys (x, x))
-* yData (Array with two entrys (y_min, y_max))
-* alpha
-* x 
-* yMin (Same as setting the yData but more intuitive)
-* yMax (Same as setting the yData but more intuitive)
+
+### Properties <a name="vline-properties"/>
+
+#### linestyle (String)
+The linestyle of the vline object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linestyle()			| -						| String		|
+|set_linestyle()			| linestyle : String	| None			|
+
+
+#### linewidth (Integer)
+The linewidth or thickness of the vline object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linewidth()			| -						| Integer		|
+|set_linewidth()			| linewidth : Integer	| None			|
+
+#### label (String)
+The label of the vline object, if there are no labels on an axis, the legend won't be displayed
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label()				| -						| String		|
+|set_label()				| label : String		| None			|
+
+
+#### color (String)
+Color of the vline object. You can use the colors from the Matplotlib documentation.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### alpha (Float)
+The transparency of the vline on the plot. 0.0 is transparent and 1.0 is fully visible.
+The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_alpha()				| -						| Float			|
+|set_alpha()				| alpha : Float			| None			|
+
+#### x (Float)
+The Y-Coordinate to draw the Hline on.
+The default is `0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_x()					| -						| Float			|
+|set_x()					| x : Float				| None			|
+
+#### yMin (Float)
+The value is given in percent like 0 <= yMin < yMax < 1. The HLine will be drawn from this margin on.
+The default is `0.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_ymin()					| -						| Float			|
+|set_ymin()					| ymin : Float			| None			|
+
+#### yMax (Float)
+The value is given in percent like 0 <= yMin < yMax < 1. The VLine will be drawn from this margin on.
+The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_ymax()					| -						| Float			|
+|set_ymax()					| ymax : Float			| None			|
 
 ## HSpan
 * label
