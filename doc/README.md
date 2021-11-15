@@ -16,6 +16,10 @@
    * [Properties](#hline-properties)
 7. [VLine](#vline)
    * [Properties](#vline-properties)
+10. [Imshow](#imshow)
+   * [Properties](#imshow-properties)
+10. [Bar](#bar)
+   * [Properties](#bar-properties)
 
 ## Figure
 
@@ -773,9 +777,51 @@ The default is `"antialiased"`.
 |set_interpolation()		| interpolation : String| None			|
 
 ## Bar
-* x
-* height
-* width
-* color
-* colors
+The Bar Plot is a bit special since it is handled in a Container of Bar objects which can't be modified easily. Thats why the Bar plot object has it's own event handler to schedule a complete reinstantiation of the Bar plot. This causes overhead and should be noted before use.
+
+### Properties <a name="bar-properties"/>
+
+#### x (Array/List)
+The positions on the X-Axis of the different Bars.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_x()					| -						| Array/List	|
+|set_x()					| x : Array/List		| None			|
+
+#### height (Array/List)
+The heights of the different Bars. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_height()				| -						| Array/List	|
+|set_height()				| height : Array/List	| None			|
+
+#### width (Float)
+The width of all the bars. 1 = the bars have no gap in between. values must be 0 < width < 1.
+The default is `0.8`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_width()				| -						| Float			|
+|set_width()				| width : Float			| None			|
+
+#### color (String)
+Use this to set one color for all of the bars.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### colors (Array/List)
+Overwrites the `color` property and gives each bar it's own color. Must have the same shape as `x` and `height`.
+If you set this to an empty Array/List it will fall back to the `color` property.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_colors()				| -						| Array/List	|
+|set_colors()				| colors : Array/List	| None			|
+
+
 * tickLabels (might move to Axis soon)
