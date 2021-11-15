@@ -375,13 +375,69 @@ Sets the major and minor ticks on the X-Axis to the `AutoLocator` object from Ma
 Sets the major and minor ticks on the Y-Axis to the `AutoLocator` object from Matplotlib. It will also set the QML Propertys `yAxisMajorTicks` and `yAxisMinorTicks` to `None` internally.
 
 ## Line
-* linestyle
-* linewidth
-* label
-* color
-* xData
-* yData
-* alpha
+
+### Properties
+
+#### linestyle (String)
+The linestyle of the line object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linestyle()			| -						| String		|
+|set_linestyle()			| linestyle : String	| None			|
+
+
+#### linewidth (Integer)
+The linewidth or thickness of the line object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linewidth()			| -						| Integer		|
+|set_linewidth()			| linewidth : Integer	| None			|
+
+#### label (String)
+The label of the line object, if there are no labels on an axis, the legend won't be displayed
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label()				| -						| String		|
+|set_label()				| label : String		| None			|
+
+
+#### color (String)
+Color of the line object. You can use the colors from the Matplotlib documentation.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### xData (Array/List)
+Marks the points on the X-Axis that are related to the points of the same index in the Array in `yData`.
+If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xdata()				| -						| Array/List	|
+|set_xdata()				| xdata : Array/List	| None			|
+
+#### yData (Array/List)
+Marks the points on the Y-Axis that are related to the points of the same index in the Array in `xData`.
+If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_ydata()				| -						| Array/List	|
+|set_ydata()				| xdata : Array/List	| None			|
+
+#### alpha (Float)
+The transparency of the line on the plot. 0.0 is transparent and 1.0 is fully visible.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_alpha()				| -						| Float			|
+|set_alpha()				| alpha : Float			| None			|
+
 
 ## Scatter
 * marker
