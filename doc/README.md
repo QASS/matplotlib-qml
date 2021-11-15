@@ -2,12 +2,12 @@
 
 ## Table of Content
 1. [Figure](#figure)
-   *[Propertys](#figure-properties)
+   * [Propertys](#figure-properties)
 2. [Plot](#plot)
-   *[Propertys](#plot-properties)
+   * [Propertys](#plot-properties)
 3. [Axis](#axis)
-   *[Propertys](#axis-properties)
-   *[Slots](#axis-slots)
+   * [Propertys](#axis-properties)
+   * [Slots](#axis-slots)
 
 ## Figure
 
