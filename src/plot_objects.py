@@ -10,6 +10,7 @@ from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
 from event import EventHandler, EventTypes
+from copy import copy
 
 class Base(QObject):
     def __init__(self, parent = None):
@@ -361,12 +362,17 @@ class Axis(QQuickItem):
         # get all children plot objects
         qml_plot_objects = [qml_child.plot_object for qml_child in self._qml_children]
         # check containers
-        for container in self._ax.containers:
+        for container in copy(self._ax.containers):
             if container in qml_plot_objects:
                 continue
             container.remove()
+        # check images
+        for image in copy(self._ax.images):
+            if image in qml_plot_objects:
+                continue
+            image.remove()
         # check lines
-        for line in self._ax.lines:
+        for line in copy(self._ax.lines):
             if line in qml_plot_objects:
                 continue
             line.remove()
