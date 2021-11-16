@@ -2,12 +2,24 @@
 
 ## Table of Content
 1. [Figure](#figure)
-   * [Propertys](#figure-properties)
+   * [Properties](#figure-properties)
 2. [Plot](#plot)
-   * [Propertys](#plot-properties)
+   * [Properties](#plot-properties)
 3. [Axis](#axis)
-   * [Propertys](#axis-properties)
+   * [Properties](#axis-properties)
    * [Slots](#axis-slots)
+4. [Line](#line)
+   * [Properties](#line-properties)
+5. [Scatter](#scatter)
+   * [Properties](#scatter-properties)
+6. [HLine](#hline)
+   * [Properties](#hline-properties)
+7. [VLine](#vline)
+   * [Properties](#vline-properties)
+10. [Imshow](#imshow)
+   * [Properties](#imshow-properties)
+10. [Bar](#bar)
+   * [Properties](#bar-properties)
 
 ## Figure
 
@@ -394,7 +406,7 @@ Sets the major and minor ticks on the Y-Axis to the `AutoLocator` object from Ma
 
 ## Line
 
-### Properties
+### Properties <a name="line-properties"/>
 
 #### linestyle (String)
 The linestyle of the line object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
@@ -458,40 +470,247 @@ The transparency of the line on the plot. 0.0 is transparent and 1.0 is fully vi
 
 
 ## Scatter
-* marker
-* label
-* color
-* xData
-* yData
-* alpha
-* markerSize
-* markerEdgeWidth
-* markerEdgeColor
-* markerFaceColor
+The Scatter QML Type is implemented as a `matplotlib.Line2D` object without a line-style to achieve better performance during plot updates. Scatters are by default a PathCollection which makes it hard to update them efficiently. Thus it is not possible to provide different markerSizes (Array-Like).
+
+### Properties <a name="scatter-properties"/>
+
+#### marker (String)
+The marker Property defines the appearance of the Scatter markers. Check out the [Matplotlib-markers](https://matplotlib.org/stable/api/markers_api.html) documentation for the available markers.
+The transparency of the line on the plot. 0.0 is transparent and 1.0 is fully visible.
+The default is `"o"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_marker()				| -						| String		|
+|set_marker()				| marker : String		| None			|
+
+#### label (String)
+The label of the scatter object, if there are no labels on an axis, the legend won't be displayed
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label()				| -						| String		|
+|set_label()				| label : String		| None			|	
+
+#### color (String)
+Color of the scatter object. You can use the colors from the Matplotlib documentation.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### xData (Array/List)
+Marks the points on the X-Axis that are related to the points of the same index in the Array in `yData`.
+If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xdata()				| -						| Array/List	|
+|set_xdata()				| xdata : Array/List	| None			|
+
+#### yData (Array/List)
+Marks the points on the Y-Axis that are related to the points of the same index in the Array in `xData`.
+If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_ydata()				| -						| Array/List	|
+|set_ydata()				| xdata : Array/List	| None			|
+
+#### alpha (Float)
+The transparency of the scatter points on the plot. 0.0 is transparent and 1.0 is fully visible.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_alpha()				| -						| Float			|
+|set_alpha()				| alpha : Float			| None			|
+
+#### markerSize (Float)
+Sets the size of all of the markers in that object.
+The default is `None` which means it falls back to mthe matplotlib default.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_markersize()			| -						| Float			|
+|set_markersize()			| markersize : Float	| None			|
+
+#### markerEdgeWidth (float)
+Modifies the outer border thickness of the markers. 
+The default is `None` which means it falls back to mthe matplotlib default.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_markeredgewidth()		| -						| Float			|
+|set_markeredgewidth()		| width : Float			| None			|
+
+#### markerEdgeColor (String)
+Sets the color of the marker borders.
+The default is `None` which means it falls back to mthe matplotlib default.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_markeredgecolor()		| -						| String		|
+|set_markeredgecolor()		| color : String		| None			|
+
+#### markerFaceColor (String)
+Sets the color of the marker face.
+The default is `None` which means it falls back to mthe matplotlib default.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_markerfacecolor()		| -						| String		|
+|set_markerfacecolor()		| color : String		| None			|
+
 
 ## HLine
-* linestyle
-* linewidth
-* label
-* color
-* xData (Array with two entrys (min_x, max_x))
-* yData (Array with two entrys (y, y))
-* alpha
-* y 
-* xMin (Same as setting the xData but more intuitive)
-* xMax (Same as setting the xData but more intuitive)
+Draws a horizontal Line on the plot.
+
+### Properties <a name="hline-properties"/>
+
+#### linestyle (String)
+The linestyle of the hline object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linestyle()			| -						| String		|
+|set_linestyle()			| linestyle : String	| None			|
+
+
+#### linewidth (Integer)
+The linewidth or thickness of the hline object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linewidth()			| -						| Integer		|
+|set_linewidth()			| linewidth : Integer	| None			|
+
+#### label (String)
+The label of the hline object, if there are no labels on an axis, the legend won't be displayed
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label()				| -						| String		|
+|set_label()				| label : String		| None			|
+
+
+#### color (String)
+Color of the hline object. You can use the colors from the Matplotlib documentation.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### alpha (Float)
+The transparency of the hline on the plot. 0.0 is transparent and 1.0 is fully visible.
+The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_alpha()				| -						| Float			|
+|set_alpha()				| alpha : Float			| None			|
+
+#### y (Float)
+The Y-Coordinate to draw the Hline on.
+The default is `0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_y()					| -						| Float			|
+|set_y()					| y : Float				| None			|
+
+#### xMin (Float)
+The value is given in percent like 0 <= xMin < xMax < 1. The HLine will be drawn from this margin on.
+The default is `0.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xmin()					| -						| Float			|
+|set_xmin()					| xmin : Float			| None			|
+
+#### xMax (Float)
+The value is given in percent like 0 <= xMin < xMax < 1. The HLine will be drawn from this margin on.
+The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xmax()					| -						| Float			|
+|set_xmax()					| xmax : Float			| None			|
 
 ## VLine
-* linestyle
-* linewidth
-* label
-* color
-* xData (Array with two entrys (x, x))
-* yData (Array with two entrys (y_min, y_max))
-* alpha
-* x 
-* yMin (Same as setting the yData but more intuitive)
-* yMax (Same as setting the yData but more intuitive)
+
+### Properties <a name="vline-properties"/>
+
+#### linestyle (String)
+The linestyle of the vline object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linestyle()			| -						| String		|
+|set_linestyle()			| linestyle : String	| None			|
+
+
+#### linewidth (Integer)
+The linewidth or thickness of the vline object. You can call abbreviations as stated in the matplotlib documentation or "dashed", "dotted", etc..
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_linewidth()			| -						| Integer		|
+|set_linewidth()			| linewidth : Integer	| None			|
+
+#### label (String)
+The label of the vline object, if there are no labels on an axis, the legend won't be displayed
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label()				| -						| String		|
+|set_label()				| label : String		| None			|
+
+
+#### color (String)
+Color of the vline object. You can use the colors from the Matplotlib documentation.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### alpha (Float)
+The transparency of the vline on the plot. 0.0 is transparent and 1.0 is fully visible.
+The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_alpha()				| -						| Float			|
+|set_alpha()				| alpha : Float			| None			|
+
+#### x (Float)
+The Y-Coordinate to draw the Hline on.
+The default is `0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_x()					| -						| Float			|
+|set_x()					| x : Float				| None			|
+
+#### yMin (Float)
+The value is given in percent like 0 <= yMin < yMax < 1. The HLine will be drawn from this margin on.
+The default is `0.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_ymin()					| -						| Float			|
+|set_ymin()					| ymin : Float			| None			|
+
+#### yMax (Float)
+The value is given in percent like 0 <= yMin < yMax < 1. The VLine will be drawn from this margin on.
+The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_ymax()					| -						| Float			|
+|set_ymax()					| ymax : Float			| None			|
 
 ## HSpan
 * label
@@ -520,15 +739,89 @@ The transparency of the line on the plot. 0.0 is transparent and 1.0 is fully vi
 * edgeColor
 
 ## Imshow
-* x
-* cMap
-* aspect
-* interpolation
+
+### Properties <a name="imshow-properties"/>
+
+#### x (Array/List)
+A 2D Array/List describing the data.
+The default is `[]`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_x()					| -						| Array/List	|
+|set_x()					| x : Array/List		| None			|
+
+#### cMap (String)
+The color Map for the Imshow. Those have a lot of variance in colors/contrast. Check out [Matplotlib-CMaps](https://matplotlib.org/stable/tutorials/colors/colormaps.html) for the available types.
+The default is `"viridis"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_cmap()					| -						| String		|
+|set_cmap()					| cmap : String			| None			|
+
+#### aspect (String)
+The default is `"equal"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_cmap()					| -						| String		|
+|set_cmap()					| cmap : String			| None			|
+
+#### interpolation (String)
+The default is `"antialiased"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_interpolation()		| -						| String		|
+|set_interpolation()		| interpolation : String| None			|
 
 ## Bar
-* x
-* height
-* width
-* color
-* colors
+The Bar Plot is a bit special since it is handled in a Container of Bar objects which can't be modified easily. Thats why the Bar plot object has it's own event handler to schedule a complete reinstantiation of the Bar plot. This causes overhead and should be noted before use.
+
+### Properties <a name="bar-properties"/>
+
+#### x (Array/List)
+The positions on the X-Axis of the different Bars.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_x()					| -						| Array/List	|
+|set_x()					| x : Array/List		| None			|
+
+#### height (Array/List)
+The heights of the different Bars. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_height()				| -						| Array/List	|
+|set_height()				| height : Array/List	| None			|
+
+#### width (Float)
+The width of all the bars. 1 = the bars have no gap in between. values must be 0 < width < 1.
+The default is `0.8`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_width()				| -						| Float			|
+|set_width()				| width : Float			| None			|
+
+#### color (String)
+Use this to set one color for all of the bars.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### colors (Array/List)
+Overwrites the `color` property and gives each bar it's own color. Must have the same shape as `x` and `height`.
+If you set this to an empty Array/List it will fall back to the `color` property.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_colors()				| -						| Array/List	|
+|set_colors()				| colors : Array/List	| None			|
+
+
 * tickLabels (might move to Axis soon)

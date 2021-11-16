@@ -164,7 +164,7 @@ class Scatter(GraphObject2D):
     """wrapper for matplotlib.pyplot.scatter"""
     def __init__(self, parent = None):
         super().__init__(parent)
-        self._marker = None
+        self._marker = "o"
         self._markersize = None
         self._markeredgewidth = None
         self._markeredgecolor = None
