@@ -14,6 +14,7 @@
    * [VSpan](#vspan)
    * [Imshow](#imshow)
    * [Bar](#bar)
+5. [Documentation](#documentation)
 
 
 # Known Issues
@@ -275,6 +276,8 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * faceColor
 
 ## Axis
+* xScale
+* yScale
 * projection
 * polar
 * sharex
@@ -283,10 +286,14 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * xAxisLabel
 * xAxisLabelFontSize
 * xAxisTickColor
+* xAxisMajorTicks
+* xAxisMinorTicks
 * xAxisLabelColor
 * yAxisLabel
 * yAxisLabelFontSize
 * yAxisTickColor
+* yAxisMajorTicks
+* yAxisMinorTicks
 * yAxisLabelColor
 * gridColor
 * gridLinestyle
@@ -307,14 +314,19 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * xData
 * yData
 * alpha
+* marker
+* markerSize
+* markerEdgeWidth
+* markerEdgeColor
+* markerFaceColor
 
 ## Scatter
-* marker
 * label
 * color
 * xData
 * yData
 * alpha
+* marker
 * markerSize
 * markerEdgeWidth
 * markerEdgeColor
@@ -331,6 +343,11 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * y 
 * xMin (Same as setting the xData but more intuitive)
 * xMax (Same as setting the xData but more intuitive)
+* marker
+* markerSize
+* markerEdgeWidth
+* markerEdgeColor
+* markerFaceColor
 
 ## VLine
 * linestyle
@@ -343,6 +360,11 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * x 
 * yMin (Same as setting the yData but more intuitive)
 * yMax (Same as setting the yData but more intuitive)
+* marker
+* markerSize
+* markerEdgeWidth
+* markerEdgeColor
+* markerFaceColor
 
 ## HSpan
 * label
@@ -383,3 +405,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * color
 * colors
 * tickLabels (might move to Axis soon)
+
+# Documentation
+
+Check out the [docs](doc/README.md) folder

@@ -5,8 +5,7 @@ from copy import copy
 import numpy as np
 
 from plot_objects import Base, Figure, Axis
-from event import EventTypes
-from src.event import EventHandler
+from event import EventTypes, EventHandler
 
 
 
@@ -123,12 +122,22 @@ class LineObject2D(GraphObject2D):
         super().__init__(parent)
         self._linestyle = None
         self._linewidth = 1.0
+        self._marker = None
+        self._markersize = None
+        self._markeredgewidth = None
+        self._markeredgecolor = None
+        self._markerfacecolor = None
 
     @property
     def matplotlib_2d_kwargs(self):
         attributes = super().matplotlib_2d_kwargs
         attributes["linestyle"] = self._linestyle
         attributes["linewidth"] = self._linewidth
+        attributes["marker"] = self._marker
+        attributes["markersize"] = self._markersize
+        attributes["markeredgewidth"] = self._markeredgewidth
+        attributes["markeredgecolor"] = self._markeredgecolor
+        attributes["markerfacecolor"] = self._markerfacecolor
         return attributes
 
     def get_linestyle(self):
@@ -149,33 +158,6 @@ class LineObject2D(GraphObject2D):
         if self._plot_obj is not None:
             self._plot_obj.set_linewidth(self._linewidth)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    linestyle = Property(str, get_linestyle, set_linestyle)
-    linewidth = Property(float, get_linewidth, set_linewidth)
-
-class Line(LineObject2D):
-    """wrapper for matplotlib.pyplot.plot"""
-    def __init__(self, parent = None):
-        super().__init__(parent)
-
-    def init(self, ax):
-        self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs)
-
-class Scatter(GraphObject2D):
-    """wrapper for matplotlib.pyplot.scatter"""
-    def __init__(self, parent = None):
-        super().__init__(parent)
-        self._marker = None
-        self._markersize = None
-        self._markeredgewidth = None
-        self._markeredgecolor = None
-        self._markerfacecolor = None
-
-    def init(self, ax):
-        self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs,
-            marker = self._marker, markersize = self._markersize, linestyle = " ",
-            markeredgewidth = self._markeredgewidth, markeredgecolor = self._markeredgecolor,
-            markerfacecolor = self._markerfacecolor)
 
     def get_marker(self):
         return self._marker
@@ -222,11 +204,33 @@ class Scatter(GraphObject2D):
             self._plot_obj.set_markerfacecolor(self._markerfacecolor)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    linestyle = Property(str, get_linestyle, set_linestyle)
+    linewidth = Property(float, get_linewidth, set_linewidth)
     marker = Property(str, get_marker, set_marker)
     markerSize = Property(float, get_markersize, set_markersize)
     markerEdgeWidth = Property(float, get_markeredgewidth, set_markeredgewidth)
     markerEdgeColor = Property(str, get_markeredgecolor, set_markeredgecolor)
     markerFaceColor = Property(str, get_markerfacecolor, set_markerfacecolor)
+
+class Line(LineObject2D):
+    """wrapper for matplotlib.pyplot.plot"""
+    def __init__(self, parent = None):
+        super().__init__(parent)
+
+    def init(self, ax):
+        self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs)
+
+class Scatter(LineObject2D):
+    """wrapper for matplotlib.pyplot.scatter"""
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self._marker = "o"
+        self._linestyle = " "
+
+    def init(self, ax):
+        self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs)
+
+    
 
 class HLine(LineObject2D):
     """wrapper for matplotlib.axes.Axes.axhline"""
@@ -571,7 +575,6 @@ class Bar(PlotObject2D):
         if len(tick_labels) == 0:
             tick_labels = None
         self._tick_labels = tick_labels
-        print(self._tick_labels)
         if self._plot_obj is not None:
             self._bar_event_handler.schedule(EventTypes.BAR_PLOT_CHANGED)
 
