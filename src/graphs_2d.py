@@ -134,6 +134,7 @@ class LineObject2D(GraphObject2D):
         attributes["linestyle"] = self._linestyle 
         attributes["linewidth"] = self._linewidth
         attributes["marker"] = self._marker
+        attributes["markersize"] = self._markersize
         attributes["markeredgewidth"] = self._markeredgewidth
         attributes["markeredgecolor"] = self._markeredgecolor
         attributes["markerfacecolor"] = self._markerfacecolor
