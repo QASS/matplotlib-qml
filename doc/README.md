@@ -468,21 +468,13 @@ The transparency of the line on the plot. 0.0 is transparent and 1.0 is fully vi
 |get_alpha()				| -						| Float			|
 |set_alpha()				| alpha : Float			| None			|
 
+The properties **marker, markerSize, markerEdgeWidth, markerEdgeColor, markerFaceColor** are analogues to the ones in [Scatter](#scatter-properties)
+
 
 ## Scatter
 The Scatter QML Type is implemented as a `matplotlib.Line2D` object without a line-style to achieve better performance during plot updates. Scatters are by default a PathCollection which makes it hard to update them efficiently. Thus it is not possible to provide different markerSizes (Array-Like).
 
 ### Properties <a name="scatter-properties"/>
-
-#### marker (String)
-The marker Property defines the appearance of the Scatter markers. Check out the [Matplotlib-markers](https://matplotlib.org/stable/api/markers_api.html) documentation for the available markers.
-The transparency of the line on the plot. 0.0 is transparent and 1.0 is fully visible.
-The default is `"o"`.
-**Python methods:**
-| Name				 		| Parameters	   		| Return Type	|
-| ------------------------- |:---------------------:|---------------|
-|get_marker()				| -						| String		|
-|set_marker()				| marker : String		| None			|
 
 #### label (String)
 The label of the scatter object, if there are no labels on an axis, the legend won't be displayed
@@ -525,6 +517,16 @@ The transparency of the scatter points on the plot. 0.0 is transparent and 1.0 i
 | ------------------------- |:---------------------:|---------------|
 |get_alpha()				| -						| Float			|
 |set_alpha()				| alpha : Float			| None			|
+
+#### marker (String)
+The marker Property defines the appearance of the Scatter markers. Check out the [Matplotlib-markers](https://matplotlib.org/stable/api/markers_api.html) documentation for the available markers.
+The transparency of the line on the plot. 0.0 is transparent and 1.0 is fully visible.
+The default is `"o"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_marker()				| -						| String		|
+|set_marker()				| marker : String		| None			|
 
 #### markerSize (Float)
 Sets the size of all of the markers in that object.
@@ -638,6 +640,8 @@ The default is `1.0`.
 |get_xmax()					| -						| Float			|
 |set_xmax()					| xmax : Float			| None			|
 
+The properties **marker, markerSize, markerEdgeWidth, markerEdgeColor, markerFaceColor** are analogues to the ones in [Scatter](#scatter-properties)
+
 ## VLine
 
 ### Properties <a name="vline-properties"/>
@@ -711,6 +715,8 @@ The default is `1.0`.
 | ------------------------- |:---------------------:|---------------|
 |get_ymax()					| -						| Float			|
 |set_ymax()					| ymax : Float			| None			|
+
+The properties **marker, markerSize, markerEdgeWidth, markerEdgeColor, markerFaceColor** are analogues to the ones in [Scatter](#scatter-properties)
 
 ## HSpan
 * label
