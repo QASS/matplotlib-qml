@@ -13,15 +13,15 @@ class EventHandler:
 	or content of the plot or anything in general. You can subscribe to a specific event
 	with a function and the Event Handler will execute that function whenever the event
 	gets emitted.
-
-	:param variable_timer_interval: This timer is being resetted every time an event comes in
+	
+	:param short_timer_interval: This timer is being resetted every time an event comes in
 	to prevent the plot from updating too often. This functionality will group events together
 	but allow single events to be handled faster.
-	:type variable_timer_interval: int, optional
-	:param set_timer_interval: The set timer will handle all events after each timeout to
-	make sure the plot is updating even though a constant flow of events arrives and resets the
+	:type short_timer_interval: int, optional
+	:param long_timer_interval: The set timer will handle all events after each timeout to 
+	make sure the plot is updating even though a constant flow of events arrives and resets the 
 	variable_timer each time.
-	:type set_timer_interval: int, optional
+	:type long_timer_interval: int, optional
 	"""
 	def __init__(self, short_timer_interval = 20, long_timer_interval = 100):
 		self._subscribers = defaultdict(list)
@@ -32,10 +32,15 @@ class EventHandler:
 		self._init_timers()
 
 	def _init_timers(self):
+		"""Connect the timers to the correct functions, set the timer interval and adjust
+		them to be single shot only"""
 		self._short_timer.timeout.connect(self._emit_events)
-		self._long_timer.timeout.connect(self._emit_events)
-		self._long_timer.start(self._long_timer_interval)
-
+		self._short_timer.setInterval(self._short_timer_interval)
+		self._short_timer.setSingleShot(True)
+		self._long_timer.timeout.connect(self._emit_events)	
+		self._long_timer.setInterval(self._long_timer_interval)
+		self._long_timer.setSingleShot(True)	
+		
 
 	def register(self, event_type, func):
 		"""Register a function to the Event Handler. This function will be called whenever
@@ -52,32 +57,35 @@ class EventHandler:
 			subscriber_function()
 
 	def set_short_timer_interval(self, interval):
-		"""Updates the short timer interval to the provided interval and restarts the timer
-
+		"""Updates the short timer interval to the provided interval
+		
 		:param interval: The new timer interval in ms
 		:type interval: int
 		"""
 		self._short_timer_interval = interval
-		self._short_timer.start(interval)
+		self._short_timer.setInterval(self._short_timer_interval)
 
 	def set_long_timer_interval(self, interval):
-		"""Updates the short timer interval to the provided interval and restarts the timer
-
+		"""Updates the short timer interval to the provided interval
+		
 		:param interval: The new timer interval in ms
 		:type interval: int
 		"""
 		self._long_timer_interval = interval
-		self._long_timer.start(interval)
+		self._long_timer.setInterval(self._long_timer_interval)
 
 	def _emit_events(self):
+		"""Copy the current event schedule and emit the events"""
 		events = self._event_schedule.copy()
 		self._event_schedule.clear()
 		for event in events:
 			self.emit(event)
-		# stop the variable timer after all events have been handled to reduce overhead
-		self._short_timer.stop()
 
 	def schedule(self, event_type):
+		"""Schedule an event to be handled in the next timer interval"""
 		self._event_schedule.add(event_type)
 		# Start the variable timer whenever an event comes in
-		self._short_timer.start(self._short_timer_interval)
+		self._short_timer.start()
+		if self._long_timer.isActive():
+			return
+		self._long_timer.start()
