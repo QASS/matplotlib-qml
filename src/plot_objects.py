@@ -8,13 +8,19 @@ from matplotlib_backend_qtquick.backend_qtquick import (
     NavigationToolbar2QtQuick)
 from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
+from matplotlib.ticker import AutoLocator
 from event import EventHandler, EventTypes
+from copy import copy
 
 class Base(QObject):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._event_handler = None
         self._plot_obj = None
+
+    @property
+    def plot_object(self):
+        return self._plot_obj
 
     def add_event_handler(self, event_handler):
         self._event_handler = event_handler
@@ -52,12 +58,12 @@ class Base(QObject):
     #     return search(self)
 
 
-class Figure(FigureCanvasQtQuickAgg):    
+class Figure(FigureCanvasQtQuickAgg):
     """Root object for all QML matplotlib objects. Every other object that is a wrapper for
     Matplotlib must have a child relationship to an object of this class.
-    The Figure and all of it's component can be customized with code from the Figure level. 
+    The Figure and all of it's component can be customized with code from the Figure level.
     The first time something on those components can be called is in the onCompleted Event of the Figure instance.
-    
+
     In order to make sure the Figure is drawn, the onCOmpleted event must call Figure.init()::
         Figure {
             //Components here
@@ -75,8 +81,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._short_timer_interval = 20
         self._long_timer_interval = 100
         self._event_handler = None
-        
-    
+
     @Slot()
     def init(self):
         """Clears the whole figure and iterates over every child that is of instance :class:`Plot`.
@@ -86,7 +91,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self.figure.clear()
         self._event_handler = EventHandler(short_timer_interval = self._short_timer_interval, long_timer_interval = self._long_timer_interval)
         for idx, child in enumerate(child for child in self.children() if isinstance(child, Plot)):
-            ax = self.figure.add_subplot(self._rows, self._columns, idx + 1) 
+            ax = self.figure.add_subplot(self._rows, self._columns, idx + 1)
             ax.set_autoscale_on(True)
             ax.autoscale_view(True,True,True)
             child.init(ax, self._event_handler)
@@ -102,13 +107,17 @@ class Figure(FigureCanvasQtQuickAgg):
     @Slot("QVariantMap")
     def tightLayout(self, kwargs = {}): # TODO make the breaking change to enable the slot and disable the property
         """Calling the tight_layout method on the figure
-        
+
         kwargs can contain the following Keywords arguments
         pad = 1.08, h_pad=None, w_pad=None, rect=None
         """
         self.figure.tight_layout(**kwargs)
         if self._event_handler is not None:
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
+
+    def get_matplotlib_figure_object(self):
+        """The supported way of retrieving the wrapped Matplotlib figure object"""
+        return self.figure
 
     def redraw(self):
         self.figure.canvas.draw()
@@ -132,10 +141,10 @@ class Figure(FigureCanvasQtQuickAgg):
 
     def set_columns(self, columns):
         self._columns = columns
-        
+
     def get_tight_layout(self):
         return self._tight_layout
-    
+
     def set_tight_layout(self, tight_layout):
         self._tight_layout = tight_layout
         if self._event_handler and self._tight_layout:
@@ -212,10 +221,15 @@ class Plot(QQuickItem):
 
 class Axis(QQuickItem):
     """Wrapper for matplotlib.pyplot.Axes"""
+
+    SCALE = {"linear" : "linear", "log" : "log", "symlog" : "symlog", "logit" : "logit"}
+
     def __init__(self, parent = None):
         super().__init__(parent)
         self._ax = None
         self._event_handler = None
+        self._xscale = "linear"
+        self._yscale = "linear"
         self._projection = "rectilinear"
         self._polar = False
         self._sharex = False
@@ -224,10 +238,14 @@ class Axis(QQuickItem):
         self._x_axis_label = ""
         self._x_axis_label_fontsize = 12
         self._x_axis_tick_color = "black"
+        self._x_axis_major_ticks = None
+        self._x_axis_minor_ticks = None
         self._x_axis_label_color = "black"
         self._y_axis_label = ""
         self._y_axis_label_fontsize = 12
         self._y_axis_tick_color = "black"
+        self._y_axis_major_ticks = None
+        self._y_axis_minor_ticks = None
         self._y_axis_label_color = "black"
         self._grid_color = "grey"
         self._grid_linestyle = "-"
@@ -238,12 +256,14 @@ class Axis(QQuickItem):
         self._xlim = [None, None] # left, right
         self._ylim = [None, None] # top, bottom
 
+        self._qml_children = [] # References to all the wrapper objects
+
 
     def init(self, ax, event_handler):
         """Iterate over every children and call the plot method on those children
         The children define how they are plotted and are provided with an axis object
         they can modify. The QML children will be plotted first.
-        
+
         :param ax: A Matplotlib axis object
         :type ax: Matplotlib.pyplot.Axes
         """
@@ -255,10 +275,10 @@ class Axis(QQuickItem):
         self._ax = ax
         # plot all children
         self._init_children(ax, event_handler)
-        
+
         # apply all the axis settings
         self._apply_axis_settings()
-        
+
 
     def _init_children(self, ax, event_handler):
         children = (child for child in self.children() if isinstance(child, Base)) # TODO change to PlotBase
@@ -266,6 +286,7 @@ class Axis(QQuickItem):
             # add the handler to the child
             child.add_event_handler(event_handler)
             child.init(ax)
+            self._qml_children.append(child)
 
     def _apply_axis_settings(self):
         """Apply the axes settings. This usually only needs to happen when the plot initializes
@@ -274,6 +295,8 @@ class Axis(QQuickItem):
         if self._grid:
             self._ax.grid(color = self._grid_color, linestyle = self._grid_linestyle, 
             linewidth = self._grid_linewidth, alpha = self._grid_alpha)
+        self._ax.set_xscale(self._xscale)
+        self._ax.set_yscale(self._yscale)
         self._ax.set_axisbelow(True)
         self._ax.set_xlabel(self._x_axis_label, fontsize = self._x_axis_label_fontsize)
         self._ax.tick_params(axis = "x", colors = self._x_axis_tick_color)
@@ -284,13 +307,21 @@ class Axis(QQuickItem):
         self._ax.set_xlim(*self._xlim, emit = True)
         self._ax.set_ylim(*self._ylim, emit = True)
         self._apply_auto_scale(self._autoscale)
+        if self._x_axis_major_ticks is not None: # TODO add AutoLocator to allow resetting of ticks
+            self._ax.set_xticks(self._x_axis_major_ticks, minor = False)
+        if self._x_axis_minor_ticks is not None:
+            self._ax.set_xticks(self._x_axis_minor_ticks, minor = True)
+        if self._y_axis_major_ticks is not None:
+            self._ax.set_yticks(self._y_axis_major_ticks, minor = False)
+        if self._y_axis_minor_ticks is not None:
+            self._ax.set_yticks(self._y_axis_minor_ticks, minor = True)
 
     def _refresh(self):
         """Rescales the axis to fit the current data lying on the axis. This is meant to be called by
         an EventHandler.
         The autoscaling is driven by the property "autoscale".
         """
-        self._ax.relim()        
+        self._ax.relim()
         self._ax.autoscale_view()
         handles, labels = self._ax.get_legend_handles_labels()
         if labels:
@@ -303,7 +334,7 @@ class Axis(QQuickItem):
         if self._ax is not None:
             # First deactivate autoscaling on both axis
             self._ax.autoscale(enable = False)
-            # If autoscale is false we deactivated autoscaling already and we can return 
+            # If autoscale is false we deactivated autoscaling already and we can return
             if self._autoscale == "":
                 return
             # Now turn autoscaling on for the desired axis
@@ -313,11 +344,18 @@ class Axis(QQuickItem):
     def ax(self):
         return self._ax
 
+    def get_matplotlib_ax_object(self):
+        """The supported way of retrieving the wrapped matplotlib axis
+        
+        :return: Matplotlib Axis object
+        """
+        return self._ax
+
     @Slot(float, float, bool, bool)
     @Slot(float, float)
     def set_xlim(self, xmin=None, xmax=None, emit=True, auto=False):
         self._ax.set_xlim(xmin, xmax, emit, auto)
-        
+
     @Slot(float, float, bool, bool)
     @Slot(float, float)
     def set_ylim(self, ymin=None, ymax=None, emit=True, auto=False):
@@ -325,11 +363,26 @@ class Axis(QQuickItem):
 
     @Slot()
     def reset(self):
-        """Resets an axis. This will reset only the graphs added by the interface and redraw the 
+        """Resets an axis. This will reset only the graphs added by the interface and redraw the
         Plot objects defined as children of the Axis in QML"""
-        self._ax.clear()
-        self.init(self._ax, self._event_handler)
-        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+        # get all children plot objects
+        qml_plot_objects = [qml_child.plot_object for qml_child in self._qml_children]
+        # check containers
+        for container in copy(self._ax.containers):
+            if container in qml_plot_objects:
+                continue
+            container.remove()
+        # check images
+        for image in copy(self._ax.images):
+            if image in qml_plot_objects:
+                continue
+            image.remove()
+        # check lines
+        for line in copy(self._ax.lines):
+            if line in qml_plot_objects:
+                continue
+            line.remove()
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     @Slot("QVariantList", "QVariantList")
     @Slot("QVariantList", "QVariantList", "QVariantMap")
@@ -404,6 +457,45 @@ class Axis(QQuickItem):
         # Emit the rerender event
         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    @Slot()
+    def reset_x_ticks(self):
+        """Sets all the ticks on the x axis to the AutoLocator.
+        It will also reset the propertys xAxisMajorTicks and xAxisMinorTicks to None.
+        resulting in them not influencing the axis"""
+        self._ax.xaxis.set_major_locator(AutoLocator())
+        self._ax.xaxis.set_minor_locator(AutoLocator())
+        self._x_axis_major_ticks = None
+        self._x_axis_minor_ticks = None
+        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    @Slot()
+    def reset_y_ticks(self):
+        """Sets all the ticks on the x axis to the AutoLocator.
+        It will also reset the propertys yAxisMajorTicks and yAxisMinorTicks to None.
+        resulting in them not influencing the axis"""
+        self._ax.yaxis.set_major_locator(AutoLocator())
+        self._ax.yaxis.set_minor_locator(AutoLocator())
+        self._y_axis_major_ticks = None
+        self._y_axis_minor_ticks = None
+        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_xscale(self):
+        return self._scale
+
+    def set_xscale(self, xscale):
+        """Check if the provided scale is valid and provide linear as fallback if necessary"""
+        self._xscale = self.SCALE.get(xscale, "linear")
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_yscale(self):
+        return self._scale
+
+    def set_yscale(self, yscale):
+        """Check if the provided scale is valid and provide linear as fallback if necessary"""
+        self._yscale = self.SCALE.get(yscale, "linear")
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_projection(self):
         return self._projection
@@ -453,6 +545,22 @@ class Axis(QQuickItem):
         if self._ax is not None:
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    def get_x_axis_major_ticks(self):
+        return self._x_axis_major_ticks
+
+    def set_x_axis_major_ticks(self, xticks):
+        self._x_axis_major_ticks = xticks
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_x_axis_minor_ticks(self):
+        return self._x_axis_minor_ticks
+
+    def set_x_axis_minor_ticks(self, xticks):
+        self._x_axis_minor_ticks = xticks
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
     def get_x_axis_label_color(self):
         return self._x_axis_label_color
 
@@ -483,6 +591,22 @@ class Axis(QQuickItem):
 
     def set_y_axis_tick_color(self, color):
         self._y_axis_tick_color = color
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_y_axis_major_ticks(self):
+        return self._y_axis_major_ticks
+
+    def set_y_axis_major_ticks(self, yticks):
+        self._y_axis_major_ticks = yticks
+        if self._ax is not None:
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_y_axis_minor_ticks(self):
+        return self._y_axis_minor_ticks
+
+    def set_y_axis_minor_ticks(self, yticks):
+        self._y_axis_minor_ticks = yticks
         if self._ax is not None:
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
@@ -598,6 +722,8 @@ class Axis(QQuickItem):
             self._ax.set_ylim(*self._xlim, auto = None)
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    xScale = Property(str, get_xscale, set_xscale)
+    yScale = Property(str, get_yscale, set_yscale)
     projection = Property(str, get_projection, set_projection) 
     polar = Property(bool, get_polar, set_polar)
     sharex = Property(bool, get_sharex, set_sharex)
@@ -605,11 +731,15 @@ class Axis(QQuickItem):
     grid = Property(bool, get_grid, set_grid)
     xAxisLabel = Property(str, get_x_axis_label, set_x_axis_label)
     xAxisLabelFontSize = Property(int, get_x_axis_label_fontsize, set_x_axis_label_fontsize)
+    xAxisMajorTicks = Property("QVariantList", get_x_axis_major_ticks, set_x_axis_major_ticks)
+    xAxisMinorTicks = Property("QVariantList", get_x_axis_minor_ticks, set_x_axis_minor_ticks)
     xAxisTickColor = Property(str, get_x_axis_tick_color, set_x_axis_tick_color)
     xAxisLabelColor = Property(str, get_x_axis_label_color, set_x_axis_label_color)
     yAxisLabel = Property(str, get_y_axis_label, set_y_axis_label)
     yAxisLabelFontSize = Property(int, get_y_axis_label_fontsize, set_y_axis_label_fontsize)
     yAxisTickColor = Property(str, get_y_axis_tick_color, set_y_axis_tick_color)
+    yAxisMajorTicks = Property("QVariantList", get_y_axis_major_ticks, set_y_axis_major_ticks)
+    yAxisMinorTicks = Property("QVariantList", get_y_axis_minor_ticks, set_y_axis_minor_ticks)
     yAxisLabelColor = Property(str, get_y_axis_label_color, set_y_axis_label_color)
     gridColor = Property(str, get_grid_color, set_grid_color)
     gridLinestyle = Property(str, get_grid_linestyle, set_grid_linestyle)

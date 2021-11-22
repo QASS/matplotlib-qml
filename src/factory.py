@@ -2,11 +2,11 @@ from PySide2.QtQml import qmlRegisterType
 
 module_items = dict()
 
-def register(class_reference, qml_module_name: str, version = 1, 
+def register(class_reference, qml_module_name: str, version = 1,
             subversion = 0, qml_component_name = None):
-    """Registers a provided class reference in the QML Components. If Components with the same 
+    """Registers a provided class reference in the QML Components. If Components with the same
     qml_component_name are registered the duplicate will be overwritten.
-    
+
     :param class_reference: A reference to the class (not an object)
     :type class_reference: class
     :param qml_module_name: The module name that will be used as an import in QML

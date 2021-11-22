@@ -9,7 +9,7 @@ class EventTypes:
 	BAR_PLOT_CHANGED = "BAR_PLOT_CHANGED"
 
 class EventHandler:
-	"""This class handles all the events that can be emitted when changing the configuratio
+	"""This class handles all the events that can be emitted when changing the configuration
 	or content of the plot or anything in general. You can subscribe to a specific event
 	with a function and the Event Handler will execute that function whenever the event
 	gets emitted.
@@ -24,13 +24,13 @@ class EventHandler:
 	:type long_timer_interval: int, optional
 	"""
 	def __init__(self, short_timer_interval = 20, long_timer_interval = 100):
-		self._subscribers = defaultdict(list) 
+		self._subscribers = defaultdict(list)
 		self._event_schedule = set()
 		self._short_timer_interval = short_timer_interval
 		self._long_timer_interval = long_timer_interval
 		self._short_timer, self._long_timer = QTimer(), QTimer()
 		self._init_timers()
-		
+
 	def _init_timers(self):
 		"""Connect the timers to the correct functions, set the timer interval and adjust
 		them to be single shot only"""
@@ -49,13 +49,13 @@ class EventHandler:
 
 	def emit(self, event_type):
 		"""Emit an event directly (synchronously) without waiting for the next update interval
-		
+
 		:param event_type: :class:`EventTypes` constant describing the type of Event
 		:type event_type: str
 		"""
 		for subscriber_function in self._subscribers.get(event_type, []):
 			subscriber_function()
-	
+
 	def set_short_timer_interval(self, interval):
 		"""Updates the short timer interval to the provided interval
 		
