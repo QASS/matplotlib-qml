@@ -19,7 +19,7 @@
 
 # Known Issues
 * If you use multiple Axis QML objects nested inside a Plot then they influence the autoscaling. A temporary fix is to give them the same `autoscale` property value.
-* The reset Method of the Axis object is not working as intended
+* Most Propertys don't have notifier Signals yet
 
 # ToDos
 
