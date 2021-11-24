@@ -445,19 +445,21 @@ Color of the line object. You can use the colors from the Matplotlib documentati
 #### xData (Array/List)
 Marks the points on the X-Axis that are related to the points of the same index in the Array in `yData`.
 If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
-**Python methods:**
+In Python you can use numpy arrays but since QML can't interpret those they will be converted to a list whenever `get_xdata()` is used by the interface.
+**Python property/method:**
 | Name				 		| Parameters	   		| Return Type	|
 | ------------------------- |:---------------------:|---------------|
-|get_xdata()				| -						| Array/List	|
+|xdata(property not method!)| -						| Array/List	|
 |set_xdata()				| xdata : Array/List	| None			|
 
 #### yData (Array/List)
 Marks the points on the Y-Axis that are related to the points of the same index in the Array in `xData`.
 If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
-**Python methods:**
+In Python you can use numpy arrays but since QML can't interpret those they will be converted to a list whenever `get_ydata()` is used by the interface.
+**Python property/method:**
 | Name				 		| Parameters	   		| Return Type	|
 | ------------------------- |:---------------------:|---------------|
-|get_ydata()				| -						| Array/List	|
+|ydata(property not method!)| -						| Array/List	|
 |set_ydata()				| xdata : Array/List	| None			|
 
 #### alpha (Float)
@@ -495,19 +497,21 @@ Color of the scatter object. You can use the colors from the Matplotlib document
 #### xData (Array/List)
 Marks the points on the X-Axis that are related to the points of the same index in the Array in `yData`.
 If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
+In Python you can use numpy arrays but since QML can't interpret those they will be converted to a list whenever `get_xdata()` is used by the interface.
 **Python methods:**
 | Name				 		| Parameters	   		| Return Type	|
 | ------------------------- |:---------------------:|---------------|
-|get_xdata()				| -						| Array/List	|
+|xdata(property not method!)| -						| Array/List	|
 |set_xdata()				| xdata : Array/List	| None			|
 
 #### yData (Array/List)
 Marks the points on the Y-Axis that are related to the points of the same index in the Array in `xData`.
 If `xData` and `yData` have different shapes or length there won't be an error if you set that in QML but there will be an error if you set it in Python. Make sure to update them right after another. 
+In Python you can use numpy arrays but since QML can't interpret those they will be converted to a list whenever `get_ydata()` is used by the interface.
 **Python methods:**
 | Name				 		| Parameters	   		| Return Type	|
 | ------------------------- |:---------------------:|---------------|
-|get_ydata()				| -						| Array/List	|
+|ydata(property not method!)| -						| Array/List	|
 |set_ydata()				| xdata : Array/List	| None			|
 
 #### alpha (Float)
