@@ -75,11 +75,11 @@ class GraphObject2D(PlotObject2D):
         # The plot object is the object being wrapped (i.e. the matplotlib object)
 
     @property
-    def xData(self):
+    def xdata(self):
         return self._xdata
 
     @property
-    def yData(self):
+    def ydata(self):
         return self._ydata
 
     @Slot(int)
@@ -92,6 +92,7 @@ class GraphObject2D(PlotObject2D):
 
     def set_xdata(self, xdata: list):
         self._xdata = copy(xdata)
+        self.xDataChanged.emit()
         if self._plot_obj is not None:
             self._plot_obj.set_xdata(self._xdata)
             # only emit the event if both shapes are correct
@@ -100,10 +101,16 @@ class GraphObject2D(PlotObject2D):
 
 
     def get_xdata(self):
+        """QML can't interpret numpy arrays thats why a conversion needs to take place 
+        before it can be used in QML. In order to still modify the numpy array in Python
+        the property `xdata` is provided """
+        if isinstance(self._xdata, np.ndarray):
+            return self._xdata.tolist()
         return self._xdata
 
     def set_ydata(self, ydata: list):
         self._ydata = copy(ydata)
+        self.yDataChanged.emit()
         if self._plot_obj is not None:
             self._plot_obj.set_ydata(self._ydata)
             # only emit the event if both shapes are correct
@@ -111,10 +118,18 @@ class GraphObject2D(PlotObject2D):
                 self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_ydata(self):
+        """QML can't interpret numpy arrays thats why a conversion needs to take place 
+        before it can be used in QML. In order to still modify the numpy array in Python
+        the property `ydata` is provided """
+        if isinstance(self._ydata, np.ndarray):
+            return self._ydata.tolist()
         return self._ydata
 
-    xData = Property("QVariantList", get_xdata, set_xdata)
-    yData = Property("QVariantList", get_ydata, set_ydata)
+    xDataChanged = Signal()
+    yDataChanged = Signal() # ´Thos notify Signals must be emitted in the setter
+
+    xData = Property("QVariantList", get_xdata, set_xdata, notify = xDataChanged)
+    yData = Property("QVariantList", get_ydata, set_ydata, notify = yDataChanged)
 
 class LineObject2D(GraphObject2D):
     """Implements Propertys from any Line item"""
