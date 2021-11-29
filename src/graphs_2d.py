@@ -65,6 +65,104 @@ class PlotObject2D(Base):
     color = Property(str, get_color, set_color)
     label = Property(str, get_label, set_label)
 
+class Text(PlotObject2D):
+    FONTFAMILIES = ('serif', 'sans-serif', 'cursive', 'fantasy', 'monospace')
+    FONTSTYLES = ('normal', 'italic', 'oblique')
+    FONTVARIANTS = ('normal', 'small-caps')
+    FONTWEIGHTS = ('ultralight', 'light', 'normal', 'regular', 'book', 'medium', 'roman', 
+        'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black')
+    HORIZONTALALIGNMENTS = ('center', 'right', 'left')
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self._fontsize = 10.0
+        self._fontstretch = 0
+        self._fontstyle = "normal"
+        self._fontvariant = "normal"
+        self._fontweight = "normal"
+        self._linespacing = 1.0
+        self._rotation = 0
+
+    @property 
+    def matplotlib_2d_kwargs(self):
+        attributes = super().matplotlib_2d_kwargs
+        attributes["fontsize"] = self._fontsize
+        attributes["fontstretch"] = self._fontstretch
+        attributes["fontstyle"] = self._fontstyle
+        attributes["fontvariant"] = self._fontvariant
+        attributes["fontweight"] = self._fontweight
+        attributes["linespacing"] = self._linespacing
+        attributes["rotation"] = self._rotation   
+        return attributes
+
+    def get_fontsize(self):
+        return self._fontsize
+
+    def set_fontsize(self, fontsize):
+        self._fontsize = fontsize
+        if self._plot_obj is not None:
+            self._plot_obj.set_fontsize(self._fontsize)
+            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_fontstretch(self):
+        return self._fontstretch
+
+    def set_fontsize(self, fontstretch):
+        self._fontstretch = fontstretch
+        if self._plot_obj is not None:
+            self._plot_obj.set_fontstretch(self._fontstretch)
+            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_fontstyle(self):
+        return self._fontstyle
+
+    def set_fontstyle(self, fontstyle):
+        if not fontstyle in self.FONTSTYLES:
+            raise ValueError("Unsupported font style")
+        self._fontstyle = fontstyle
+        if self._plot_obj is not None:
+            self._plot_obj.set_fontstyle(self._fontstyle)
+            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_fontvariant(self):
+        return self._fontvariant
+
+    def set_fontvariant(self, fontvariant):
+        if not fontvariant in self.FONTVARIANTS:
+            raise ValueError("Unsupported font style")
+        self._fontvariant = fontvariant
+        if self._plot_obj is not None:
+            self._plot_obj.set_fontvariant(self._fontvariant)
+            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_fontweight(self):
+        return self._fontweight
+
+    def set_fontweight(self, fontweight):
+        if not fontweight in self.FONTWEIGHTS:
+            raise ValueError("Unsupported font style")
+        self._fontweight = fontweight
+        if self._plot_obj is not None:
+            self._plot_obj.set_fontweight(self._fontweight)
+            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_linespacing(self):
+        return self._linespacing
+
+    def set_linespacing(self, linespacing):
+        self._linespacing = linespacing
+        if self._plot_obj is not None:
+            self._plot_obj.set_linespacing(self._linespacing)
+            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_rotation(self):
+        return self._rotation
+
+    def set_rotation(self, rotation):
+        self._rotation = rotation
+        if self._plot_obj is not None:
+            self._plot_obj.set_rotation(self._rotation)
+            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
 
 class GraphObject2D(PlotObject2D):
     """Implements Propertys from 2D Graph objects like scatters, lines, spans"""
@@ -600,35 +698,7 @@ class Bar(PlotObject2D):
     colors = Property("QVariantList", get_colors, set_colors)
     tickLabels = Property("QVariantList", get_tick_labels, set_tick_labels)
 
-class Text(PlotObject2D):
-    FONTFAMILIES = ('serif', 'sans-serif', 'cursive', 'fantasy', 'monospace')
-    FONTSTYLES = ('normal', 'italic', 'oblique')
-    FONTVARIANTS = ('normal', 'small-caps')
-    FONTWEIGHTS = ('ultralight', 'light', 'normal', 'regular', 'book', 'medium', 'roman', 
-        'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black')
-    HORIZONTALALIGNMENTS = ('center', 'right', 'left')
 
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self._fontsize = 10.0
-        self._fontstretch = 0
-        self._fontstyle = "normal"
-        self._fontvariant = "normal"
-        self._fontweight = "normal"
-        self._linespacing = 1.0
-        self._rotation = 0
-
-    @property 
-    def matplotlib_2d_kwargs(self):
-        attributes = super().matplotlib_2d_kwargs
-        attributes["fontsize"] = self._fontsize
-        attributes["fontstretch"] = self._fontstretch
-        attributes["fontstyle"] = self._fontstyle
-        attributes["fontvariant"] = self._fontvariant
-        attributes["fontweight"] = self._fontweight
-        attributes["linespacing"] = self._linespacing
-        attributes["rotation"] = self._rotation   
-        return attributes
 
 
 
