@@ -600,7 +600,39 @@ class Bar(PlotObject2D):
     colors = Property("QVariantList", get_colors, set_colors)
     tickLabels = Property("QVariantList", get_tick_labels, set_tick_labels)
 
-class Annotation(PlotObject2D):
+class Text(PlotObject2D):
+    FONTFAMILIES = ('serif', 'sans-serif', 'cursive', 'fantasy', 'monospace')
+    FONTSTYLES = ('normal', 'italic', 'oblique')
+    FONTVARIANTS = ('normal', 'small-caps')
+    FONTWEIGHTS = ('ultralight', 'light', 'normal', 'regular', 'book', 'medium', 'roman', 
+        'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black')
+    HORIZONTALALIGNMENTS = ('center', 'right', 'left')
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self._fontsize = 10.0
+        self._fontstretch = 0
+        self._fontstyle = "normal"
+        self._fontvariant = "normal"
+        self._fontweight = "normal"
+        self._linespacing = 1.0
+        self._rotation = 0
+
+    @property 
+    def matplotlib_2d_kwargs(self):
+        attributes = super().matplotlib_2d_kwargs
+        attributes["fontsize"] = self._fontsize
+        attributes["fontstretch"] = self._fontstretch
+        attributes["fontstyle"] = self._fontstyle
+        attributes["fontvariant"] = self._fontvariant
+        attributes["fontweight"] = self._fontweight
+        attributes["linespacing"] = self._linespacing
+        attributes["rotation"] = self._rotation   
+        return attributes
+
+
+
+class Annotation(Text):
     COORDS = ("figure points", "figure pixels", "figure fraction", "subfigure points",
         "subfigure pixels", "subfigure fraction", "axes points", "axes pixels", "axes fraction",
         "data", "polar")
