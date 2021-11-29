@@ -76,7 +76,7 @@ class Text(PlotObject2D):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self._fontsize = 10.0
-        self._fontstretch = 0
+        #self._fontstretch = 1000
         self._fontstyle = "normal"
         self._fontvariant = "normal"
         self._fontweight = "normal"
@@ -87,7 +87,7 @@ class Text(PlotObject2D):
     def matplotlib_2d_kwargs(self):
         attributes = super().matplotlib_2d_kwargs
         attributes["fontsize"] = self._fontsize
-        attributes["fontstretch"] = self._fontstretch
+        #attributes["fontstretch"] = self._fontstretch
         attributes["fontstyle"] = self._fontstyle
         attributes["fontvariant"] = self._fontvariant
         attributes["fontweight"] = self._fontweight
@@ -102,16 +102,17 @@ class Text(PlotObject2D):
         self._fontsize = fontsize
         if self._plot_obj is not None:
             self._plot_obj.set_fontsize(self._fontsize)
-            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def get_fontstretch(self):
-        return self._fontstretch
+    # TODO does nothing atm must be fixed
+    # def get_fontstretch(self):
+    #     return self._fontstretch
 
-    def set_fontsize(self, fontstretch):
-        self._fontstretch = fontstretch
-        if self._plot_obj is not None:
-            self._plot_obj.set_fontstretch(self._fontstretch)
-            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+    # def set_fontstretch(self, fontstretch):
+    #     self._fontstretch = fontstretch
+    #     if self._plot_obj is not None:
+    #         self._plot_obj.set_fontstretch(self._fontstretch)
+    #         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_fontstyle(self):
         return self._fontstyle
@@ -122,7 +123,7 @@ class Text(PlotObject2D):
         self._fontstyle = fontstyle
         if self._plot_obj is not None:
             self._plot_obj.set_fontstyle(self._fontstyle)
-            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_fontvariant(self):
         return self._fontvariant
@@ -133,7 +134,7 @@ class Text(PlotObject2D):
         self._fontvariant = fontvariant
         if self._plot_obj is not None:
             self._plot_obj.set_fontvariant(self._fontvariant)
-            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_fontweight(self):
         return self._fontweight
@@ -144,7 +145,7 @@ class Text(PlotObject2D):
         self._fontweight = fontweight
         if self._plot_obj is not None:
             self._plot_obj.set_fontweight(self._fontweight)
-            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_linespacing(self):
         return self._linespacing
@@ -153,7 +154,7 @@ class Text(PlotObject2D):
         self._linespacing = linespacing
         if self._plot_obj is not None:
             self._plot_obj.set_linespacing(self._linespacing)
-            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_rotation(self):
         return self._rotation
@@ -162,7 +163,16 @@ class Text(PlotObject2D):
         self._rotation = rotation
         if self._plot_obj is not None:
             self._plot_obj.set_rotation(self._rotation)
-            self._event_handler.scheduöe(EventTypes.PLOT_DATA_CHANGED)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    fontSize = Property(float, get_fontsize, set_fontsize)
+    #fontStretch = Property(int, get_fontstretch, set_fontstretch)
+    fontStyle = Property(str, get_fontstyle, set_fontstyle)
+    fontVariant = Property(str, get_fontvariant, set_fontvariant)
+    fontWeight = Property(str, get_fontweight, set_fontweight)
+    lineSpacing = Property(float, get_linespacing, set_linespacing)
+    rotation = Property(float, get_rotation, set_rotation)
+
 
 class GraphObject2D(PlotObject2D):
     """Implements Propertys from 2D Graph objects like scatters, lines, spans"""
@@ -697,9 +707,6 @@ class Bar(PlotObject2D):
     color = Property(str, get_color, set_color)
     colors = Property("QVariantList", get_colors, set_colors)
     tickLabels = Property("QVariantList", get_tick_labels, set_tick_labels)
-
-
-
 
 
 class Annotation(Text):
