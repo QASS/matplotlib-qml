@@ -3,6 +3,7 @@
 ## Table of Content
 1. [Figure](#figure)
    * [Properties](#figure-properties)
+   * [Slots](#figure-slots)
 2. [Plot](#plot)
    * [Properties](#plot-properties)
 3. [Axis](#axis)
@@ -18,13 +19,13 @@
    * [Properties](#vline-properties)
 10. [Imshow](#imshow)
    * [Properties](#imshow-properties)
-10. [Bar](#bar)
+11. [Bar](#bar)
    * [Properties](#bar-properties)
 
 ## Figure
 
 ### Example usage
-You need to call the init method after the QML objects have been instantiated in order for the Figure to create the wrapped matplotlib objects.
+You need to call the [init](#init-slot) method after the QML objects have been instantiated in order for the Figure to create the wrapped matplotlib objects.
 ```javascript
 Figure {
 	faceColor: "blue"
@@ -58,10 +59,6 @@ This is set only during the init phase of the figure and can't be modified later
 The default is `1`.
 
 
-#### tightLayout (Boolean) (DEPRECATED)
-Readjust the plot and label positions in the figure to better fit the bounding box. This will soon be replaced by a Slot which allows a lot more flexibility.
-The default is `false`.
-
 #### shortTimerInterval (Integer)
 The Figure updates are driven by an event system. The short timer is responsible to propagate single standalone changes but is reset anytime an event is emitted to group changes in the figure together. 
 The provided value is the timer in milliseconds.
@@ -81,6 +78,28 @@ The default is `100`.
 | ------------------------- |:---------------------:|---------------|
 |get_long_timer_interval()	| -						| Integer		|
 |set_long_timer_interval()	| interval : Integer	| None			|
+
+### Slots <a name = "figure-slots">
+
+#### init() <a name = "init-slot">
+This is probably the most important Slot in the whole project. This **MUST** be called whenever the Figure Component is instantiated in QML do prepare the Matplotlib objects in the background.
+
+#### tightLayout(kwargs = {})
+Check out the [Matplotlib Documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html) for the full documentation. With this Slot the available space for the Figure can be adjusted. This is kind of analog to using a padding on any QML object (which won't work with the Figure). The kwargs dictionary must be provided as a Javascript object.
+**Example**
+This will add a padding of 10% to the bottom of the figure. 
+```javascript
+Figure {
+	faceColor: "blue"
+	rows: 1
+	columns: 1
+	Component.onCompleted: {
+		init()
+		tightLayout({rect : [0, 0.1, 1, 1]})
+	}
+	// Plot etc. here
+}
+```
 
 ## Plot
 
