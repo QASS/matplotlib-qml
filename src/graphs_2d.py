@@ -66,6 +66,9 @@ class PlotObject2D(Base):
     label = Property(str, get_label, set_label)
 
 class Text(PlotObject2D):
+    """Base class for all text related Types as in Matplotlib"""
+
+    # constants for allowed arguments
     FONTFAMILIES = ('serif', 'sans-serif', 'cursive', 'fantasy', 'monospace')
     FONTSTYLES = ('normal', 'italic', 'oblique')
     FONTVARIANTS = ('normal', 'small-caps')
@@ -78,20 +81,23 @@ class Text(PlotObject2D):
         self._fontsize = 10.0
         #self._fontstretch = 1000
         self._fontstyle = "normal"
-        self._fontvariant = "normal"
+        # self._fontvariant = "normal"
         self._fontweight = "normal"
+        self._fontfamily = "serif"
         self._linespacing = 1.0
         self._rotation = 0
 
     @property 
     def matplotlib_2d_kwargs(self):
+        """Extends the typical kwargs dict witht he text types"""
         attributes = super().matplotlib_2d_kwargs
         attributes["fontsize"] = self._fontsize
         #attributes["fontstretch"] = self._fontstretch
         attributes["fontstyle"] = self._fontstyle
-        attributes["fontvariant"] = self._fontvariant
+        # attributes["fontvariant"] = self._fontvariant
         attributes["fontweight"] = self._fontweight
-        attributes["linespacing"] = self._linespacing
+        attributes["fontfamily"] = self._fontfamily
+        # attributes["linespacing"] = self._linespacing
         attributes["rotation"] = self._rotation   
         return attributes
 
@@ -125,36 +131,50 @@ class Text(PlotObject2D):
             self._plot_obj.set_fontstyle(self._fontstyle)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def get_fontvariant(self):
-        return self._fontvariant
+    # TODO doesn't do anything
+    # def get_fontvariant(self):
+    #     return self._fontvariant
 
-    def set_fontvariant(self, fontvariant):
-        if not fontvariant in self.FONTVARIANTS:
-            raise ValueError("Unsupported font style")
-        self._fontvariant = fontvariant
-        if self._plot_obj is not None:
-            self._plot_obj.set_fontvariant(self._fontvariant)
-            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+    # def set_fontvariant(self, fontvariant):
+    #     if not fontvariant in self.FONTVARIANTS:
+    #         raise ValueError("Unsupported font style")
+    #     self._fontvariant = fontvariant
+    #     if self._plot_obj is not None:
+    #         self._plot_obj.set_fontvariant(self._fontvariant)
+    #         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_fontweight(self):
         return self._fontweight
 
     def set_fontweight(self, fontweight):
         if not fontweight in self.FONTWEIGHTS:
-            raise ValueError("Unsupported font style")
+            raise ValueError("Unsupported font weight")
         self._fontweight = fontweight
         if self._plot_obj is not None:
             self._plot_obj.set_fontweight(self._fontweight)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def get_linespacing(self):
-        return self._linespacing
+    def get_fontfamily(self):
+        return self._fontfamily
 
-    def set_linespacing(self, linespacing):
-        self._linespacing = linespacing
+    def set_fontfamily(self, fontfamily):
+        if not fontfamily in self.FONTFAMILIES:
+            print("Unsupported fontfamily, falling back to serif")
+            fontfamily = "serif"
+        self._fontfamily = fontfamily
         if self._plot_obj is not None:
-            self._plot_obj.set_linespacing(self._linespacing)
+            self._plot_obj.set_fontfamily(self._fontfamily)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    # TODO doesn't do anything
+    # def get_linespacing(self):
+    #     return self._linespacing
+
+    # def set_linespacing(self, linespacing):
+    #     self._linespacing = linespacing
+    #     if self._plot_obj is not None:
+    #         self._plot_obj.set_linespacing(self._linespacing)
+    #         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_rotation(self):
         return self._rotation
@@ -168,9 +188,10 @@ class Text(PlotObject2D):
     fontSize = Property(float, get_fontsize, set_fontsize)
     #fontStretch = Property(int, get_fontstretch, set_fontstretch)
     fontStyle = Property(str, get_fontstyle, set_fontstyle)
-    fontVariant = Property(str, get_fontvariant, set_fontvariant)
+    # fontVariant = Property(str, get_fontvariant, set_fontvariant)
     fontWeight = Property(str, get_fontweight, set_fontweight)
-    lineSpacing = Property(float, get_linespacing, set_linespacing)
+    fontFamily = Property(str, get_fontfamily, set_fontfamily)
+    # lineSpacing = Property(float, get_linespacing, set_linespacing)
     rotation = Property(float, get_rotation, set_rotation)
 
 
@@ -710,6 +731,8 @@ class Bar(PlotObject2D):
 
 
 class Annotation(Text):
+    """Wrapper for the `matplotlib.axes.Axes.annotate`"""
+
     COORDS = ("figure points", "figure pixels", "figure fraction", "subfigure points",
         "subfigure pixels", "subfigure fraction", "axes points", "axes pixels", "axes fraction",
         "data", "polar")
@@ -718,11 +741,12 @@ class Annotation(Text):
         super().__init__(parent=parent)
         self._text = None
         self._xy = [0, 0] # point to annotate
-        self._xytext = self._xy # point to place text
+        self._xytext = self._xy # defaults to xy like in matplotlib
         self._xycoords = "data"
         self._arrowprops = None
 
     def init(self, ax):
+        """initializes the Text plot object"""
         if self._text is None:
             raise ValueError("Missing text Property!")
         self._plot_obj = ax.annotate(self._text, self._xy, self._xytext, self._xycoords, arrowprops = self._arrowprops, 
@@ -731,30 +755,48 @@ class Annotation(Text):
     def get_text(self):
         return self._text
 
-    def set_text(self, text):
+    def set_text(self, text): 
+        """Setter for the text to be displayed on the annotation (can't render Math Tex yet)"""       
         self._text = text
+        if self._plot_obj is not None:
+            self._plot_obj.set_text(self._text)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xy(self):
         return self._xy
 
     def set_xy(self, xy):
+        """Setter for the xy coordinates of the annotation point. Note that the annotation point is not the point where the
+        Text will be rendered but the point the annotation arrow will point towards (the point thats actually annotated)
+        If the xy coordinates are the same as the xytext coordinates they will be kept the same when changing xy"""
         if self._xy == self._xytext:
             self.set_xytext(xy)
         self._xy = xy
+        if self._plot_obj is not None:
+            self._plot_obj.xy = self._xy
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
         
     def get_xytext(self):
         return self._xy
 
     def set_xytext(self, xytext):
+        """Setter for the position of the text"""
         self._xytext = xytext
+        if self._plot_obj is not None:
+            self._plot_obj.set_position(self._xytext)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xycoords(self):
         return self._xycoords
 
     def set_xycoords(self, xycoords):
+        """Setter for the coordinate system the coordinates for the annotation point and text will be evaluated."""
         if not xycoords in self.COORDS:
             raise ValueError("provided xycoords are not supported")
         self._xycoords = xycoords
+        if self._plot_obj is not None:
+            self._plot_obj.set_anncoords(self._xycoords)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     text = Property(str, get_text, set_text)
     xy = Property("QVariantList", get_xy, set_xy)

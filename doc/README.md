@@ -20,6 +20,8 @@
    * [Properties](#imshow-properties)
 10. [Bar](#bar)
    * [Properties](#bar-properties)
+12. [Annotation](#annotation)
+   * [Properties](#annotation-properties)
 
 ## Figure
 
@@ -835,3 +837,93 @@ If you set this to an empty Array/List it will fall back to the `color` property
 
 
 * tickLabels (might move to Axis soon)
+
+## Annotation
+The Annotation is used to display text in a Plot. Under the hood it's a Text object from Matplotlib. Check out the [Matplotlib Documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.annotate.html) for more information.
+
+### Properties <a name="bar-properties"/>
+
+#### color (String)
+Use this to set one color for the Annotation.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_color()				| -						| String		|
+|set_color()				| color : String		| None			|
+
+#### text (String)
+This defines the displayed text. Note that Math formulars are not supported yet because it's a nightmare to translate LaTeX Code from QML to Python. It should be possible to use it from Python code however.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_text()					| -						| String		|
+|set_text()					| text : String			| None			|
+
+#### xy (Array/List)
+The xy coordinates of the POINT that you want to annotate. This is not the position of where the text will be displayed but the position the arrow will point towards. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xy()					| -						| Array/List	|
+|set_xy()					| xy : Array/List		| None			|
+
+#### xyText (Array/List)
+The xy coordinates of the TEXT that you want to display. 
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xyText()				| -						| Array/List	|
+|set_xyText()				| xyText : Array/List	| None			|
+
+#### xyCoords (String)
+The coordinate system that describes how the coordinates provided shall be interpreted. Allowed types are in the [Matplotlib Documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.annotate.html)
+The default is `"data"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_xycoords()				| -						| String		|
+|set_xycoords()				| xycoords : String		| None			|
+
+#### fontSize (Float)
+The fontSize in points. The default is `10.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_fontsize()				| -						| Float			|
+|set_fontsize()				| fontsize : Float		| None			|
+
+#### fontStyle (String)
+The font style to be used. Valid values are: ('normal', 'italic', 'oblique').
+The default is `"normal"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_fontstyle()			| -						| String		|
+|set_fontstyle()			| fontstyle : String	| None			|
+
+#### fontWeight (String)
+This is a value for "boldness" or how thick the text will be rendered. Valid values are: ('ultralight', 'light', 'normal', 'regular', 'book', 'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black').
+The default is `"normal"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_fontweight()			| -						| String		|
+|set_fontweight()			| fontweight : String	| None			|
+
+#### fontFamily (String)
+The font family of the text. Valid values are: ('serif', 'sans-serif', 'cursive', 'fantasy', 'monospace').
+The default is `"serif"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_fontfamily()			| -						| String		|
+|set_fontfamily()			| fontfamily : String	| None			|
+
+#### rotation (Float)
+The rotation of the text around the anchorpoint in degrees. 
+The default is `0.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_rotation()				| -						| Float			|
+|set_rotation()				| rotation : Float		| None			|

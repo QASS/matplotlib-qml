@@ -14,6 +14,7 @@
    * [VSpan](#vspan)
    * [Imshow](#imshow)
    * [Bar](#bar)
+   * [Annotation](#annotation)
 5. [Documentation](#documentation)
 
 
@@ -405,6 +406,17 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * color
 * colors
 * tickLabels (might move to Axis soon)
+
+## Annotation
+* text
+* xy
+* xyText
+* xyCoords
+* fontSize
+* fontStyle
+* fontWeight
+* fontFamily
+* rotation
 
 # Documentation
 
