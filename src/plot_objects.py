@@ -77,7 +77,6 @@ class Figure(FigureCanvasQtQuickAgg):
         self._facecolor = "white"
         self._rows = 1
         self._columns = 1
-        self._tight_layout = False
         self._short_timer_interval = 20
         self._long_timer_interval = 100
         self._event_handler = None
@@ -95,9 +94,6 @@ class Figure(FigureCanvasQtQuickAgg):
             ax.set_autoscale_on(True)
             ax.autoscale_view(True,True,True)
             child.init(ax, self._event_handler)
-        # call tight_layout function to prevent axis label clipping
-        if self._tight_layout:
-            self.figure.tight_layout()
         # This must register in the end because otherwise the plot will be drawn
         # before the axis can rescale
         self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
@@ -142,15 +138,6 @@ class Figure(FigureCanvasQtQuickAgg):
     def set_columns(self, columns):
         self._columns = columns
 
-    def get_tight_layout(self):
-        return self._tight_layout
-
-    def set_tight_layout(self, tight_layout):
-        self._tight_layout = tight_layout
-        if self._event_handler and self._tight_layout:
-            self.figure.tight_layout()
-            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
-
     def get_short_timer_interval(self):
         return self._short_timer_interval
 
@@ -173,7 +160,6 @@ class Figure(FigureCanvasQtQuickAgg):
     faceColor = Property(str, get_facecolor, set_facecolor, notify=faceColorChanged)
     rows = Property(int, get_rows, set_rows)
     columns = Property(int, get_columns, set_columns)
-    tightLayout = Property(bool, get_tight_layout, set_tight_layout)
     shortTimerInterval = Property(int, get_short_timer_interval, set_short_timer_interval)
     longTimerInterval = Property(int, get_long_timer_interval, set_long_timer_interval)
 
