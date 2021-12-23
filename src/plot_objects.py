@@ -293,7 +293,7 @@ class Axis(QQuickItem):
         self._ax.relim()
         self._ax.autoscale_view()
         handles, labels = self._ax.get_legend_handles_labels()
-        if labels:
+        if labels and self._legend_visible:
             self._ax.legend()
 
     def _apply_auto_scale(self, autoscale):
