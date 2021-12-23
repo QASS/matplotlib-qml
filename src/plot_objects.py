@@ -730,4 +730,4 @@ class Axis(QQuickItem):
     xMax = Property(float, get_xmax, set_xmax)
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
-    legendVisible = Property(bool, get_legend_visible, set_legend_visible)
+    legend = Property(bool, get_legend_visible, set_legend_visible)
