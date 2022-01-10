@@ -15,7 +15,7 @@ class PlotObject2D(Base):
         super().__init__(parent)
         self._alpha = 1.0
         self._color = None
-        self._label = ""
+        self._label = ""        
 
 
     @property
@@ -23,7 +23,7 @@ class PlotObject2D(Base):
         attributes = {
             "alpha" : self._alpha,
             "color" : self._color,
-            "label" : self._label
+            "label" : self._label,            
         }
         return attributes
 
@@ -57,6 +57,8 @@ class PlotObject2D(Base):
             self._plot_obj.set_color(self._color)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    
+
     def init(self, ax):
         raise NotImplementedError("This method needs to be implemented by the programmer!")
 
@@ -64,6 +66,7 @@ class PlotObject2D(Base):
     alpha = Property(float, get_alpha, set_alpha)
     color = Property(str, get_color, set_color)
     label = Property(str, get_label, set_label)
+    
 
 
 class GraphObject2D(PlotObject2D):
@@ -142,6 +145,8 @@ class LineObject2D(GraphObject2D):
         self._markeredgewidth = None
         self._markeredgecolor = None
         self._markerfacecolor = None
+        self._pickradius = 0
+        self._picker = False # Wether picking is enabled for an artist
 
     @property
     def matplotlib_2d_kwargs(self):
@@ -153,6 +158,7 @@ class LineObject2D(GraphObject2D):
         attributes["markeredgewidth"] = self._markeredgewidth
         attributes["markeredgecolor"] = self._markeredgecolor
         attributes["markerfacecolor"] = self._markerfacecolor
+        attributes["picker"] = self._pickradius
         return attributes
 
     def get_linestyle(self):
@@ -219,6 +225,16 @@ class LineObject2D(GraphObject2D):
             self._plot_obj.set_markerfacecolor(self._markerfacecolor)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_pick_radius(self):
+        return self._pick_radius
+
+    def set_pick_radius(self, pick_radius):
+        self._pick_radius = pick_radius
+        if self._plot_obj is not None:
+            self._plot_obj.set_picker(self._pick_radius)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        
+
     linestyle = Property(str, get_linestyle, set_linestyle)
     linewidth = Property(float, get_linewidth, set_linewidth)
     marker = Property(str, get_marker, set_marker)
@@ -226,6 +242,7 @@ class LineObject2D(GraphObject2D):
     markerEdgeWidth = Property(float, get_markeredgewidth, set_markeredgewidth)
     markerEdgeColor = Property(str, get_markeredgecolor, set_markeredgecolor)
     markerFaceColor = Property(str, get_markerfacecolor, set_markerfacecolor)
+    pickRadius = Property(int, get_pick_radius, set_pick_radius)
 
 class Line(LineObject2D):
     """wrapper for matplotlib.pyplot.plot"""
@@ -245,7 +262,6 @@ class Scatter(LineObject2D):
     def init(self, ax):
         self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs)
 
-    
 
 class HLine(LineObject2D):
     """wrapper for matplotlib.axes.Axes.axhline"""
