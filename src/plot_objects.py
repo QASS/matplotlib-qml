@@ -4,13 +4,13 @@ import sys
 from PySide2.QtQuick import QQuickItem
 from PySide2.QtCore import QObject, Signal, Slot, Property
 
-from matplotlib_backend_qtquick.backend_qtquick import (
-    NavigationToolbar2QtQuick)
 from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
 from event import EventHandler, EventTypes
 from copy import copy
+
+from toolbar import Toolbar
 
 class Base(QObject):
     def __init__(self, parent = None):
@@ -80,6 +80,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._short_timer_interval = 20
         self._long_timer_interval = 100
         self._event_handler = None
+        self._toolbars = []
 
     @Slot()
     def init(self):
@@ -88,17 +89,28 @@ class Figure(FigureCanvasQtQuickAgg):
         This function should be called in When the Figure Component is Completed in QML.
         """
         self.figure.clear()
+        self._toolbars = []
         self._event_handler = EventHandler(short_timer_interval = self._short_timer_interval, long_timer_interval = self._long_timer_interval)
         for idx, child in enumerate(child for child in self.children() if isinstance(child, Plot)):
             ax = self.figure.add_subplot(self._rows, self._columns, idx + 1)
             ax.set_autoscale_on(True)
             ax.autoscale_view(True,True,True)
-            child.init(ax, self._event_handler)
+            child.init(ax, self._event_handler)           
+
+        for idx, child in enumerate(child for child in self.children() if isinstance(child, Toolbar)):
+            child.init(self.figure) # connect the toolbars
+            self._toolbars.append(child)
+        
         # This must register in the end because otherwise the plot will be drawn
-        # before the axis can rescale
+        # before the axis can rescale 
         self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
+
+    @Slot(str)
+    def connect_to_toolbar(self, name):
+        """Allows to connect to a toolbar defined outside of the figure"""
+        pass
 
     @Slot("QVariantMap")
     def tightLayout(self, kwargs = {}): # TODO make the breaking change to enable the slot and disable the property
