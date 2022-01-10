@@ -198,7 +198,6 @@ import Matplotlib 1.0
 
 Figure {
         anchors.fill: parent
-        tightLayout: true
         Component.onCompleted: {
                 init()
         }
@@ -318,6 +317,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * markerEdgeWidth
 * markerEdgeColor
 * markerFaceColor
+* visible
 
 ## Scatter
 * label
@@ -330,6 +330,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * markerEdgeWidth
 * markerEdgeColor
 * markerFaceColor
+* visible
 
 ## HLine
 * linestyle
@@ -347,6 +348,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * markerEdgeWidth
 * markerEdgeColor
 * markerFaceColor
+* visible
 
 ## VLine
 * linestyle
@@ -364,6 +366,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * markerEdgeWidth
 * markerEdgeColor
 * markerFaceColor
+* visible
 
 ## HSpan
 * label
@@ -377,6 +380,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * xMax
 * faceColor
 * edgeColor
+* visible
 
 ## VSpan
 * label
@@ -390,12 +394,14 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * xMax
 * faceColor
 * edgeColor
+* visible
 
 ## Imshow
 * x
 * cMap
 * aspect
 * interpolation
+* visible
 
 ## Bar
 * x
@@ -404,6 +410,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * color
 * colors
 * tickLabels (might move to Axis soon)
+* visible
 
 # Documentation
 
