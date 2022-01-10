@@ -1,6 +1,7 @@
 
 from plot_objects import Figure, Axis, Plot
 from graphs_2d import Line, Scatter, HLine, VSpan, HSpan, Imshow, Bar
+from toolbar import Toolbar
 import factory
 from factory import module_items
 import plugin_loader
@@ -17,6 +18,7 @@ def main():
     factory.register(HSpan, "Matplotlib")
     factory.register(Imshow, "Matplotlib")
     factory.register(Bar, "Matplotlib")
+    factory.register(Toolbar, "Matplotlib")
 
     plugins = plugin_loader.get_plugins()
     plugin_loader.load_plugins(plugins)
