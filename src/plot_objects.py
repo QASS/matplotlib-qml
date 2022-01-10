@@ -17,6 +17,7 @@ class Base(QObject):
         super().__init__(parent)
         self._event_handler = None
         self._plot_obj = None
+        self._visible = True
 
     @property
     def plot_object(self):
@@ -25,37 +26,16 @@ class Base(QObject):
     def add_event_handler(self, event_handler):
         self._event_handler = event_handler
 
-    # def __setattr__(self, name: str, value):
-    #     """Overwrite the setattr behaviour to redraw the whole figure
-    #     every time a property is changed.
-    #     """
-    #     # is_property = False
-    #     # if hasattr(self, name):
-    #     #     is_property = isinstance(getattr(self, name), Property)
+    def get_visible(self):
+        return self._visible
 
-    #     if hasattr(self, "_initialized") and name != "initialized" and name != "_initialized":
-    #         if hasattr(self, "figure_reference") and self._initialized:
-    #             super().__setattr__(name, value)
-    #             self.figure_reference.redraw()
-    #         elif self._initialized:
-    #             figure = self._find_figure()
-    #             super().__setattr__("figure_reference", figure)
-    #             super().__setattr__(name, value)
-    #             figure.redraw()
+    def set_visible(self, visible):
+        self._visible = visible
+        if self._plot_obj is not None:
+            self._plot_obj.set_visible(self._visible)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    #     return super().__setattr__(name, value)
-
-    # def _find_figure(self):
-    #     """Search the figure which is supposed to always be the root of each
-    #     Matplotlib QML Plot and return a reference to it's figure object"""
-    #     def search(obj):
-    #         if isinstance(obj, Figure):
-    #             return obj
-    #         if obj.parent() is None:
-    #             raise LookupError("A Figure instance is supposed to be the root object of each plot")
-    #         return search(obj.parent())
-
-    #     return search(self)
+    visible = Property(bool, get_visible, set_visible)
 
 
 class Figure(FigureCanvasQtQuickAgg):
@@ -213,6 +193,7 @@ class Axis(QQuickItem):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._ax = None
+        self._legend = None
         self._event_handler = None
         self._xscale = "linear"
         self._yscale = "linear"
@@ -237,6 +218,7 @@ class Axis(QQuickItem):
         self._grid_linestyle = "-"
         self._grid_linewidth = 1
         self._grid_alpha = 1.0
+        # self._legend_visible = True
 
         self._autoscale = "both"
         self._xlim = [None, None] # left, right
@@ -264,6 +246,7 @@ class Axis(QQuickItem):
 
         # apply all the axis settings
         self._apply_axis_settings()
+        
 
 
     def _init_children(self, ax, event_handler):
@@ -310,7 +293,7 @@ class Axis(QQuickItem):
         self._ax.relim()
         self._ax.autoscale_view()
         handles, labels = self._ax.get_legend_handles_labels()
-        if labels:
+        if labels: #and self._legend_visible:
             self._ax.legend()
 
     def _apply_auto_scale(self, autoscale):
@@ -708,6 +691,17 @@ class Axis(QQuickItem):
             self._ax.set_ylim(*self._xlim, auto = None)
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    # def get_legend_visible(self):
+    #     return self._legend_visible
+
+    # def set_legend_visible(self, visible):
+    #     self._legend_visible = visible
+    #     # fetch the legend if there is one
+    #     self._legend = self._ax.get_legend()
+    #     if self._event_handler is not None and self._legend is not None:
+    #         self._legend.set_visible(self._legend_visible)
+    #         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
     xScale = Property(str, get_xscale, set_xscale)
     yScale = Property(str, get_yscale, set_yscale)
     projection = Property(str, get_projection, set_projection) 
@@ -736,3 +730,4 @@ class Axis(QQuickItem):
     xMax = Property(float, get_xmax, set_xmax)
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
+    #legend = Property(bool, get_legend_visible, set_legend_visible)
