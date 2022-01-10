@@ -218,7 +218,7 @@ class Axis(QQuickItem):
         self._grid_linestyle = "-"
         self._grid_linewidth = 1
         self._grid_alpha = 1.0
-        self._legend_visible = True
+        # self._legend_visible = True
 
         self._autoscale = "both"
         self._xlim = [None, None] # left, right
@@ -293,7 +293,7 @@ class Axis(QQuickItem):
         self._ax.relim()
         self._ax.autoscale_view()
         handles, labels = self._ax.get_legend_handles_labels()
-        if labels:
+        if labels: #and self._legend_visible:
             self._ax.legend()
 
     def _apply_auto_scale(self, autoscale):
@@ -691,16 +691,16 @@ class Axis(QQuickItem):
             self._ax.set_ylim(*self._xlim, auto = None)
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
-    def get_legend_visible(self):
-        return self._legend_visible
+    # def get_legend_visible(self):
+    #     return self._legend_visible
 
-    def set_legend_visible(self, visible):
-        self._legend_visible = visible
-        # fetch the legend if there is one
-        self._legend = self._ax.get_legend()
-        if self._event_handler is not None and self._legend is not None:
-            self._legend.set_visible(self._legend_visible)
-            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+    # def set_legend_visible(self, visible):
+    #     self._legend_visible = visible
+    #     # fetch the legend if there is one
+    #     self._legend = self._ax.get_legend()
+    #     if self._event_handler is not None and self._legend is not None:
+    #         self._legend.set_visible(self._legend_visible)
+    #         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     xScale = Property(str, get_xscale, set_xscale)
     yScale = Property(str, get_yscale, set_yscale)
@@ -730,4 +730,4 @@ class Axis(QQuickItem):
     xMax = Property(float, get_xmax, set_xmax)
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
-    legendVisible = Property(bool, get_legend_visible, set_legend_visible)
+    #legend = Property(bool, get_legend_visible, set_legend_visible)
