@@ -4,8 +4,24 @@ from PySide2.QtCore import Signal, Slot, Property
 from PySide2.QtQuick import QQuickItem
 from matplotlib_backend_qtquick.backend_qtquick import NavigationToolbar2QtQuick
 
+# doc: https://matplotlib.org/stable/api/backend_bases_api.html
 
 class Toolbar(QQuickItem):
+    events = ['resize_event', 
+          'draw_event', 
+          'key_press_event', 
+          'key_release_event', 
+          'button_press_event', 
+          'button_release_event', 
+          'scroll_event', 
+          'motion_notify_event', 
+          'pick_event', 
+          'idle_event', 
+          'figure_enter_event', 
+          'figure_leave_event', 
+          'axes_enter_event', 
+          'axes_leave_event', 
+          'close_event']
 
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -19,7 +35,9 @@ class Toolbar(QQuickItem):
         self._figure = figure
         self._toolbar = NavigationToolbar2QtQuick(canvas = figure.canvas)
 
+        # connect the events
         self._figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
+        self._figure.canvas.mpl_connect("pick_event", self._on_pick)
 
     def _on_motion(self, event):
         self._coordinates = (event.xdata, event.ydata)
@@ -45,6 +63,11 @@ class Toolbar(QQuickItem):
     def zoom(self, *args):
         """activate zoom tool."""
         self._toolbar.zoom(*args)
+
+    def _on_pick(self, event):
+        plot_object = event.artist
+        index = event.ind
+        print(index)
 
     def get_coordinates(self):
         return str(self._coordinates)
