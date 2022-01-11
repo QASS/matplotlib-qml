@@ -158,7 +158,7 @@ class LineObject2D(GraphObject2D):
         attributes["markeredgewidth"] = self._markeredgewidth
         attributes["markeredgecolor"] = self._markeredgecolor
         attributes["markerfacecolor"] = self._markerfacecolor
-        attributes["pickRadius"] = self._pickradius
+        attributes["pickradius"] = self._pickradius
         return attributes
 
     def get_linestyle(self):
