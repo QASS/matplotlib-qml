@@ -144,9 +144,9 @@ class LineObject2D(GraphObject2D):
         self._markersize = None
         self._markeredgewidth = None
         self._markeredgecolor = None
-        self._markerfacecolor = None
-        self._pickradius = 0
+        self._markerfacecolor = None        
         self._picker = False # Wether picking is enabled for an artist
+        self._pickradius = 0
 
     @property
     def matplotlib_2d_kwargs(self):
@@ -158,6 +158,7 @@ class LineObject2D(GraphObject2D):
         attributes["markeredgewidth"] = self._markeredgewidth
         attributes["markeredgecolor"] = self._markeredgecolor
         attributes["markerfacecolor"] = self._markerfacecolor
+        attributes["picker"] = self._picker
         attributes["pickradius"] = self._pickradius
         return attributes
 
@@ -225,13 +226,22 @@ class LineObject2D(GraphObject2D):
             self._plot_obj.set_markerfacecolor(self._markerfacecolor)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_picker(self):
+        return self._picker
+
+    def set_picker(self, picker):
+        self._picker = picker
+        if self._plot_obj is not None:
+            self._plot_obj.set_picker(self._picker)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
     def get_pick_radius(self):
-        return self._pick_radius
+        return self._pickradius
 
     def set_pick_radius(self, pick_radius):
-        self._pick_radius = pick_radius
+        self._pickradius = pick_radius
         if self._plot_obj is not None:
-            self._plot_obj.set_pickradius(self._pick_radius)
+            self._plot_obj.set_pickradius(self._pickradius)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
         
 
@@ -242,6 +252,7 @@ class LineObject2D(GraphObject2D):
     markerEdgeWidth = Property(float, get_markeredgewidth, set_markeredgewidth)
     markerEdgeColor = Property(str, get_markeredgecolor, set_markeredgecolor)
     markerFaceColor = Property(str, get_markerfacecolor, set_markerfacecolor)
+    picker = Property(bool, get_picker, set_picker)
     pickRadius = Property(int, get_pick_radius, set_pick_radius)
 
 class Line(LineObject2D):
