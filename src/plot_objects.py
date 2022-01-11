@@ -87,6 +87,9 @@ class Figure(FigureCanvasQtQuickAgg):
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
 
+        # connect the figure events
+        self.figure.canvas.mpl_connect("pick_event", self._on_pick)        
+
     @Slot(str)
     def connect_to_toolbar(self, name):
         """Allows to connect to a toolbar defined outside of the figure"""
@@ -102,6 +105,9 @@ class Figure(FigureCanvasQtQuickAgg):
         self.figure.tight_layout(**kwargs)
         if self._event_handler is not None:
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
+
+    def _on_pick(self, event):
+        print(event)
 
     def get_matplotlib_figure_object(self):
         """The supported way of retrieving the wrapped Matplotlib figure object"""
