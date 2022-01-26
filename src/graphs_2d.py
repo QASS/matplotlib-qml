@@ -146,7 +146,7 @@ class LineObject2D(GraphObject2D):
         self._markeredgecolor = None
         self._markerfacecolor = None        
         self._picker = False # Wether picking is enabled for an artist
-        self._pickradius = 0
+        self._pickradius = 1
 
     @property
     def matplotlib_2d_kwargs(self):
