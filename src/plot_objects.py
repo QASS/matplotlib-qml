@@ -109,6 +109,7 @@ class Figure(FigureCanvasQtQuickAgg):
         # connect the figure events
         self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
         self.figure.canvas.mpl_connect("pick_event", self._on_pick)
+        self.figure.canvas.mpl_connect("button_press_event", self._on_click)
 
     @Slot()
     def registerToolbar(self):
@@ -168,6 +169,15 @@ class Figure(FigureCanvasQtQuickAgg):
     def _on_pick(self, event):
         print(event)
 
+    def _on_click(self, event):
+        """Emits the clicked event that can be subscribed via 'onClicked' in QML providing
+        The x and y coordinates of the mouse event"""
+        mouse_click = {
+            "x" : event.xdata,
+            "y" : event.ydata
+        }
+        self.clicked.emit(mouse_click)
+
     def get_matplotlib_figure_object(self):
         """The supported way of retrieving the wrapped Matplotlib figure object"""
         return self.figure
@@ -224,6 +234,7 @@ class Figure(FigureCanvasQtQuickAgg):
 
     faceColorChanged = Signal(str)
     coordinatesChanged = Signal("QVariantMap")
+    clicked = Signal("QVariantMap")
 
     faceColor = Property(str, get_facecolor, set_facecolor, notify = faceColorChanged)
     rows = Property(int, get_rows, set_rows)
