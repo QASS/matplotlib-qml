@@ -459,9 +459,12 @@ class Imshow(Base):
         self._cmap = "viridis"
         self._aspect = "equal"
         self._interpolation = "antialiased"
+        self._vmin = None
+        self._vmax = None
 
     def init(self, ax):
-        self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect)
+        self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect, 
+            vmin = self._vmin, vmax = self._vmax)
 
     def get_x(self):
         return self._x
@@ -501,10 +504,30 @@ class Imshow(Base):
             self._plot_obj.set_interpolation(self._interpolation)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_vmin(self):
+        return self._vmin
+
+    def set_vmin(self, vmin):
+        self._vmin = vmin
+        if self._plot_obj is not None:
+            self._plot_obj.set_clim(None, self._vmin, self._vmax)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_vmax(self):
+        return self._vmax
+
+    def set_vmax(self, vmax):
+        self._vmax = vmax
+        if self._plot_obj is not None:
+            self._plot_obj._scale_norm(None, self._vmin, self._vmax)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
     x = Property("QVariantList", get_x, set_x)
     cMap = Property(str, get_cmap, set_cmap)
     aspect = Property(str, get_aspect, set_aspect)
     interpolation = Property(str, get_interpolation, set_interpolation)
+    vMin = Property(float, get_vmin, set_vmin)
+    vMax = Property(float, get_vmax, set_vmax)
 
 
 class Bar(PlotObject2D):

@@ -401,6 +401,8 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * cMap
 * aspect
 * interpolation
+* vMin
+* vMax
 * visible
 
 ## Bar

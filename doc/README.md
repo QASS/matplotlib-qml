@@ -805,6 +805,22 @@ The default is `"antialiased"`.
 |get_interpolation()		| -						| String		|
 |set_interpolation()		| interpolation : String| None			|
 
+#### vMin (Float)
+If the imshow is not normalized this is used as the lower Boundary value for the color spectrum. The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_vmin()					| -						| Float			|
+|set_vmin()					| vmin : Float			| None			|
+
+#### vMax (Float)
+If the imshow is not normalized this is used as the upper Boundary value for the color spectrum. The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_vmax()					| -						| Float			|
+|set_vmax()					| vmin : Float			| None			|
+
 ## Bar
 The Bar Plot is a bit special since it is handled in a Container of Bar objects which can't be modified easily. Thats why the Bar plot object has it's own event handler to schedule a complete reinstantiation of the Bar plot. This causes overhead and should be noted before use.
 
