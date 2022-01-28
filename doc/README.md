@@ -821,6 +821,15 @@ If the imshow is not normalized this is used as the upper Boundary value for the
 |get_vmax()					| -						| Float			|
 |set_vmax()					| vmin : Float			| None			|
 
+#### extent (List/Tuple)
+Describes the bounding box the data is stretched to fill the image.
+The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_extent()				| -						| List/Tuple	|
+|set_extent()				| extent : List/Tuple	| None			|
+
 ## Bar
 The Bar Plot is a bit special since it is handled in a Container of Bar objects which can't be modified easily. Thats why the Bar plot object has it's own event handler to schedule a complete reinstantiation of the Bar plot. This causes overhead and should be noted before use.
 
