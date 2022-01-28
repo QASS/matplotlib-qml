@@ -461,10 +461,11 @@ class Imshow(Base):
         self._interpolation = "antialiased"
         self._vmin = None
         self._vmax = None
+        self._extent = None
 
     def init(self, ax):
         self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect, 
-            vmin = self._vmin, vmax = self._vmax)
+            vmin = self._vmin, vmax = self._vmax, extent = self._extent)
 
     def get_x(self):
         return self._x
@@ -522,12 +523,30 @@ class Imshow(Base):
             self._plot_obj._scale_norm(None, self._vmin, self._vmax)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_extent(self):
+        return self._extent
+
+    def set_extent(self, extent):
+        """
+        he bounding box in data coordinates that the image will fill. The image is stretched individually along x and y to fill the box.
+        The default extent is determined by the following conditions. Pixels have unit size in data coordinates. Their centers are on integer coordinates, and their center coordinates range from 0 to columns-1 horizontally and from 0 to rows-1 vertically.
+        Note that the direction of the vertical axis and thus the default values for top and bottom depend on origin:
+        For origin == 'upper' the default is (-0.5, numcols-0.5, numrows-0.5, -0.5).
+        For origin == 'lower' the default is (-0.5, numcols-0.5, -0.5, numrows-0.5).
+        See the origin and extent in imshow tutorial for examples and a more detailed description.
+        """
+        self._extent = extent
+        if self._plot_obj is not None:
+            self._plot_obj.set_extent(self._extent)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
     x = Property("QVariantList", get_x, set_x)
     cMap = Property(str, get_cmap, set_cmap)
     aspect = Property(str, get_aspect, set_aspect)
     interpolation = Property(str, get_interpolation, set_interpolation)
     vMin = Property(float, get_vmin, set_vmin)
     vMax = Property(float, get_vmax, set_vmax)
+    extent = Property("QVariantList", get_extent, set_extent)
 
 
 class Bar(PlotObject2D):
