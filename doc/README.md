@@ -101,6 +101,44 @@ Figure {
 }
 ```
 
+### home()
+Home button functionality of the standard matplotlib Toolbar. 
+**Example**
+```javascript
+import Matplotlib 1.0
+
+Button {
+        text: "zoom"
+        width: 100
+        height: 100
+        onClicked: {
+                fig.home()
+        }
+}
+
+Figure {
+        id: fig
+        anchors.fill: parent
+        Component.onCompleted: {
+                init()
+        }
+        // Axis and Plots here
+}
+```
+
+### back()
+Back button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### forward()
+Forward button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### pan()
+Pan button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### zoom()
+Zoom button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+
 ## Plot
 
 ### Example usage

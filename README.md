@@ -209,7 +209,7 @@ Figure {
 ```
 
 ## Using the Toolbar
-The toolbar functionality is tied to the figure QML component. You can create any type of user interaction and connect it to one of the slots to achieve the functionality of the toolbar. The available slots are: `pan()`, `zoom()`, `forward()`, `backward()`, `home()`.
+The toolbar functionality is tied to the figure QML component. You can create any type of user interaction and connect it to one of the slots to achieve the functionality of the toolbar. The available slots are: `pan()`, `zoom()`, `forward()`, `back()`, `home()`.
 Example:
 ```javascript
 import Matplotlib 1.0
