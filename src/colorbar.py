@@ -73,6 +73,12 @@ class Colorbar(Base):
         to which this colorbar belongs changes."""
         self._plot_obj.update_normal(mappable)
 
+    def update_mappable(self, mappable):
+        """If the mappable related to the colorbar changes the colorbar needs to be reinstantiated in case vmin
+        and vmax changed on the mappable"""
+        self._mappable = mappable
+        self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
     def get_orientation(self):
         return self._orientation
 
