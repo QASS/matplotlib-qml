@@ -11,6 +11,13 @@ class ScatterCollection(PlotObject2D):
     Note that this instantiates a PathCollection so you will have a lot of objects sticking around 
     if you have many scatter points. The scatter is reinstantiated every time a property changes as well which
     results in additional overhead.
+    Example:
+        ScatterCollection {
+            x: [1,2,3]
+            y: [1,2,3]
+            c: [1,2,3]
+            cMap: "gist_rainbow"
+        }
     """
     def __init__(self, parent = None):
         super().__init__(parent)
