@@ -101,6 +101,44 @@ Figure {
 }
 ```
 
+### home()
+Home button functionality of the standard matplotlib Toolbar. 
+**Example**
+```javascript
+import Matplotlib 1.0
+
+Button {
+        text: "zoom"
+        width: 100
+        height: 100
+        onClicked: {
+                fig.home()
+        }
+}
+
+Figure {
+        id: fig
+        anchors.fill: parent
+        Component.onCompleted: {
+                init()
+        }
+        // Axis and Plots here
+}
+```
+
+### back()
+Back button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### forward()
+Forward button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### pan()
+Pan button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### zoom()
+Zoom button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+
 ## Plot
 
 ### Example usage
@@ -804,6 +842,31 @@ The default is `"antialiased"`.
 | ------------------------- |:---------------------:|---------------|
 |get_interpolation()		| -						| String		|
 |set_interpolation()		| interpolation : String| None			|
+
+#### vMin (Float)
+If the imshow is not normalized this is used as the lower Boundary value for the color spectrum. The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_vmin()					| -						| Float			|
+|set_vmin()					| vmin : Float			| None			|
+
+#### vMax (Float)
+If the imshow is not normalized this is used as the upper Boundary value for the color spectrum. The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_vmax()					| -						| Float			|
+|set_vmax()					| vmin : Float			| None			|
+
+#### extent (List/Tuple)
+Describes the bounding box the data is stretched to fill the image.
+The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_extent()				| -						| List/Tuple	|
+|set_extent()				| extent : List/Tuple	| None			|
 
 ## Bar
 The Bar Plot is a bit special since it is handled in a Container of Bar objects which can't be modified easily. Thats why the Bar plot object has it's own event handler to schedule a complete reinstantiation of the Bar plot. This causes overhead and should be noted before use.

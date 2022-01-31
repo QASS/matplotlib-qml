@@ -175,7 +175,10 @@ In this case you don't need to create a venv or any of that. Just make sure you 
 ```
 pip install -r --user requirements.txt
 ```
-If this doesn't work you need to install the dependencies one by one. Usually it's only the `matplotlib-backend-qtquick` thats missing on the Optimizer.
+If this doesn't work you need to install the dependencies one by one. Usually it's only the `matplotlib-backend-qtquick` thats missing on the Optimizer:
+```
+pip install matplotlib-backend-qtquick
+```
 
 After that in the Analyzer you need to navigate to `Preferences/Python` and provide the path to the `init_matplotlib_bridge.py` Skript in the `/src/` folder. Make sure to add the `/src/` folder to the sysPath Extensions otherwise you will run into import errors. After that you need to restart the Analyzer Software since this Skript will be only executed at startup. If you make any changes to plugins of yours you will need to restart the Analyzer Software in order for them to take effect.
 
@@ -197,6 +200,31 @@ Sometimes it happens that the figure dimensions squash the figure together, whic
 import Matplotlib 1.0
 
 Figure {
+        anchors.fill: parent
+        Component.onCompleted: {
+                init()
+        }
+        // Axis and Plots here
+}
+```
+
+## Using the Toolbar
+The toolbar functionality is tied to the figure QML component. You can create any type of user interaction and connect it to one of the slots to achieve the functionality of the toolbar. The available slots are: `pan()`, `zoom()`, `forward()`, `back()`, `home()`.
+Example:
+```javascript
+import Matplotlib 1.0
+
+Button {
+        text: "zoom"
+        width: 100
+        height: 100
+        onClicked: {
+                fig.zoom()
+        }
+}
+
+Figure {
+        id: fig
         anchors.fill: parent
         Component.onCompleted: {
                 init()
@@ -401,6 +429,9 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * cMap
 * aspect
 * interpolation
+* vMin
+* vMax
+* extent
 * visible
 
 ## Bar
@@ -410,6 +441,9 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * color
 * colors
 * tickLabels (might move to Axis soon)
+* vMin
+* vMax
+* extent
 * visible
 
 # Documentation
