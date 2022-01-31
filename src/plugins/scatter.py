@@ -32,16 +32,17 @@ class ScatterCollection(PlotObject2D):
         self._vmax = None
         self._scatter_event_handler = EventHandler()
         self._ax = None # reference to the matplotlib wrapper axis
-        #self._colorbar = None
+        self._colorbar = None
 
     def init(self, ax):
         # create the ScatterCollection
         self._create_plot_obj(ax)
         # create the colorbar if there is one
-        # for idx, child in enumerate(child for child in self.children() if isinstance(child, Colorbar)):
-        #     child.init(ax, self._plot_obj)
-        #self._colorbar.init(ax, self._plot_obj)
+        if self._colorbar is not None:
+            self._colorbar.init(ax, self._plot_obj)
+
         self._scatter_event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
+
         axis = self.parent()
         if isinstance(axis, Axis):
             self._ax = axis
@@ -139,11 +140,11 @@ class ScatterCollection(PlotObject2D):
         if self._plot_obj is not None:
             self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    # def get_colorbar(self):
-    #     return self._colorbar
+    def get_colorbar(self):
+        return self._colorbar
 
-    # def set_colorbar(self, colorbar):
-    #     self._colorbar = colorbar
+    def set_colorbar(self, colorbar):
+        self._colorbar = colorbar
         
 
     xChanged = Signal()
@@ -158,7 +159,7 @@ class ScatterCollection(PlotObject2D):
     markerSize = Property(float, get_size, set_size)
     vMin = Property(float, get_vmin, set_vmin)
     vMax = Property(float, get_vmax, set_vmax)
-    #colorbar = Property(QObject, get_colorbar, set_colorbar)
+    colorbar = Property(QObject, get_colorbar, set_colorbar)
 
 
 def init(factory):
