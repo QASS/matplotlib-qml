@@ -515,7 +515,7 @@ class Imshow(Base):
     def set_vmin(self, vmin):
         self._vmin = vmin
         if self._plot_obj is not None:
-            self._plot_obj.set_clim(None, self._vmin, self._vmax)
+            self._plot_obj.set_clim(self._vmin, self._vmax)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_vmax(self):
@@ -524,7 +524,7 @@ class Imshow(Base):
     def set_vmax(self, vmax):
         self._vmax = vmax
         if self._plot_obj is not None:
-            self._plot_obj._scale_norm(None, self._vmin, self._vmax)
+            self._plot_obj.set_clim(self._vmin, self._vmax)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_extent(self):
