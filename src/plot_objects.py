@@ -23,7 +23,7 @@ class Base(QObject):
     def plot_object(self):
         return self._plot_obj
 
-    def add_event_handler(self, event_handler):
+    def set_event_handler(self, event_handler):
         self._event_handler = event_handler
 
     def get_visible(self):
@@ -353,8 +353,8 @@ class Axis(QQuickItem):
     def _init_children(self, ax, event_handler):
         children = (child for child in self.children() if isinstance(child, Base)) # TODO change to PlotBase
         for child in children:
-            # add the handler to the child
-            child.add_event_handler(event_handler)
+            # set the handler on the child
+            child.set_event_handler(event_handler)
             child.init(ax)
             self._qml_children.append(child)
 

@@ -39,7 +39,8 @@ class ScatterCollection(PlotObject2D):
         self._create_plot_obj(ax)
         # create the colorbar if there is one
         if self._colorbar is not None:
-            self._colorbar.init(ax, self._plot_obj)
+            self._colorbar.set_event_handler(self._event_handler)
+            self._colorbar.init(ax, self._plot_obj)            
 
         self._scatter_event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
 

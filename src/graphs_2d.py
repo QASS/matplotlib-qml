@@ -468,6 +468,7 @@ class Imshow(Base):
         self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect, 
             vmin = self._vmin, vmax = self._vmax, extent = self._extent)
         if self._colorbar is not None:
+            self._colorbar.set_event_handler(self._event_handler)
             self._colorbar.init(ax, self._plot_obj)
 
     def get_x(self):
