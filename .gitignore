@@ -4,3 +4,5 @@
 __pycache__
 */main.py
 */main.qml
+matplotlib_bridge.egg-info
+/dist/
