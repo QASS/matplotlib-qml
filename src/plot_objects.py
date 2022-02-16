@@ -2,60 +2,40 @@
 import sys
 
 from PySide2.QtQuick import QQuickItem
-from PySide2.QtCore import QObject, Signal, Slot, Property
+from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer
 
-from matplotlib_backend_qtquick.backend_qtquick import (
-    NavigationToolbar2QtQuick)
 from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
 from event import EventHandler, EventTypes
 from copy import copy
 
+from matplotlib_backend_qtquick.backend_qtquick import NavigationToolbar2QtQuick
+
 class Base(QObject):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._event_handler = None
         self._plot_obj = None
+        self._visible = True
 
     @property
     def plot_object(self):
         return self._plot_obj
 
-    def add_event_handler(self, event_handler):
+    def set_event_handler(self, event_handler):
         self._event_handler = event_handler
 
-    # def __setattr__(self, name: str, value):
-    #     """Overwrite the setattr behaviour to redraw the whole figure
-    #     every time a property is changed.
-    #     """
-    #     # is_property = False
-    #     # if hasattr(self, name):
-    #     #     is_property = isinstance(getattr(self, name), Property)
+    def get_visible(self):
+        return self._visible
 
-    #     if hasattr(self, "_initialized") and name != "initialized" and name != "_initialized":
-    #         if hasattr(self, "figure_reference") and self._initialized:
-    #             super().__setattr__(name, value)
-    #             self.figure_reference.redraw()
-    #         elif self._initialized:
-    #             figure = self._find_figure()
-    #             super().__setattr__("figure_reference", figure)
-    #             super().__setattr__(name, value)
-    #             figure.redraw()
+    def set_visible(self, visible):
+        self._visible = visible
+        if self._plot_obj is not None:
+            self._plot_obj.set_visible(self._visible)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    #     return super().__setattr__(name, value)
-
-    # def _find_figure(self):
-    #     """Search the figure which is supposed to always be the root of each
-    #     Matplotlib QML Plot and return a reference to it's figure object"""
-    #     def search(obj):
-    #         if isinstance(obj, Figure):
-    #             return obj
-    #         if obj.parent() is None:
-    #             raise LookupError("A Figure instance is supposed to be the root object of each plot")
-    #         return search(obj.parent())
-
-    #     return search(self)
+    visible = Property(bool, get_visible, set_visible)
 
 
 class Figure(FigureCanvasQtQuickAgg):
@@ -72,15 +52,39 @@ class Figure(FigureCanvasQtQuickAgg):
             }
         }
     """
+
+    figure_events = ['resize_event', 
+          'draw_event', 
+          'key_press_event', 
+          'key_release_event', 
+          'button_press_event', 
+          'button_release_event', 
+          'scroll_event', 
+          'motion_notify_event', 
+          'pick_event', 
+          'idle_event', 
+          'figure_enter_event', 
+          'figure_leave_event', 
+          'axes_enter_event', 
+          'axes_leave_event', 
+          'close_event']
+
     def __init__(self, parent = None):
         super().__init__(parent)
         self._facecolor = "white"
         self._rows = 1
         self._columns = 1
-        self._tight_layout = False
         self._short_timer_interval = 20
         self._long_timer_interval = 100
         self._event_handler = None
+        self._toolbar = NavigationToolbar2QtQuick(canvas = self.figure.canvas)
+        self._coordinates = [0, 0]
+        self._coordinates_timer_refresh_rate = 50
+
+        self._coordinates_timer = QTimer()
+        self._coordinates_timer.timeout.connect(self._emit_coordinates)
+        self._coordinates_timer.setInterval(self._coordinates_timer_refresh_rate)
+        self._coordinates_timer.setSingleShot(True)
 
     @Slot()
     def init(self):
@@ -94,18 +98,48 @@ class Figure(FigureCanvasQtQuickAgg):
             ax = self.figure.add_subplot(self._rows, self._columns, idx + 1)
             ax.set_autoscale_on(True)
             ax.autoscale_view(True,True,True)
-            child.init(ax, self._event_handler)
-        # call tight_layout function to prevent axis label clipping
-        if self._tight_layout:
-            self.figure.tight_layout()
+            child.init(ax, self._event_handler)           
+        
         # This must register in the end because otherwise the plot will be drawn
-        # before the axis can rescale
+        # before the axis can rescale 
         self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
         self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
 
+        # connect the figure events
+        self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
+        self.figure.canvas.mpl_connect("pick_event", self._on_pick)
+        self.figure.canvas.mpl_connect("button_press_event", self._on_click)
+
+    @Slot()
+    def registerToolbar(self):
+        """It might be beneficial to be able to register a custom Toolbar""" 
+        raise NotImplementedError("This has not been implemented yet")        
+
+    @Slot()
+    def home(self, *args):
+        self._toolbar.home(*args)
+
+    @Slot()
+    def back(self, *args):
+        self._toolbar.back(*args)
+
+    @Slot()
+    def forward(self, *args):
+        self._toolbar.forward(*args)
+
+    @Slot()
+    def pan(self, *args):
+        """Activate the pan tool."""
+        self._toolbar.pan(*args)
+
+    @Slot()
+    def zoom(self, *args):
+        """activate zoom tool."""
+        self._toolbar.zoom(*args)        
+
     @Slot("QVariantMap")
-    def tightLayout(self, kwargs = {}): # TODO make the breaking change to enable the slot and disable the property
+    def tightLayout(self, kwargs = {}):
         """Calling the tight_layout method on the figure
 
         kwargs can contain the following Keywords arguments
@@ -114,6 +148,35 @@ class Figure(FigureCanvasQtQuickAgg):
         self.figure.tight_layout(**kwargs)
         if self._event_handler is not None:
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
+
+    def _on_motion(self, event):
+        """This is a handler registered on the ' motion_notify_event' to refresh the mouse coordinates
+        This event gets fired a lot and it is not necessary to emit all those events because that clogs
+        up the event loop. Start a timer thatz will refresh the coordinates every 50ms (20 times/s)
+        """
+        # TODO this might need to move on the axis if we want to have per axis coords
+        if self._coordinates_timer.isActive():
+            return
+        if event.ydata is None or event.xdata is None:
+            return
+        self._coordinates_timer.start()
+        self._coordinates = [float(event.xdata), float(event.ydata)]
+        self.coordinatesChanged.emit(self._coordinates)
+
+    def _emit_coordinates(self):
+        self.coordinatesChanged.emit(self._coordinates)
+    
+    def _on_pick(self, event):
+        print(event)
+
+    def _on_click(self, event):
+        """Emits the clicked event that can be subscribed via 'onClicked' in QML providing
+        The x and y coordinates of the mouse event"""
+        mouse_click = {
+            "x" : event.xdata,
+            "y" : event.ydata
+        }
+        self.clicked.emit(mouse_click)
 
     def get_matplotlib_figure_object(self):
         """The supported way of retrieving the wrapped Matplotlib figure object"""
@@ -142,15 +205,6 @@ class Figure(FigureCanvasQtQuickAgg):
     def set_columns(self, columns):
         self._columns = columns
 
-    def get_tight_layout(self):
-        return self._tight_layout
-
-    def set_tight_layout(self, tight_layout):
-        self._tight_layout = tight_layout
-        if self._event_handler and self._tight_layout:
-            self.figure.tight_layout()
-            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
-
     def get_short_timer_interval(self):
         return self._short_timer_interval
 
@@ -167,15 +221,28 @@ class Figure(FigureCanvasQtQuickAgg):
         if self._event_handler is not None:
             self._event_handler.set_long_timer_interval(self._long_timer_interval)
 
+    def get_coordinates(self):
+        return self._coordinates
+
+    def get_coordinates_refresh_rate(self):
+        return self._coordinates_timer_refresh_rate
+
+    def set_coordinates_refresh_rate(self, refresh_rate):
+        self._coordinates_timer_refresh_rate = refresh_rate
+        self._coordinates_timer.setInterval(self._coordinates_timer_refresh_rate)
+
 
     faceColorChanged = Signal(str)
+    coordinatesChanged = Signal("QVariantMap")
+    clicked = Signal("QVariantMap")
 
-    faceColor = Property(str, get_facecolor, set_facecolor, notify=faceColorChanged)
+    faceColor = Property(str, get_facecolor, set_facecolor, notify = faceColorChanged)
     rows = Property(int, get_rows, set_rows)
     columns = Property(int, get_columns, set_columns)
-    tightLayout = Property(bool, get_tight_layout, set_tight_layout)
     shortTimerInterval = Property(int, get_short_timer_interval, set_short_timer_interval)
     longTimerInterval = Property(int, get_long_timer_interval, set_long_timer_interval)
+    coordinates = Property("QVariantList", get_coordinates, notify = coordinatesChanged)
+    coordinatesRefreshRate = Property(int, get_coordinates_refresh_rate, set_coordinates_refresh_rate)
 
 class Plot(QQuickItem):
     """Container to allow useful implementation of mutliple axis."""
@@ -227,6 +294,7 @@ class Axis(QQuickItem):
     def __init__(self, parent = None):
         super().__init__(parent)
         self._ax = None
+        self._legend = None
         self._event_handler = None
         self._xscale = "linear"
         self._yscale = "linear"
@@ -251,6 +319,7 @@ class Axis(QQuickItem):
         self._grid_linestyle = "-"
         self._grid_linewidth = 1
         self._grid_alpha = 1.0
+        # self._legend_visible = True
 
         self._autoscale = "both"
         self._xlim = [None, None] # left, right
@@ -278,13 +347,14 @@ class Axis(QQuickItem):
 
         # apply all the axis settings
         self._apply_axis_settings()
+        
 
 
     def _init_children(self, ax, event_handler):
         children = (child for child in self.children() if isinstance(child, Base)) # TODO change to PlotBase
         for child in children:
-            # add the handler to the child
-            child.add_event_handler(event_handler)
+            # set the handler on the child
+            child.set_event_handler(event_handler)
             child.init(ax)
             self._qml_children.append(child)
 
@@ -324,7 +394,7 @@ class Axis(QQuickItem):
         self._ax.relim()
         self._ax.autoscale_view()
         handles, labels = self._ax.get_legend_handles_labels()
-        if labels:
+        if labels: #and self._legend_visible:
             self._ax.legend()
 
     def _apply_auto_scale(self, autoscale):
@@ -722,6 +792,17 @@ class Axis(QQuickItem):
             self._ax.set_ylim(*self._xlim, auto = None)
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    # def get_legend_visible(self):
+    #     return self._legend_visible
+
+    # def set_legend_visible(self, visible):
+    #     self._legend_visible = visible
+    #     # fetch the legend if there is one
+    #     self._legend = self._ax.get_legend()
+    #     if self._event_handler is not None and self._legend is not None:
+    #         self._legend.set_visible(self._legend_visible)
+    #         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
     xScale = Property(str, get_xscale, set_xscale)
     yScale = Property(str, get_yscale, set_yscale)
     projection = Property(str, get_projection, set_projection) 
@@ -750,3 +831,4 @@ class Axis(QQuickItem):
     xMax = Property(float, get_xmax, set_xmax)
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
+    #legend = Property(bool, get_legend_visible, set_legend_visible)

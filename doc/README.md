@@ -3,6 +3,7 @@
 ## Table of Content
 1. [Figure](#figure)
    * [Properties](#figure-properties)
+   * [Slots](#figure-slots)
 2. [Plot](#plot)
    * [Properties](#plot-properties)
 3. [Axis](#axis)
@@ -18,13 +19,15 @@
    * [Properties](#vline-properties)
 10. [Imshow](#imshow)
    * [Properties](#imshow-properties)
-10. [Bar](#bar)
+11. [Bar](#bar)
    * [Properties](#bar-properties)
+11. [Colorbar](#colorbar)
+   * [Properties](#colorbar-properties)
 
 ## Figure
 
 ### Example usage
-You need to call the init method after the QML objects have been instantiated in order for the Figure to create the wrapped matplotlib objects.
+You need to call the [init](#init-slot) method after the QML objects have been instantiated in order for the Figure to create the wrapped matplotlib objects.
 ```javascript
 Figure {
 	faceColor: "blue"
@@ -58,10 +61,6 @@ This is set only during the init phase of the figure and can't be modified later
 The default is `1`.
 
 
-#### tightLayout (Boolean) (DEPRECATED)
-Readjust the plot and label positions in the figure to better fit the bounding box. This will soon be replaced by a Slot which allows a lot more flexibility.
-The default is `false`.
-
 #### shortTimerInterval (Integer)
 The Figure updates are driven by an event system. The short timer is responsible to propagate single standalone changes but is reset anytime an event is emitted to group changes in the figure together. 
 The provided value is the timer in milliseconds.
@@ -81,6 +80,66 @@ The default is `100`.
 | ------------------------- |:---------------------:|---------------|
 |get_long_timer_interval()	| -						| Integer		|
 |set_long_timer_interval()	| interval : Integer	| None			|
+
+### Slots <a name = "figure-slots">
+
+#### init() <a name = "init-slot">
+This is probably the most important Slot in the whole project. This **MUST** be called whenever the Figure Component is instantiated in QML do prepare the Matplotlib objects in the background.
+
+#### tightLayout(kwargs = {})
+Check out the [Matplotlib Documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html) for the full documentation. With this Slot the available space for the Figure can be adjusted. This is kind of analog to using a padding on any QML object (which won't work with the Figure). The kwargs dictionary must be provided as a Javascript object.
+**Example**
+This will add a padding of 10% to the bottom of the figure. 
+```javascript
+Figure {
+	faceColor: "blue"
+	rows: 1
+	columns: 1
+	Component.onCompleted: {
+		init()
+		tightLayout({rect : [0, 0.1, 1, 1]})
+	}
+	// Plot etc. here
+}
+```
+
+### home()
+Home button functionality of the standard matplotlib Toolbar. 
+**Example**
+```javascript
+import Matplotlib 1.0
+
+Button {
+        text: "zoom"
+        width: 100
+        height: 100
+        onClicked: {
+                fig.home()
+        }
+}
+
+Figure {
+        id: fig
+        anchors.fill: parent
+        Component.onCompleted: {
+                init()
+        }
+        // Axis and Plots here
+}
+```
+
+### back()
+Back button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### forward()
+Forward button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### pan()
+Pan button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
+### zoom()
+Zoom button functionality of the standard matplotlib Toolbar. Example is analog to `home()`.
+
 
 ## Plot
 
@@ -786,6 +845,31 @@ The default is `"antialiased"`.
 |get_interpolation()		| -						| String		|
 |set_interpolation()		| interpolation : String| None			|
 
+#### vMin (Float)
+If the imshow is not normalized this is used as the lower Boundary value for the color spectrum. The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_vmin()					| -						| Float			|
+|set_vmin()					| vmin : Float			| None			|
+
+#### vMax (Float)
+If the imshow is not normalized this is used as the upper Boundary value for the color spectrum. The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_vmax()					| -						| Float			|
+|set_vmax()					| vmin : Float			| None			|
+
+#### extent (List/Tuple)
+Describes the bounding box the data is stretched to fill the image.
+The default is `None`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_extent()				| -						| List/Tuple	|
+|set_extent()				| extent : List/Tuple	| None			|
+
 ## Bar
 The Bar Plot is a bit special since it is handled in a Container of Bar objects which can't be modified easily. Thats why the Bar plot object has it's own event handler to schedule a complete reinstantiation of the Bar plot. This causes overhead and should be noted before use.
 
@@ -835,3 +919,111 @@ If you set this to an empty Array/List it will fall back to the `color` property
 
 
 * tickLabels (might move to Axis soon)
+
+## Colorbar
+
+### Example usage
+The Colorbar QML type can be used on the property `colorbar` of the Scalarmappables `ScatterCollection` and `Imshow`
+```javascript
+Figure {
+	Layout.fillWidth: true
+	Layout.fillHeight: true
+	Component.onCompleted: init()
+	coordinatesRefreshRate: 1000
+	Plot {
+		Axis {
+			Imshow {
+				x: [[1, 2, 3], [3, 2, 1]]
+				vMin: 0
+				vMax: 10
+				colorbar: Colorbar {
+					id: cbar
+					label: "Colorbar"
+					orientation: "horizontal"
+					location: "bottom"
+					fraction: 0.15
+					shrink: 1.0
+					aspect: 20
+					drawEdges: true
+					labelLocation: "center"
+				}
+			}
+		}
+	}
+}
+```
+
+### Properties <a name="colorbar-properties"/>
+
+#### orientation (String)
+The orientation of the Colorbar can be either horizontal or vertical. The default is `vertical`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_orientation()			| -						| String		|
+|set_orientation()			| orientation : String	| None			|
+
+#### label (String)
+The label of the Colorbar. The position can be adjusted with the [labelLocation](#labelLocation) property. The default is `""`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label()				| -						| String		|
+|set_label()				| label : String		| None			|
+
+#### location (String)
+The position of the Colorbar relative to the plot it is used with. Note that for the orientation `horizontal` the colorbar can be only above or underneath the plot. The default is `"right"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_location()				| -						| String		|
+|set_location()				| location : String		| None			|
+
+#### fraction (Float)
+The new Axis for the Colorbar will "steal" space from the axis it is drawn next to. The fraction defines how much space of the axis the colorbar will steal for it's own axis. The default is `0.15`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_fraction()				| -						| Float			|
+|set_fraction()				| fraction : Float		| None			|
+
+#### shrink (Float)
+A multiplier of how much the colorbar will shrink compared to the dimension of the plot it is used with. The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_shrink()				| -						| Float			|
+|set_shrink()				| shrink : Float		| None			|
+
+#### aspect (Integer)
+The default is `20`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_aspect()				| -						| Integer		|
+|set_aspect()				| aspect : Integer		| None			|
+
+#### drawEdges (Bool)
+Draws "steps" into the colorbar. The default is `False`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_drawedges()			| -						| Bool			|
+|set_drawedges()			| drawEdges : Bool		| None			|
+
+#### filled (Bool)
+Whether the Colorbar is filled with the color gradient. The default is `True`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_filled()				| -						| Bool			|
+|set_filled()				| filled : Bool			| None			|
+
+#### labelLocation (String)
+Whether the Colorbar is filled with the color gradient. For horizontal orientation it can be (left, center, right). For vertical orientation it can be (bottom, center, top).
+The default is `"center"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label_location()		| -						| String		|
+|set_label_location()		| labelLocation : String| None			|

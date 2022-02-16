@@ -15,7 +15,7 @@ class PlotObject2D(Base):
         super().__init__(parent)
         self._alpha = 1.0
         self._color = None
-        self._label = ""
+        self._label = ""        
 
 
     @property
@@ -23,7 +23,7 @@ class PlotObject2D(Base):
         attributes = {
             "alpha" : self._alpha,
             "color" : self._color,
-            "label" : self._label
+            "label" : self._label,            
         }
         return attributes
 
@@ -57,6 +57,8 @@ class PlotObject2D(Base):
             self._plot_obj.set_color(self._color)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    
+
     def init(self, ax):
         raise NotImplementedError("This method needs to be implemented by the programmer!")
 
@@ -64,6 +66,7 @@ class PlotObject2D(Base):
     alpha = Property(float, get_alpha, set_alpha)
     color = Property(str, get_color, set_color)
     label = Property(str, get_label, set_label)
+    
 
 class Text(PlotObject2D):
     FONTFAMILIES = ('serif', 'sans-serif', 'cursive', 'fantasy', 'monospace')
@@ -249,7 +252,9 @@ class LineObject2D(GraphObject2D):
         self._markersize = None
         self._markeredgewidth = None
         self._markeredgecolor = None
-        self._markerfacecolor = None
+        self._markerfacecolor = None        
+        self._picker = False # Wether picking is enabled for an artist
+        self._pickradius = 1
 
     @property
     def matplotlib_2d_kwargs(self):
@@ -261,6 +266,8 @@ class LineObject2D(GraphObject2D):
         attributes["markeredgewidth"] = self._markeredgewidth
         attributes["markeredgecolor"] = self._markeredgecolor
         attributes["markerfacecolor"] = self._markerfacecolor
+        attributes["picker"] = self._picker
+        attributes["pickradius"] = self._pickradius
         return attributes
 
     def get_linestyle(self):
@@ -327,6 +334,25 @@ class LineObject2D(GraphObject2D):
             self._plot_obj.set_markerfacecolor(self._markerfacecolor)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_picker(self):
+        return self._picker
+
+    def set_picker(self, picker):
+        self._picker = picker
+        if self._plot_obj is not None:
+            self._plot_obj.set_picker(self._picker)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_pick_radius(self):
+        return self._pickradius
+
+    def set_pick_radius(self, pick_radius):
+        self._pickradius = pick_radius
+        if self._plot_obj is not None:
+            self._plot_obj.set_pickradius(self._pickradius)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        
+
     linestyle = Property(str, get_linestyle, set_linestyle)
     linewidth = Property(float, get_linewidth, set_linewidth)
     marker = Property(str, get_marker, set_marker)
@@ -334,6 +360,8 @@ class LineObject2D(GraphObject2D):
     markerEdgeWidth = Property(float, get_markeredgewidth, set_markeredgewidth)
     markerEdgeColor = Property(str, get_markeredgecolor, set_markeredgecolor)
     markerFaceColor = Property(str, get_markerfacecolor, set_markerfacecolor)
+    picker = Property(bool, get_picker, set_picker)
+    pickRadius = Property(int, get_pick_radius, set_pick_radius)
 
 class Line(LineObject2D):
     """wrapper for matplotlib.pyplot.plot"""
@@ -353,7 +381,6 @@ class Scatter(LineObject2D):
     def init(self, ax):
         self._plot_obj, = ax.plot(self._xdata, self._ydata, **self.matplotlib_2d_kwargs)
 
-    
 
 class HLine(LineObject2D):
     """wrapper for matplotlib.axes.Axes.axhline"""
@@ -540,9 +567,17 @@ class Imshow(Base):
         self._cmap = "viridis"
         self._aspect = "equal"
         self._interpolation = "antialiased"
+        self._vmin = None
+        self._vmax = None
+        self._extent = None
+        self._colorbar = None
 
     def init(self, ax):
-        self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect)
+        self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect, 
+            vmin = self._vmin, vmax = self._vmax, extent = self._extent)
+        if self._colorbar is not None:
+            self._colorbar.set_event_handler(self._event_handler)
+            self._colorbar.init(ax, self._plot_obj)
 
     def get_x(self):
         return self._x
@@ -582,10 +617,55 @@ class Imshow(Base):
             self._plot_obj.set_interpolation(self._interpolation)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_vmin(self):
+        return self._vmin
+
+    def set_vmin(self, vmin):
+        self._vmin = vmin
+        if self._plot_obj is not None:
+            self._plot_obj.set_clim(self._vmin, self._vmax)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_vmax(self):
+        return self._vmax
+
+    def set_vmax(self, vmax):
+        self._vmax = vmax
+        if self._plot_obj is not None:
+            self._plot_obj.set_clim(self._vmin, self._vmax)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_extent(self):
+        return self._extent
+
+    def set_extent(self, extent):
+        """
+        he bounding box in data coordinates that the image will fill. The image is stretched individually along x and y to fill the box.
+        The default extent is determined by the following conditions. Pixels have unit size in data coordinates. Their centers are on integer coordinates, and their center coordinates range from 0 to columns-1 horizontally and from 0 to rows-1 vertically.
+        Note that the direction of the vertical axis and thus the default values for top and bottom depend on origin:
+        For origin == 'upper' the default is (-0.5, numcols-0.5, numrows-0.5, -0.5).
+        For origin == 'lower' the default is (-0.5, numcols-0.5, -0.5, numrows-0.5).
+        See the origin and extent in imshow tutorial for examples and a more detailed description.
+        """
+        self._extent = extent
+        if self._plot_obj is not None:
+            self._plot_obj.set_extent(self._extent)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_colorbar(self):
+        return self._colorbar
+
+    def set_colorbar(self, colorbar):
+        self._colorbar = colorbar
+
     x = Property("QVariantList", get_x, set_x)
     cMap = Property(str, get_cmap, set_cmap)
     aspect = Property(str, get_aspect, set_aspect)
     interpolation = Property(str, get_interpolation, set_interpolation)
+    vMin = Property(float, get_vmin, set_vmin)
+    vMax = Property(float, get_vmax, set_vmax)
+    extent = Property("QVariantList", get_extent, set_extent)
+    colorbar = Property(QObject, get_colorbar, set_colorbar)
 
 
 class Bar(PlotObject2D):
