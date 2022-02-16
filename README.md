@@ -458,6 +458,22 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * filled
 * labelLocation
 
+## Annotation
+* text
+* xy
+* xyText
+* xyCoords
+* arrowProps
+* fontSize
+* fontStyle
+* fontVariant
+* fontWeight
+* lineSpacing
+* rotation
+* alpha
+* color
+* label
+
 # Documentation
 
 Check out the [docs](doc/README.md) folder
