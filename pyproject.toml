@@ -1,6 +1,10 @@
 [build-system]
 requires = [
     "setuptools>=42",
+	"matplotlib",
+	"numpy",
+	"matplotlib_backend_qtquick",
+	"PySide2",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
