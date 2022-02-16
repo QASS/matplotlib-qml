@@ -1,13 +1,13 @@
 
-from plot_objects import Figure, Axis, Plot
-from graphs_2d import Line, Scatter, HLine, VSpan, HSpan, Imshow, Bar
-from colorbar import Colorbar
-import factory
-from factory import module_items
-import plugin_loader
+from matplotlib_bridge.plot_objects import Figure, Axis, Plot
+from matplotlib_bridge.graphs_2d import Line, Scatter, HLine, VSpan, HSpan, Imshow, Bar
+from matplotlib_bridge.colorbar import Colorbar
+from matplotlib_bridge.factory import module_items
+from matplotlib_bridge import factory
+from matplotlib_bridge import plugin_loader
 
 
-def main():
+def init():
     factory.register(Figure, "Matplotlib")
     factory.register(Line, "Matplotlib")
     factory.register(Scatter, "Matplotlib")
@@ -25,7 +25,7 @@ def main():
 
     factory.register_at_qml(module_items)
 
-main()
+# init()
 
-#if __name__ == "__main__":
-    #main()
+# #if __name__ == "__main__":
+#     #main()

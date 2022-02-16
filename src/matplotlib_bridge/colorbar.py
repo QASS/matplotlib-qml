@@ -2,10 +2,12 @@
 from multiprocessing import set_forkserver_preload
 from PySide2.QtCore import Signal, Slot, Property, QObject
 from PySide2.QtQuick import QQuickItem
-from plot_objects import Base 
-from event import EventHandler, EventTypes
+
 from matplotlib.colorbar import Colorbar as MatplotlibColorbar
 from matplotlib.colorbar import make_axes
+
+from matplotlib_bridge.plot_objects import Base 
+from matplotlib_bridge.event import EventHandler, EventTypes
 
 # Matplotlib source code: https://github.com/matplotlib/matplotlib/blob/v3.5.1/lib/matplotlib/colorbar.py
 

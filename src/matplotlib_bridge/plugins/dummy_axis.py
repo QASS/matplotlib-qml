@@ -1,4 +1,4 @@
-from plot_objects import Axis
+from matplotlib_bridge.plot_objects import Axis
 from PySide2.QtCore import Signal, Slot, Property
 
 
