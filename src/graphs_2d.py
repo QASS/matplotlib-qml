@@ -69,6 +69,9 @@ class PlotObject2D(Base):
     
 
 class Text(PlotObject2D):
+    """Base class for all text related Types as in Matplotlib"""
+
+    # constants for allowed arguments
     FONTFAMILIES = ('serif', 'sans-serif', 'cursive', 'fantasy', 'monospace')
     FONTSTYLES = ('normal', 'italic', 'oblique')
     FONTVARIANTS = ('normal', 'small-caps')
@@ -81,20 +84,23 @@ class Text(PlotObject2D):
         self._fontsize = 10.0
         #self._fontstretch = 1000
         self._fontstyle = "normal"
-        self._fontvariant = "normal"
+        # self._fontvariant = "normal"
         self._fontweight = "normal"
+        self._fontfamily = "serif"
         self._linespacing = 1.0
         self._rotation = 0
 
     @property 
     def matplotlib_2d_kwargs(self):
+        """Extends the typical kwargs dict witht he text types"""
         attributes = super().matplotlib_2d_kwargs
         attributes["fontsize"] = self._fontsize
         #attributes["fontstretch"] = self._fontstretch
         attributes["fontstyle"] = self._fontstyle
-        attributes["fontvariant"] = self._fontvariant
+        # attributes["fontvariant"] = self._fontvariant
         attributes["fontweight"] = self._fontweight
-        attributes["linespacing"] = self._linespacing
+        attributes["fontfamily"] = self._fontfamily
+        # attributes["linespacing"] = self._linespacing
         attributes["rotation"] = self._rotation   
         return attributes
 
@@ -128,36 +134,50 @@ class Text(PlotObject2D):
             self._plot_obj.set_fontstyle(self._fontstyle)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def get_fontvariant(self):
-        return self._fontvariant
+    # TODO doesn't do anything
+    # def get_fontvariant(self):
+    #     return self._fontvariant
 
-    def set_fontvariant(self, fontvariant):
-        if not fontvariant in self.FONTVARIANTS:
-            raise ValueError("Unsupported font style")
-        self._fontvariant = fontvariant
-        if self._plot_obj is not None:
-            self._plot_obj.set_fontvariant(self._fontvariant)
-            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+    # def set_fontvariant(self, fontvariant):
+    #     if not fontvariant in self.FONTVARIANTS:
+    #         raise ValueError("Unsupported font style")
+    #     self._fontvariant = fontvariant
+    #     if self._plot_obj is not None:
+    #         self._plot_obj.set_fontvariant(self._fontvariant)
+    #         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_fontweight(self):
         return self._fontweight
 
     def set_fontweight(self, fontweight):
         if not fontweight in self.FONTWEIGHTS:
-            raise ValueError("Unsupported font style")
+            raise ValueError("Unsupported font weight")
         self._fontweight = fontweight
         if self._plot_obj is not None:
             self._plot_obj.set_fontweight(self._fontweight)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def get_linespacing(self):
-        return self._linespacing
+    def get_fontfamily(self):
+        return self._fontfamily
 
-    def set_linespacing(self, linespacing):
-        self._linespacing = linespacing
+    def set_fontfamily(self, fontfamily):
+        if not fontfamily in self.FONTFAMILIES:
+            print("Unsupported fontfamily, falling back to serif")
+            fontfamily = "serif"
+        self._fontfamily = fontfamily
         if self._plot_obj is not None:
-            self._plot_obj.set_linespacing(self._linespacing)
+            self._plot_obj.set_fontfamily(self._fontfamily)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    # TODO doesn't do anything
+    # def get_linespacing(self):
+    #     return self._linespacing
+
+    # def set_linespacing(self, linespacing):
+    #     self._linespacing = linespacing
+    #     if self._plot_obj is not None:
+    #         self._plot_obj.set_linespacing(self._linespacing)
+    #         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_rotation(self):
         return self._rotation
@@ -171,9 +191,10 @@ class Text(PlotObject2D):
     fontSize = Property(float, get_fontsize, set_fontsize)
     #fontStretch = Property(int, get_fontstretch, set_fontstretch)
     fontStyle = Property(str, get_fontstyle, set_fontstyle)
-    fontVariant = Property(str, get_fontvariant, set_fontvariant)
+    # fontVariant = Property(str, get_fontvariant, set_fontvariant)
     fontWeight = Property(str, get_fontweight, set_fontweight)
-    lineSpacing = Property(float, get_linespacing, set_linespacing)
+    fontFamily = Property(str, get_fontfamily, set_fontfamily)
+    # lineSpacing = Property(float, get_linespacing, set_linespacing)
     rotation = Property(float, get_rotation, set_rotation)
 
 

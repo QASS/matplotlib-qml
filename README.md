@@ -15,6 +15,7 @@
    * [Imshow](#imshow)
    * [Bar](#bar)
    * [Colorbar](#colorbar)
+   * [Annotation](#annotation)
 5. [Documentation](#documentation)
 
 
@@ -473,6 +474,7 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * alpha
 * color
 * label
+
 
 # Documentation
 
