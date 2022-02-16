@@ -43,7 +43,6 @@ class Colorbar(Base):
         kwargs["aspect"] = self._aspect
         kwargs["drawedges"] = self._drawedges
         kwargs["filled"] = self._filled
-        print(kwargs)
         return kwargs
 
     def init(self, ax, mappable):
@@ -66,12 +65,18 @@ class Colorbar(Base):
         # the axis for the cbar
         self._ax.figure.tight_layout(rect = (0, 0.05, 1, 1))
         self._create_plot_obj(self._ax, self._mappable)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def update_normal(self, mappable):
         """This is meant to be called when the norm of the image or contour plot
         to which this colorbar belongs changes."""
         self._plot_obj.update_normal(mappable)
+
+    def remove(self):
+        self._plot_obj.remove()
+        self._plot_obj = None
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def update_mappable(self, mappable):
         """If the mappable related to the colorbar changes the colorbar needs to be reinstantiated in case vmin

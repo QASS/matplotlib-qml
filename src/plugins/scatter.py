@@ -60,16 +60,18 @@ class ScatterCollection(PlotObject2D):
 
     def redraw(self):
         """Delete the current plot object and reinstantiate it with the new parameters"""
+        if self._colorbar is not None:
+            self._colorbar.remove()
         if self._plot_obj is not None:
             self._plot_obj.remove()
             self._plot_obj = None
         # get the axis parent object
         self._create_plot_obj(self._ax.get_matplotlib_ax_object())
         if self._colorbar is not None:
-                self._colorbar.update_mappable(self._plot_obj)
-        self._event_handler.emit(EventTypes.PLOT_DATA_CHANGED)
+            self._colorbar.update_mappable(self._plot_obj)
+        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def get_x(self): # remove
+    def get_x(self):
         return self._x
 
     def set_x(self, x):
