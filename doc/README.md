@@ -21,6 +21,8 @@
    * [Properties](#imshow-properties)
 11. [Bar](#bar)
    * [Properties](#bar-properties)
+11. [Colorbar](#colorbar)
+   * [Properties](#colorbar-properties)
 
 ## Figure
 
@@ -917,3 +919,111 @@ If you set this to an empty Array/List it will fall back to the `color` property
 
 
 * tickLabels (might move to Axis soon)
+
+## Colorbar
+
+### Example usage
+The Colorbar QML type can be used on the property `colorbar` of the Scalarmappables `ScatterCollection` and `Imshow`
+```javascript
+Figure {
+	Layout.fillWidth: true
+	Layout.fillHeight: true
+	Component.onCompleted: init()
+	coordinatesRefreshRate: 1000
+	Plot {
+		Axis {
+			Imshow {
+				x: [[1, 2, 3], [3, 2, 1]]
+				vMin: 0
+				vMax: 10
+				colorbar: Colorbar {
+					id: cbar
+					label: "Colorbar"
+					orientation: "horizontal"
+					location: "bottom"
+					fraction: 0.15
+					shrink: 1.0
+					aspect: 20
+					drawEdges: true
+					labelLocation: "center"
+				}
+			}
+		}
+	}
+}
+```
+
+### Properties <a name="colorbar-properties"/>
+
+#### orientation (String)
+The orientation of the Colorbar can be either horizontal or vertical. The default is `vertical`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_orientation()			| -						| String		|
+|set_orientation()			| orientation : String	| None			|
+
+#### label (String)
+The label of the Colorbar. The position can be adjusted with the [labelLocation](#labelLocation) property. The default is `""`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label()				| -						| String		|
+|set_label()				| label : String		| None			|
+
+#### location (String)
+The position of the Colorbar relative to the plot it is used with. Note that for the orientation `horizontal` the colorbar can be only above or underneath the plot. The default is `"right"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_location()				| -						| String		|
+|set_location()				| location : String		| None			|
+
+#### fraction (Float)
+The new Axis for the Colorbar will "steal" space from the axis it is drawn next to. The fraction defines how much space of the axis the colorbar will steal for it's own axis. The default is `0.15`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_fraction()				| -						| Float			|
+|set_fraction()				| fraction : Float		| None			|
+
+#### shrink (Float)
+A multiplier of how much the colorbar will shrink compared to the dimension of the plot it is used with. The default is `1.0`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_shrink()				| -						| Float			|
+|set_shrink()				| shrink : Float		| None			|
+
+#### aspect (Integer)
+The default is `20`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_aspect()				| -						| Integer		|
+|set_aspect()				| aspect : Integer		| None			|
+
+#### drawEdges (Bool)
+Draws "steps" into the colorbar. The default is `False`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_drawedges()			| -						| Bool			|
+|set_drawedges()			| drawEdges : Bool		| None			|
+
+#### filled (Bool)
+Whether the Colorbar is filled with the color gradient. The default is `True`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_filled()				| -						| Bool			|
+|set_filled()				| filled : Bool			| None			|
+
+#### labelLocation (String)
+Whether the Colorbar is filled with the color gradient. For horizontal orientation it can be (left, center, right). For vertical orientation it can be (bottom, center, top).
+The default is `"center"`.
+**Python methods:**
+| Name				 		| Parameters	   		| Return Type	|
+| ------------------------- |:---------------------:|---------------|
+|get_label_location()		| -						| String		|
+|set_label_location()		| labelLocation : String| None			|

@@ -14,6 +14,7 @@
    * [VSpan](#vspan)
    * [Imshow](#imshow)
    * [Bar](#bar)
+   * [Colorbar](#colorbar)
 5. [Documentation](#documentation)
 
 
@@ -445,6 +446,17 @@ my_ax_id.plot(myXData, myYData, {color : "green", linestyle : "dashed"})
 * vMax
 * extent
 * visible
+
+## Colorbar
+* orientation
+* label
+* location
+* fraction
+* shrink
+* aspect
+* drawEdges
+* filled
+* labelLocation
 
 # Documentation
 
