@@ -6,3 +6,4 @@ __pycache__
 */main.qml
 matplotlib_bridge.egg-info
 /dist/
+.pypirc
