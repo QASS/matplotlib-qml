@@ -2,10 +2,12 @@
 from multiprocessing import set_forkserver_preload
 from PySide2.QtCore import Signal, Slot, Property, QObject
 from PySide2.QtQuick import QQuickItem
-from plot_objects import Base 
-from event import EventHandler, EventTypes
+
 from matplotlib.colorbar import Colorbar as MatplotlibColorbar
 from matplotlib.colorbar import make_axes
+
+from matplotlib_bridge.plot_objects import Base 
+from matplotlib_bridge.event import EventHandler, EventTypes
 
 # Matplotlib source code: https://github.com/matplotlib/matplotlib/blob/v3.5.1/lib/matplotlib/colorbar.py
 
@@ -17,18 +19,23 @@ class Colorbar(Base):
     """
     def __init__(self, parent = None):
         super().__init__(parent)
-        self._orientation = "vertical"
+        self._orientation = None
         self._label = ""
         self._fraction_of_original_axis = 0.15
-        self._location = "right"
+        self._location = None
         self._shrink = 1.0
         self._aspect = 20
         self._padding = 0.1        
         self._drawedges = False
         self._filled = True
-
+        self._tick_color = "black"
+        self._tick_label_color = "black"
         self._label_location = "center"
+        self._label_color = "black"
+        self._label_font_size = 12
+
         self._ax = None # The axis the colorbar is drawn next to
+        self._cax = None # The axis the colorbar sits on
         self._mappable = None # the mappable object from which the cbar derives
         self._cbar_event_handler = EventHandler()
 
@@ -52,9 +59,17 @@ class Colorbar(Base):
         self._cbar_event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
 
     def _create_plot_obj(self, ax, mappable):
-        cax, kwargs = make_axes(ax, **self.colorbar_kwargs)
-        self._plot_obj = MatplotlibColorbar(cax, mappable=mappable, **kwargs)
-        self._plot_obj.set_label(self._label, loc = self._label_location)
+        self._cax, kwargs = make_axes(ax, **self.colorbar_kwargs)
+        self._plot_obj = MatplotlibColorbar(self._cax, mappable=mappable, **kwargs)
+        self._apply_label_settings()
+        self._cax.tick_params(color = self._tick_color, labelcolor = self._tick_label_color)
+        self._cax.yaxis.label.set_color(self._label_color)
+
+    def _apply_label_settings(self):
+        if self._plot_obj is not None:
+            self._plot_obj.set_label(self._label, loc = self._label_location, color = self._label_color, 
+                        fontsize = self._label_font_size)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def redraw(self):
         """Delete the current plot object and reinstantiate it with the new parameters"""
@@ -97,9 +112,7 @@ class Colorbar(Base):
 
     def set_label(self, label):
         self._label = label
-        if self._plot_obj is not None:
-            self._plot_obj.set_label(self._label, loc = self._label_location)
-            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        self._apply_label_settings()
 
     def get_location(self):
         return self._location
@@ -149,14 +162,45 @@ class Colorbar(Base):
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_tickcolor(self):
+        return self._tick_color
+
+    def set_tickcolor(self, tickcolor):
+        self._tick_color = tickcolor
+        if self._plot_obj is not None:
+            self._cax.tick_params(color = self._tick_color)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+    def get_tick_label_color(self):
+        return self._tick_label_color
+
+    def set_tick_label_color(self, color):
+        self._tick_label_color = color
+        if self._plot_obj is not None:
+            self._cax.tick_params(labelcolor = self._tick_label_color)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
+
     def get_label_location(self):
         return self._label_location
 
     def set_label_location(self, location):
         self._label_location = location
-        if self._plot_obj is not None:
-            self._plot_obj.set_label(self._label, loc = self._label_location)
-            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        self._apply_label_settings()
+
+    def get_label_color(self):
+        return self._label_color
+
+    def set_label_color(self, label_color):
+        self._label_color = label_color
+        self._apply_label_settings()
+
+    def get_label_fontsize(self):
+        return self._label_font_size
+
+    def set_label_font_size(self, font_size):
+        self._label_font_size = font_size
+        self._apply_label_settings()
 
 
     orientation = Property(str, get_orientation, set_orientation)
@@ -167,5 +211,9 @@ class Colorbar(Base):
     aspect = Property(int, get_aspect, set_aspect)
     drawEdges = Property(bool, get_drawedges, set_drawedges)
     filled = Property(bool, get_filled, set_filled)
+    tickColor = Property(str, get_tickcolor, set_tickcolor)
+    tickLabelColor = Property(str, get_tick_label_color, set_tick_label_color)
     labelLocation = Property(str, get_label_location, set_label_location)
+    labelColor = Property(str, get_label_color, set_label_color)
+    labelFontSize = Property(int, get_label_fontsize, set_label_font_size)
 

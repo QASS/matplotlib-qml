@@ -1,7 +1,7 @@
 from PySide2.QtCore import Signal, Slot, Property
-from graphs_2d import Text
-from event import EventTypes, EventHandler
-from plot_objects import Axis
+from matplotlib_bridge.graphs_2d import Text
+from matplotlib_bridge.event import EventTypes, EventHandler
+from matplotlib_bridge.plot_objects import Axis
 
 
 

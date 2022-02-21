@@ -1,8 +1,8 @@
 from copy import copy
 from PySide2.QtCore import QObject, Signal, Slot, Property
-from graphs_2d import PlotObject2D
-from plot_objects import Axis
-from event import EventHandler, EventTypes
+from matplotlib_bridge.graphs_2d import PlotObject2D
+from matplotlib_bridge.plot_objects import Axis
+from matplotlib_bridge.event import EventHandler, EventTypes
 
 
 

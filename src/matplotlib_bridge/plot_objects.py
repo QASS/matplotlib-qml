@@ -7,7 +7,8 @@ from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer
 from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
-from event import EventHandler, EventTypes
+
+from matplotlib_bridge.event import EventHandler, EventTypes
 from copy import copy
 
 from matplotlib_backend_qtquick.backend_qtquick import NavigationToolbar2QtQuick

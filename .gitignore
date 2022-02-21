@@ -1,5 +1,9 @@
 /venv/
 */__pycache__/*
 /__pycache__/
+__pycache__
 */main.py
 */main.qml
+matplotlib_bridge.egg-info
+/dist/
+.pypirc

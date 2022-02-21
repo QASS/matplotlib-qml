@@ -1,6 +1,6 @@
-from graphs_2d import LineObject2D
+from matplotlib_bridge.graphs_2d import LineObject2D
 from PySide2.QtCore import Signal, Slot, Property
-from event import EventTypes
+from matplotlib_bridge.event import EventTypes
 
 class VLine(LineObject2D):
     """wrapper for matplotlib.axes.Axes.axvline"""
