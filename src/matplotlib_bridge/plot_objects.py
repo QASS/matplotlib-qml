@@ -1,5 +1,6 @@
 
 import sys
+import warnings
 
 from PySide2.QtQuick import QQuickItem
 from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer
@@ -80,6 +81,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._event_handler = None
         self._toolbar = NavigationToolbar2QtQuick(canvas = self.figure.canvas)
         self._coordinates = [0, 0]
+        self._refresh_coordinates = False
         self._coordinates_timer_refresh_rate = 50
         self._constrained_layout = True
 
@@ -87,6 +89,8 @@ class Figure(FigureCanvasQtQuickAgg):
         self._coordinates_timer.timeout.connect(self._emit_coordinates)
         self._coordinates_timer.setInterval(self._coordinates_timer_refresh_rate)
         self._coordinates_timer.setSingleShot(True)
+
+        self._motion_notify_event_id = None
 
     @Slot()
     def init(self):
@@ -110,7 +114,8 @@ class Figure(FigureCanvasQtQuickAgg):
         self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
 
         # connect the figure events
-        self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
+        if self._refresh_coordinates:
+            self._motion_notify_event_id = self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
         self.figure.canvas.mpl_connect("pick_event", self._on_pick)
         self.figure.canvas.mpl_connect("button_press_event", self._on_click)
 
@@ -231,6 +236,18 @@ class Figure(FigureCanvasQtQuickAgg):
     def get_coordinates(self):
         return self._coordinates
 
+    def get_refresh_coordinates(self):
+        return self._refresh_coordinates
+
+    def set_refresh_coordinates(self, refresh):
+        """Enable/Disable of the signal coordinates changed. Conenct the figure to the canvas motion notify event or disconnect it"""
+        self._refresh_coordinates = refresh
+        if self._motion_notify_event_id is None and self._refresh_coordinates:
+            self._motion_notify_event_id = self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
+        if self._motion_notify_event_id and not self._refresh_coordinates:
+            self.figure.canvas.mpl_disconnect(self._motion_notify_event_id)
+            self._motion_notify_event_id = None
+
     def get_coordinates_refresh_rate(self):
         return self._coordinates_timer_refresh_rate
 
@@ -258,6 +275,7 @@ class Figure(FigureCanvasQtQuickAgg):
     shortTimerInterval = Property(int, get_short_timer_interval, set_short_timer_interval)
     longTimerInterval = Property(int, get_long_timer_interval, set_long_timer_interval)
     coordinates = Property("QVariantList", get_coordinates, notify = coordinatesChanged)
+    refreshCoordinates = Property(bool, get_refresh_coordinates, set_refresh_coordinates)
     coordinatesRefreshRate = Property(int, get_coordinates_refresh_rate, set_coordinates_refresh_rate)
     constrainedLayout = Property(bool, get_constrained_layout, set_constrained_layout)
 
