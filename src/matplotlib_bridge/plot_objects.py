@@ -81,6 +81,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._toolbar = NavigationToolbar2QtQuick(canvas = self.figure.canvas)
         self._coordinates = [0, 0]
         self._coordinates_timer_refresh_rate = 50
+        self._constrained_layout = True
 
         self._coordinates_timer = QTimer()
         self._coordinates_timer.timeout.connect(self._emit_coordinates)
@@ -94,6 +95,7 @@ class Figure(FigureCanvasQtQuickAgg):
         This function should be called in When the Figure Component is Completed in QML.
         """
         self.figure.clear()
+        self.figure.set_constrained_layout(self._constrained_layout)
         self._event_handler = EventHandler(short_timer_interval = self._short_timer_interval, long_timer_interval = self._long_timer_interval)
         for idx, child in enumerate(child for child in self.children() if isinstance(child, Plot)):
             ax = self.figure.add_subplot(self._rows, self._columns, idx + 1)
@@ -149,6 +151,10 @@ class Figure(FigureCanvasQtQuickAgg):
         self.figure.tight_layout(**kwargs)
         if self._event_handler is not None:
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
+
+    @Slot("QVariantMap")
+    def subplotsAdjust(self, kwargs = {}):
+        self.figure.subplots_adjust(**kwargs)
 
     def _on_motion(self, event):
         """This is a handler registered on the ' motion_notify_event' to refresh the mouse coordinates
@@ -233,6 +239,15 @@ class Figure(FigureCanvasQtQuickAgg):
         self._coordinates_timer.setInterval(self._coordinates_timer_refresh_rate)
 
 
+    def get_constrained_layout(self):
+        return self._constrained_layout
+
+    def set_constrained_layout(self, constrained_layout):
+        self._constrained_layout = constrained_layout
+        if self._event_handler is not None:
+            self.figure.set_constrained_layout(self._constrained_layout)
+            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
+
     faceColorChanged = Signal(str)
     coordinatesChanged = Signal("QVariantMap")
     clicked = Signal("QVariantMap")
@@ -244,6 +259,7 @@ class Figure(FigureCanvasQtQuickAgg):
     longTimerInterval = Property(int, get_long_timer_interval, set_long_timer_interval)
     coordinates = Property("QVariantList", get_coordinates, notify = coordinatesChanged)
     coordinatesRefreshRate = Property(int, get_coordinates_refresh_rate, set_coordinates_refresh_rate)
+    constrainedLayout = Property(bool, get_constrained_layout, set_constrained_layout)
 
 class Plot(QQuickItem):
     """Container to allow useful implementation of mutliple axis."""
@@ -320,6 +336,7 @@ class Axis(QQuickItem):
         self._grid_linestyle = "-"
         self._grid_linewidth = 1
         self._grid_alpha = 1.0
+        self._aspect_ratio = None
         # self._legend_visible = True
 
         self._autoscale = "both"
@@ -378,6 +395,7 @@ class Axis(QQuickItem):
         self._ax.set_xlim(*self._xlim, emit = True)
         self._ax.set_ylim(*self._ylim, emit = True)
         self._apply_auto_scale(self._autoscale)
+        
         if self._x_axis_major_ticks is not None: # TODO add AutoLocator to allow resetting of ticks
             self._ax.set_xticks(self._x_axis_major_ticks, minor = False)
         if self._x_axis_minor_ticks is not None:
@@ -793,6 +811,17 @@ class Axis(QQuickItem):
             self._ax.set_ylim(*self._xlim, auto = None)
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
+    def get_aspect_ratio(self):
+        return self._aspect_ratio
+
+    def set_aspect_ratio(self, ratio):
+        self._aspect_ratio = ratio
+        if self._ax is not None:
+            x_left, x_right = self._ax.get_xlim()
+            y_low, y_high = self._ax.get_ylim()
+            self._ax.set_aspect(abs((x_right - x_left) / (y_low - y_high)) * self._aspect_ratio)
+            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
+
     # def get_legend_visible(self):
     #     return self._legend_visible
 
@@ -832,4 +861,5 @@ class Axis(QQuickItem):
     xMax = Property(float, get_xmax, set_xmax)
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
+    aspect = Property(float, get_aspect_ratio, set_aspect_ratio)
     #legend = Property(bool, get_legend_visible, set_legend_visible)
