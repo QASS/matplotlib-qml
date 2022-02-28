@@ -74,11 +74,13 @@ class Colorbar(Base):
     def redraw(self):
         """Delete the current plot object and reinstantiate it with the new parameters"""
         if self._plot_obj is not None:
-            self._plot_obj.remove()
+            # self._plot_obj.remove()
             self._plot_obj = None
         # we need to call tight layout to rescale the axis since we "stole" some space earlier to create
         # the axis for the cbar
-        self._ax.figure.tight_layout(rect = (0, 0.05, 1, 1))
+        self._ax.figure.delaxes(self._cax) # delete the colorbar_axis
+        self._cax = None
+        self._ax.figure.subplots_adjust() # adjust the subplot since they now have more space
         self._create_plot_obj(self._ax, self._mappable)
         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
