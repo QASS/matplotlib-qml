@@ -45,6 +45,18 @@ class FillBetween(PlotObject2D):
         self._create_plot_obj(self._ax)
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    @property
+    def x(self):
+        return self._x
+    
+    @property
+    def y1(self):
+        return self._y1
+
+    @property
+    def y2(self):
+        return self._y2
+
     def get_x(self):
         if isinstance(self._xdata, np.ndarray):
             return self._x.tolist()
