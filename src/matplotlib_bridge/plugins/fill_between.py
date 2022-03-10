@@ -1,8 +1,8 @@
-from copy import copy
 from PySide2.QtCore import QObject, Signal, Slot, Property
 from matplotlib_bridge.graphs_2d import PlotObject2D
 from matplotlib_bridge.plot_objects import Axis
 from matplotlib_bridge.event import EventHandler, EventTypes
+import numpy as np
 
 # https://matplotlib.org/3.5.1/api/_as_gen/matplotlib.axes.Axes.fill_between.html
 class FillBetween(PlotObject2D):
@@ -46,7 +46,10 @@ class FillBetween(PlotObject2D):
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_x(self):
-        return self._x
+        if isinstance(self._xdata, np.ndarray):
+            return self._x.tolist()
+        else:
+            return self._x
 
     def set_x(self, x):
         self._x = x
@@ -54,7 +57,10 @@ class FillBetween(PlotObject2D):
             pass
 
     def get_y1(self):
-        return self._y1
+        if isinstance(self._xdata, np.ndarray):
+            return self._y1.tolist()
+        else:
+            return self._y1
 
     def set_y1(self, y1):
         self._y1 = y1
@@ -62,7 +68,10 @@ class FillBetween(PlotObject2D):
             self._fill_between_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_y2(self):
-        return self._y2
+        if isinstance(self._xdata, np.ndarray):
+            return self._y2.tolist()
+        else:
+            return self._y2
 
     def set_y2(self, y2):
         self._y2 = y2
@@ -70,7 +79,10 @@ class FillBetween(PlotObject2D):
             self._fill_between_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_where(self):
-        return self._where
+        if isinstance(self._xdata, np.ndarray):
+            return self._where.tolist()
+        else:
+            return self._where
 
     def set_where(self, where):
         self._where = where
@@ -118,7 +130,7 @@ class FillBetween(PlotObject2D):
     y1 = Property("QVariantList", get_y1, set_y1)
     y2 = Property("QVariantList", get_y2, set_y2)
     where = Property("QVariantList", get_where, set_where)
-    interpolate = Property(str, get_interpolate, set_interpolate)
+    interpolate = Property(bool, get_interpolate, set_interpolate)
     step = Property(str, get_step, set_step)
     linestyle = Property(str, get_linestyle, set_linestyle)
     linewidth = Property(float, get_linewidth, set_linewidth)
