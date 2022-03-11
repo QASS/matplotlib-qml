@@ -1,12 +1,13 @@
 from PySide2.QtCore import QObject, Property
 
+from matplotlib_bridge.event import EventTypes
+
 class Artist(QObject):
     """Wrapper class for matplotlib.artist.Artist"""
     def __init__(self, parent = None):
         super().__init__(parent)
-
+        # self._plot_obj = None
         self._axes = None
-        self.figure = None
 
         # self._transform = None
         # self._transformSet = False
@@ -24,15 +25,26 @@ class Artist(QObject):
         # self._agg_filter = None
         self._picker = None
 
-        self._plot_obj = None
+        # self._plot_obj = None
+        self.figure = None
+        self._event_handler = None
 
     @property
     def figure(self):
-        return self._plot_obj.get_figure()
+        if self._plot_obj is not None:
+            return self._plot_obj.get_figure()
 
     @figure.setter
     def figure(self, figure):
-        self._plot_obj.set_figure(figure)
+        if self._plot_obj is not None:
+            self._plot_obj.set_figure(figure)
+
+    def schedule_plot_update(self):
+        if self._event_handler is not None:
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def set_event_handler(self, event_handler):
+        self._event_handler = event_handler
         
     def remove(self):
         if self._plot_obj is not None:
