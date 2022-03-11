@@ -7,3 +7,4 @@ __pycache__
 matplotlib_bridge.egg-info
 /dist/
 .pypirc
+.vscode
