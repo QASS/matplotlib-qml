@@ -125,7 +125,7 @@ class Line2D(Artist):
         return self._plot_obj.get_pickradius # or self._plot_obj.get_pickradius
 
     def set_pickradius(self, pickradius):
-        self._plot_obj.set_pickradius(self._pickradius)
+        self._plot_obj.set_pickradius(pickradius)
 
     def get_drawstyle(self):
         return self._plot_obj.get_drawstyle() # or self._plot_obj.get_drawstyle()
