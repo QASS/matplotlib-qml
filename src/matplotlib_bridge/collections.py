@@ -230,9 +230,9 @@ class _CollectionWithSizes(Collection):
             self._plot_obj.set_sizes((size,))
             self.schedule_plot_update()
 
-    sizes = Property("QVariantList", get_sizes, set_sizes)
-    s = sizes
-    size = Property(float, get_size, set_size)
+    markerSizes = Property("QVariantList", get_sizes, set_sizes)
+    s = markerSizes
+    markerSize = Property(float, get_size, set_size)
     
 
 class PathCollection(_CollectionWithSizes):
@@ -250,7 +250,7 @@ class PathCollection(_CollectionWithSizes):
 
 from matplotlib.markers import MarkerStyle
 
-class ScatterCol(PathCollection):
+class ScatterCollection(PathCollection):
     """A Collection can't exist outside of an axes because it requires the transform data"""
     OFFSET_CHANGED = "OFFSET_CHANGED"
 
@@ -296,6 +296,8 @@ class ScatterCol(PathCollection):
         if self._plot_obj is not None:
             if len(self._x ) == len(self._y):
                 self._adjust_offset()
+                self.xChanged.emit()
+                self.xDataChanged.emit()
                 self.schedule_plot_update()
 
     def get_y(self):
@@ -308,6 +310,8 @@ class ScatterCol(PathCollection):
         if self._plot_obj is not None:
             if len(self._x ) == len(self._y):
                 self._adjust_offset()
+                self.yChanged.emit()
+                self.yDataChanged.emit()
                 self.schedule_plot_update()
 
     def get_marker(self):
@@ -325,7 +329,11 @@ class ScatterCol(PathCollection):
 
     xChanged = Signal()
     yChanged = Signal()
+    xDataChanged = xChanged
+    yDataChanged = yChanged
 
     x = Property("QVariantList", get_x, set_x, notify = xChanged)
+    xData = x
     y = Property("QVariantList", get_y, set_y, notify = yChanged)
+    yData = y
     marker = Property(str, get_marker, set_marker)
