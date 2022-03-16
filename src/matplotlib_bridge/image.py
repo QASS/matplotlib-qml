@@ -97,12 +97,12 @@ class _ImageBase(Artist, ScalarMappable):
             self._plot_obj.set_interpolation_stage(self._interpolation_stage)
             self.schedule_plot_update()
 
-    x = Property("QVariantList", )
+    x = Property("QVariantList", get_x, set_x)
     interpolation = Property(str, get_interpolation, set_interpolation)
     origin = Property(str, get_origin, set_origin)
     resample = Property(bool, get_resample, set_resample)
     filternorm = Property(bool, get_filternorm, set_filternorm)
-    filterrad = Property(float)
+    filterrad = Property(float, get_filterrad, set_filterrad)
 
 class AxesImage(_ImageBase):
     
@@ -127,14 +127,35 @@ class AxesImage(_ImageBase):
             self._plot_obj.set_extent(self._extent)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    extent = Property("QVariantList", get_extent, set_extent)
+
 class Imshow(AxesImage):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._aspect = "equal"
 
 
         self._ax = None
 
     def init(self, ax):
         self._ax = ax
-        self._plot_obj = ax.imshow()
+        self._plot_obj = ax.imshow(self._x, cmap = self._cmap, aspect = self._aspect, 
+                                vmin = self._vmin, vmax = self._vmax, origin = self._origin, 
+                                extent = self._extent, filternorm = self._filternorm, 
+                                filterrad = self._filterrad, resample = self._resample)
+        ScalarMappable.init(self, ax)
+
+    def get_aspect(self):
+        if self._ax is None:
+            return self._aspect
+        return self._ax.get_aspect()
+
+    def set_aspect(self, aspect):
+        """The aspect property is originally from the axis so it might move there"""
+        self._aspect = aspect
+        if self._ax is not None:
+            self._ax.set_aspect(self._aspect)
+            self.schedule_plot_update()
+
+    aspect = Property(str, get_aspect, set_aspect)
