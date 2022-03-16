@@ -101,6 +101,9 @@ class Colorbar(Base):
         self._mappable = mappable
         self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def draw_all(self):
+        return self._plot_obj.draw_all()
+
     def get_orientation(self):
         return self._orientation
 
