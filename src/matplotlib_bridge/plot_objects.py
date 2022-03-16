@@ -8,6 +8,7 @@ from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer
 from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
+from matplotlib_bridge.artist import Artist
 
 from matplotlib_bridge.event import EventHandler, EventTypes
 from copy import copy
@@ -387,7 +388,7 @@ class Axis(QQuickItem):
 
 
     def _init_children(self, ax, event_handler):
-        children = (child for child in self.children() if isinstance(child, Base)) # TODO change to PlotBase
+        children = (child for child in self.children() if isinstance(child, Base) or isinstance(child, Artist)) # TODO change to PlotBase
         for child in children:
             # set the handler on the child
             child.set_event_handler(event_handler)
