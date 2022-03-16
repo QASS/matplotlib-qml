@@ -126,6 +126,7 @@ class Collection(Artist, ScalarMappable):
         return self._plot_obj.get_hatch()
 
     def set_hatch(self, hatch):
+        self._hatch = hatch
         if self._plot_obj is not None:
             self._plot_obj.set_hatch(hatch)
             self.schedule_plot_update()
@@ -216,14 +217,17 @@ class _CollectionWithSizes(Collection):
             self.schedule_plot_update()
 
     def get_size(self):
-        if self._plot_obj is None:
+        if self._plot_obj is None or self._sizes is None:
             return self._size
         return self._plot_obj.get_sizes()
 
     def set_size(self, size):
+        """sizes always have priority over size. 
+        Even though size is a single value it must be provided as an iterable (list,tuple,np.array)
+        In order to keep the state of the wrapper synchron with QML property compatibilities it needs to be done like this"""
         self._size = size
-        if self._plot_obj is not None:
-            self._plot_obj.set_sizes(size)
+        if self._plot_obj is not None and self._sizes is None:
+            self._plot_obj.set_sizes((size,))
             self.schedule_plot_update()
 
     sizes = Property("QVariantList", get_sizes, set_sizes)
