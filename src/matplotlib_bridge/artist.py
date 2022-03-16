@@ -3,7 +3,9 @@ from PySide2.QtCore import QObject, Property
 from matplotlib_bridge.event import EventTypes
 
 class Artist(QObject):
-    """Wrapper class for matplotlib.artist.Artist"""
+    """Wrapper class for matplotlib.artist.Artist
+    The state of the matplotlib object is synchronized with the internal state of the wrapper object because collections
+    and possibly other objects can only be instantiated after the figure has been initialized"""
     def __init__(self, parent = None):
         super().__init__(parent)
         # self._plot_obj = None
@@ -24,6 +26,7 @@ class Artist(QObject):
         # self._rasterized = None
         # self._agg_filter = None
         self._picker = None
+        self._zorder = 1
 
         # self._plot_obj = None
         self.figure = None
