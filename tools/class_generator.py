@@ -10,7 +10,7 @@ class ClassGenerator:
 		self._indentation_level = 0
 
 		self._paragraph_end = "\n\n"
-		self._class_doc = "\"\"\" This is class has been auto generated. ABSOLUTELY PROVIDE  \"\"\""
+		self._class_doc = "\"\"\" This is class has been auto generated. PLEASE PROVIDE DOCUMENTATION!!! \"\"\""
 
 	def _get_current_indent(self):
 		"""Returns the current indentation as spaces or tab-string"""
