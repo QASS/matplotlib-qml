@@ -8,3 +8,4 @@ matplotlib_bridge.egg-info
 /dist/
 .pypirc
 .vscode
+*/output.py
