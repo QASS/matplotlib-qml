@@ -33,6 +33,18 @@ class Artist(QObject):
         self._event_handler = None
 
     @property
+    def kwargs(self):
+        kwargs = {
+            "visible": self._visible,
+            "alpha": self._alpha,
+            #"clipon": self._clipon,
+            "label": self._label,
+            "zorder": self._zorder,
+            "picker": self._picker
+        }
+        return kwargs
+
+    @property
     def figure(self):
         if self._plot_obj is not None:
             return self._plot_obj.get_figure()
