@@ -1,170 +1,114 @@
 from copy import copy
 from PySide2.QtCore import QObject, Signal, Slot, Property
-from matplotlib_bridge.graphs_2d import PlotObject2D
-from matplotlib_bridge.plot_objects import Axis
-from matplotlib_bridge.event import EventHandler, EventTypes
+from matplotlib.markers import MarkerStyle
+import numpy as np
+
+from matplotlib_bridge.collections import PathCollection
+from matplotlib_bridge.cm import ScalarMappable
+from matplotlib_bridge.event import EventHandler
 
 
 
-class ScatterCollection(PlotObject2D):
+class ScatterCollection(PathCollection):
     """wrapper for matplotlib.pyplot.scatter
-    Note that this instantiates a PathCollection so you will have a lot of objects sticking around 
-    if you have many scatter points. The scatter is reinstantiated every time a property changes as well which
-    results in additional overhead.
-    Example:
-        ScatterCollection {
-            x: [1,2,3]
-            y: [1,2,3]
-            c: [1,2,3]
-            cMap: "gist_rainbow"
-        }
-    """
-    def __init__(self, parent = None):
+        Note that this instantiates a PathCollection so you will have a lot of objects sticking around 
+        if you have many scatter points. The scatter is reinstantiated every time a property changes as well which
+        results in additional overhead.
+        Example:
+            ScatterCollection {
+                x: [1,2,3]
+                y: [1,2,3]
+                c: [1,2,3]
+                cMap: "gist_rainbow"
+            }
+        A Collection can't exist outside of an axes because it requires the transform data"""
+    
+    OFFSET_CHANGED = "OFFSET_CHANGED"
+
+    def __init__(self, parent=None):
         super().__init__(parent)
         self._x = []
         self._y = []
-        self._sizes = None # Array
-        self._size = None # scalar marker size
-        self._colors = None # Array
-        self._marker = None
-        self._cmap = None
-        self._vmin = None
-        self._vmax = None
+        self._marker = "o"
+        self._ax = None
         self._scatter_event_handler = EventHandler()
-        self._ax = None # reference to the matplotlib wrapper axis
-        self._colorbar = None
 
-    def init(self, ax):
-        # create the ScatterCollection
+    def init(self, ax):       
+        self._ax = ax
         self._create_plot_obj(ax)
-        # create the colorbar if there is one
-        if self._colorbar is not None:
-            self._colorbar.set_event_handler(self._event_handler)
-            self._colorbar.init(ax, self._plot_obj)            
-
-        self._scatter_event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
-
-        axis = self.parent()
-        if isinstance(axis, Axis):
-            self._ax = axis
-        else:
-            raise LookupError("Parent is not of type Axis")
+        # initialize the ScalarMappable to enable the colorbar
+        ScalarMappable.init(self, ax)
+        self._scatter_event_handler.register(self.OFFSET_CHANGED, self._adjust_offset)
 
     def _create_plot_obj(self, ax):
-        if self._sizes is not None:
-            self._plot_obj = ax.scatter(self._x, self._y, **self.matplotlib_2d_kwargs, s = self._sizes, c = self._colors, 
-            marker = self._marker, cmap = self._cmap, vmin = self._vmin, vmax = self._vmax)
-        else:
-            self._plot_obj = ax.scatter(self._x, self._y, **self.matplotlib_2d_kwargs, s = self._size, c = self._colors, 
-            marker = self._marker, cmap = self._cmap, vmin = self._vmin, vmax = self._vmax)
+        """First check whether there are lists of properties otherwise fall back to the defaults or single properties"""
+        edgecolors = self._edgecolors if self._edgecolors is not None else self._edgecolor
+        colors = self._facecolors if self._facecolors is not None else self._facecolor
+        linewidths = self._linewidths if self._linewidths is not None else self._linewidth
+        sizes = self._sizes if self._sizes is not None else self._size
+        self._plot_obj = ax.scatter(self._x, self._y, c = colors, s = sizes, marker = self._marker, cmap = self._cmap, 
+                                    norm = None, vmin = self._vmin, vmax = self._vmax, alpha = self._alpha, 
+                                    linewidths = linewidths, edgecolors = edgecolors, hatch = self._hatch)
 
-    def redraw(self):
-        """Delete the current plot object and reinstantiate it with the new parameters"""
-        if self._colorbar is not None:
-            self._colorbar.remove()
-        if self._plot_obj is not None:
-            self._plot_obj.remove()
-            self._plot_obj = None
-        # get the axis parent object
-        self._create_plot_obj(self._ax.get_matplotlib_ax_object())
-        if self._colorbar is not None:
-            self._colorbar.update_mappable(self._plot_obj)
-        self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+    def _adjust_offset(self):
+        """The offsets is a 2D array, telling the collection where each scatter point is located relative to the origin"""
+        x = np.array(self._x).reshape(len(self._x), 1)
+        y = np.array(self._y).reshape(len(self._y), 1)
 
+        offsets = np.hstack((x, y))
+        self._plot_obj.set_offsets(offsets)
+    
     def get_x(self):
+        if isinstance(self._x, np.ndarray):
+            return self._x.tolist()
         return self._x
 
     def set_x(self, x):
-        self._x = copy(x)
-        self.xChanged.emit()
-        if self._plot_obj is not None and len(self._x) == len(self._y):
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        self._x = x
+        if self._plot_obj is not None:
+            if len(self._x ) == len(self._y):
+                self._adjust_offset()
+                self.xChanged.emit()
+                self.xDataChanged.emit()
+                self.schedule_plot_update()
 
     def get_y(self):
+        if isinstance(self._y, np.ndarray):
+            return self._y.tolist()
         return self._y
 
     def set_y(self, y):
-        self._y = copy(y)
-        self.yChanged.emit()
-        if self._plot_obj is not None and len(self._x) == len(self._y):
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    def get_sizes(self):
-        return self._size
-
-    def set_sizes(self, sizes):
-        self._sizes = copy(sizes)
+        self._y = y
         if self._plot_obj is not None:
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    def get_size(self):
-        return self._size
-
-    def set_size(self, size):
-        self._size = size        
-        if self._plot_obj is not None:
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    def get_colors(self):
-        return self._colors
-
-    def set_colors(self, colors):
-        self._colors = copy(colors)
-        if self._plot_obj is not None:
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            if len(self._x ) == len(self._y):
+                self._adjust_offset()
+                self.yChanged.emit()
+                self.yDataChanged.emit()
+                self.schedule_plot_update()
 
     def get_marker(self):
         return self._marker
 
     def set_marker(self, marker):
+        """Fetch the marker style and the current applied transform of the marker style object"""
         self._marker = marker
-        if self._plot_obj is not None:
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+        if self._plot_obj is not None:            
+            marker_obj = MarkerStyle(marker)
+            marker_path = marker_obj.get_path().transformed(marker_obj.get_transform())
+            self.set_paths((marker_path,))
+            self.schedule_plot_update()
 
-    def get_cmap(self):
-        return self._cmap
-
-    def set_cmap(self, cmap):
-        self._cmap = cmap
-        if self._plot_obj is not None:
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    def get_vmin(self):
-        return self._vmin
-
-    def set_vmin(self, vmin):
-        self._vmin = vmin
-        if self._plot_obj is not None:
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    def get_vmax(self):
-        return self._vmax
-
-    def set_vmax(self, vmax):
-        self._vmax = vmax
-        if self._plot_obj is not None:
-            self._scatter_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    def get_colorbar(self):
-        return self._colorbar
-
-    def set_colorbar(self, colorbar):
-        self._colorbar = colorbar
-        
 
     xChanged = Signal()
     yChanged = Signal()
+    xDataChanged = xChanged
+    yDataChanged = yChanged
 
     x = Property("QVariantList", get_x, set_x, notify = xChanged)
+    xData = x
     y = Property("QVariantList", get_y, set_y, notify = yChanged)
-    s = Property("QVariantList", get_sizes, set_sizes)
-    c = Property("QVariantList", get_colors, set_colors)
+    yData = y
     marker = Property(str, get_marker, set_marker)
-    cMap = Property(str, get_cmap, set_cmap)
-    markerSize = Property(float, get_size, set_size)
-    vMin = Property(float, get_vmin, set_vmin)
-    vMax = Property(float, get_vmax, set_vmax)
-    colorbar = Property(QObject, get_colorbar, set_colorbar)
 
 
 def init(factory):
