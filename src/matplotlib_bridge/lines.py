@@ -183,5 +183,100 @@ class Line2D(Artist):
 Line = Line2D
 
 
+class HLine(Line2D):
+    """ wrapper for matplotlib.axes.Axes.axhline """
 
-    
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self._y = 0
+        self._xmin = 0
+        self._xmax = 1
+
+    def init(self, ax):
+        """Apply the yaxis transform to the Line2D object in order to stick it to the axis edges"""
+        transform = ax.get_yaxis_transform(which='grid')
+        self._plot_obj.set_transform(transform)
+        super().init(ax)
+
+    def get_y(self):
+        ydata = self.get_ydata()
+        if len(ydata) < 0:
+            return self._y
+        return ydata[0]
+
+    def set_y(self, y):
+        self._y = y
+        self.set_ydata([self._y, self._y])
+
+    def get_xmin(self):
+        xdata = self.get_xdata()
+        if len(xdata) < 0:
+            return self._xmin
+        return xdata[0]
+
+    def set_xmin(self, xmin):
+        self._xmin = xmin
+        self.set_xdata([self._xmin, self._xmax])
+
+    def get_xmax(self):
+        xdata = self.get_xdata()
+        if len(xdata) < 0:
+            return self._xmax
+        return xdata[1]
+
+    def set_xmax(self, xmax):
+        self._xmax = xmax
+        self.set_xdata([self._xmin, self._xmax])
+
+    y = Property(float, get_y, set_y)
+    xMin = Property(float, get_xmin, set_xmin)
+    xMax = Property(float, get_xmax, set_xmax)
+
+class VLine(Line2D):
+    """ wrapper for matplotlib.axes.Axes.axvline """
+
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self._x = 0
+        self._ymin = 0
+        self._ymax = 1
+
+    def init(self, ax):
+        """Apply the xaxis transform to the Line2D object in order to stick it to the axis edges"""
+        transform = ax.get_xaxis_transform(which='grid')
+        self._plot_obj.set_transform(transform)
+        super().init(ax)
+
+    def get_x(self):
+        xdata = self.get_xdata()
+        if len(xdata) < 0:
+            return self._y
+        return xdata[0]
+
+    def set_x(self, x):
+        self._x = x
+        self.set_xdata([self._x, self._x])
+
+    def get_ymin(self):
+        ydata = self.get_ydata()
+        if len(ydata) < 0:
+            return self._xmin
+        return ydata[0]
+
+    def set_ymin(self, ymin):
+        self._ymin = ymin
+        self.set_ydata([self._ymin, self._ymax])
+
+    def get_ymax(self):
+        ydata = self.get_ydata()
+        if len(ydata) < 0:
+            return self._ymax
+        return ydata[1]
+
+    def set_ymax(self, ymax):
+        self._ymax = ymax
+        self.set_ydata([self._ymin, self._ymax])
+
+    x = Property(float, get_x, set_x)
+    yMin = Property(float, get_ymin, set_ymin)
+    yMax = Property(float, get_ymax, set_ymax)
