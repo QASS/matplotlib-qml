@@ -23,6 +23,13 @@ class ScalarMappable:
             self._colorbar.set_event_handler(self._event_handler)
             self._colorbar.init(ax, self._plot_obj)
 
+    @property
+    def kwargs(self):
+        kwargs = {
+            "cmap": self._cmap,
+        }
+        return kwargs
+
     def get_array(self):
         return self._array
     
