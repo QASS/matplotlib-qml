@@ -118,8 +118,10 @@ class Collection(Artist, ScalarMappable):
         return self._plot_obj.get_linestyle() # or self._plot_obj.get_linestyle()
 
     def set_linestyle(self, linestyle):
-        self._plot_obj.set_linestyle(linestyle)
-        self.schedule_plot_update()
+        self._linestyles = linestyle
+        if self._plot_obj is not None:
+            self._plot_obj.set_linestyle(self._linestyles)
+            self.schedule_plot_update()
 
     def get_pickradius(self):
         if self._plot_obj is None:
@@ -194,6 +196,7 @@ class Collection(Artist, ScalarMappable):
     markerEdgeColor = Property(str, get_edgecolor, set_edgecolor)
     linewidths = Property("QVariantList", get_linewidths, set_linewidths)
     linewidth = Property(float, get_linewidth, set_linewidth)
+    linestyle = Property(str, get_linestyle, set_linestyle)
     hatch = Property(str, get_hatch, set_hatch)
 
 class _CollectionWithSizes(Collection):
@@ -267,120 +270,3 @@ class PolyCollection(_CollectionWithSizes):
 
     verts = Property("QVariantList", get_verts, set_verts)
 
-
-class FillBetween(PolyCollection):
-    """ This is class has been auto generated. PLEASE PROVIDE DOCUMENTATION!!! """
-
-    def __init__(self, parent = None):
-        super().__init__(parent)
-        self._x = []
-        self._y1 = []
-        self._y2 = 0
-        self._where = None
-        self._interpolate = False
-        self._step = None
-
-        self._ax = None
-
-    def init(self, ax):
-        self._ax = ax
-        kwargs = super().kwargs
-        self._plot_obj = ax.fill_between(self._x, self._y1, y2 = self._y2, where = self._where,
-                                        interpolate = self._interpolate, step = self._step, **kwargs)
-
-    def get_x(self):
-        if self._plot_obj is None:
-            return self._x
-        return self._plot_obj.get_x()
-
-    def set_x(self, x):
-        self._x = x
-        if self._plot_obj is not None:
-            self._plot_obj.set_x(self._x)
-            self.schedule_plot_update()
-
-    def get_y1(self):
-        if self._plot_obj is None:
-            return self._y1
-        return self._plot_obj.get_y1()
-
-    def set_y1(self, y1):
-        self._y1 = y1
-        if self._plot_obj is not None:
-            self._plot_obj.set_y1(self._y1)
-            self.schedule_plot_update()
-
-    def get_y2(self):
-        if self._plot_obj is None:
-            return self._y2
-        return self._plot_obj.get_y2()
-
-    def set_y2(self, y2):
-        self._y2 = y2
-        if self._plot_obj is not None:
-            self._plot_obj.set_y2(self._y2)
-            self.schedule_plot_update()
-
-    def get_where(self):
-        if self._plot_obj is None:
-            return self._where
-        return self._plot_obj.get_where()
-
-    def set_where(self, where):
-        self._where = where
-        if self._plot_obj is not None:
-            self._plot_obj.set_where(self._where)
-            self.schedule_plot_update()
-
-    def get_interpolate(self):
-        if self._plot_obj is None:
-            return self._interpolate
-        return self._plot_obj.get_interpolate()
-
-    def set_interpolate(self, interpolate):
-        self._interpolate = interpolate
-        if self._plot_obj is not None:
-            self._plot_obj.set_interpolate(self._interpolate)
-            self.schedule_plot_update()
-
-    def get_step(self):
-        if self._plot_obj is None:
-            return self._step
-        return self._plot_obj.get_step()
-
-    def set_step(self, step):
-        self._step = step
-        if self._plot_obj is not None:
-            self._plot_obj.set_step(self._step)
-            self.schedule_plot_update()
-
-    def get_linestyle(self):
-        if self._plot_obj is None:
-            return self._linestyle
-        return self._plot_obj.get_linestyle()
-
-    def set_linestyle(self, linestyle):
-        self._linestyle = linestyle
-        if self._plot_obj is not None:
-            self._plot_obj.set_linestyle(self._linestyle)
-            self.schedule_plot_update()
-
-    def get_linewidth(self):
-        if self._plot_obj is None:
-            return self._linewidth
-        return self._plot_obj.get_linewidth()
-
-    def set_linewidth(self, linewidth):
-        self._linewidth = linewidth
-        if self._plot_obj is not None:
-            self._plot_obj.set_linewidth(self._linewidth)
-            self.schedule_plot_update()
-
-    x = Property("QVariantList", get_x, set_x)
-    y1 = Property("QVariantList", get_y1, set_y1)
-    y2 = Property("QVariantList", get_y2, set_y2)
-    where = Property("QVariantList", get_where, set_where)
-    interpolate = Property(bool, get_interpolate, set_interpolate)
-    step = Property(str, get_step, set_step)
-    linestyle = Property(str, get_linestyle, set_linestyle)
-    linewidth = Property(float, get_linewidth, set_linewidth)
