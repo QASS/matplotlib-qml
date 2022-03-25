@@ -280,3 +280,9 @@ class VLine(Line2D):
     x = Property(float, get_x, set_x)
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
+
+
+def init(factory):
+    factory.register(Line2D, "Matplotlib", qml_component_name = "Line")
+    factory.register(HLine, "Matplotlib")
+    factory.register(VLine, "Matplotlib")
