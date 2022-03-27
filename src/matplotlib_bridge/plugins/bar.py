@@ -5,13 +5,17 @@ from matplotlib_bridge.plot_objects import Base
 
 
 class Bar(Base):
-    """ This is class has been auto generated. PLEASE PROVIDE DOCUMENTATION!!! """
+    """ Wrapper for matplotlib.axes.Axes.bar
+    
+    the bar method returns a BarContainer which contains an errorbar container and an array of patches.
+    This creates the need to recreate the whole  container whenever a property changes which causes a lot of overhead.
+     """
 
     def __init__(self, parent = None):
         super().__init__(parent)
         self._x = []
         self._height = []
-        self._whidths = None
+        self._widths = None
         self._width = 0.8
         self._bottoms = None
         self._bottom = 0
@@ -31,6 +35,7 @@ class Bar(Base):
         self._error_kw = dict()
         self._log = False
         self._alpha = None
+        self._label = None
 
         self._plot_obj = None
         self._ax = None
@@ -43,7 +48,7 @@ class Bar(Base):
 
     def _create_plot_obj(self, ax):
         kwargs = {
-			"width": self._whidths if self.whidths is not None else self._width, 
+			"width": self._widths if self.widths is not None else self._width, 
 			"bottom": self._bottoms if self._bottoms is not None else self._bottom,
 			"align": self._align,			
 			"color": self._colors if self._colors is not None else self.color,
@@ -56,22 +61,23 @@ class Bar(Base):
 			"capsize": self._capsize,
 			"error_kw": self._error_kw,
 			"log": self._log,
-			"alpha": self._alpha
+			"alpha": self._alpha,
+            "label": self._label
         }
         self._plot_obj = ax.bar(self._x, self._height, **kwargs)
 
     def redraw(self):
         """Delete the plot object and reinstantiate it"""
         if self._plot_obj is not None:
+            if self._plot_obj.errorbar is not None:
+                self._plot_obj.errorbar.remove()
             self._plot_obj.remove()
             self._plot_obj = None
         self._create_plot_obj(self._ax)
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_x(self):
-        if self._plot_obj is None:
             return self._x
-        return self._plot_obj.get_x()
 
     def set_x(self, x):
         self._x = x
@@ -86,11 +92,11 @@ class Bar(Base):
         if self._plot_obj is not None:
             self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def get_whidths(self):
-        return self._whidths
+    def get_widths(self):
+        return self._widths
 
-    def set_whidths(self, whidths):
-        self._whidths = whidths
+    def set_widths(self, widths):
+        self._widths = widths
         if self._plot_obj is not None:
             self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
@@ -246,9 +252,17 @@ class Bar(Base):
         if self._plot_obj is not None:
             self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def get_label(self):
+        return self._label
+
+    def set_label(self, label):
+        self._label = label
+        if self._plot_obj is not None:
+            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
     x = Property("QVariantList", get_x, set_x)
     height = Property("QVariantList", get_height, set_height)
-    whidths = Property("QVariantList", get_whidths, set_whidths)
+    widths = Property("QVariantList", get_widths, set_widths)
     width = Property(float, get_width, set_width)
     bottoms = Property("QVariantList", get_bottoms, set_bottoms)
     bottom = Property(float, get_bottom, set_bottom)
@@ -258,16 +272,17 @@ class Bar(Base):
     edgecolors = Property("QVariantList", get_edgecolors, set_edgecolors)
     edgecolor = Property(str, get_edgecolor, set_edgecolor)
     linewidths = Property("QVariantList", get_linewidths, set_linewidths)
-    linewidth = Property(str, get_linewidth, set_linewidth)
+    linewidth = Property(float, get_linewidth, set_linewidth)
     tick_label = Property("QVariantList", get_tick_label, set_tick_label)
     xerr = Property("QVariantList", get_xerr, set_xerr)
     yerr = Property("QVariantList", get_yerr, set_yerr)
-    ecolors = Property("QVariantList", get_ecolors, set_ecolors)
+    # ecolors = Property("QVariantList", get_ecolors, set_ecolors)
     ecolor = Property(str, get_ecolor, set_ecolor)
     capsize = Property(float, get_capsize, set_capsize)
     error_kw = Property("QVariantMap", get_error_kw, set_error_kw)
     log = Property(bool, get_log, set_log)
     alpha = Property(float, get_alpha, set_alpha)
+    label = Property(str, get_label, set_label)
 
 def init(factory):
     factory.register(Bar, "Matplotlib")
