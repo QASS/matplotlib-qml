@@ -48,20 +48,20 @@ class Bar(Base):
 
     def _create_plot_obj(self, ax):
         kwargs = {
-			"width": self._widths if self.widths is not None else self._width, 
-			"bottom": self._bottoms if self._bottoms is not None else self._bottom,
-			"align": self._align,			
-			"color": self._colors if self._colors is not None else self.color,
-			"edgecolor": self._edgecolors if self._edgecolors is not None else self._edgecolor,
-			"linewidth": self._linewidths if self._linewidths is not None else self._linewidth,
-			"tick_label": self._tick_label,
-			"xerr": self._xerr,
-			"yerr": self._xerr,
-			"ecolor": self._ecolors if self._ecolors is not None else self._ecolor,
-			"capsize": self._capsize,
-			"error_kw": self._error_kw,
-			"log": self._log,
-			"alpha": self._alpha,
+            "width": self._widths if self.widths is not None else self._width, 
+            "bottom": self._bottoms if self._bottoms is not None else self._bottom,
+            "align": self._align,			
+            "color": self._colors if self._colors is not None else self.color,
+            "edgecolor": self._edgecolors if self._edgecolors is not None else self._edgecolor,
+            "linewidth": self._linewidths if self._linewidths is not None else self._linewidth,
+            "tick_label": self._tick_label,
+            "xerr": self._xerr,
+            "yerr": self._xerr,
+            "ecolor": self._ecolors if self._ecolors is not None else self._ecolor,
+            "capsize": self._capsize,
+            "error_kw": self._error_kw,
+            "log": self._log,
+            "alpha": self._alpha,
             "label": self._label
         }
         self._plot_obj = ax.bar(self._x, self._height, **kwargs)
@@ -76,189 +76,175 @@ class Bar(Base):
         self._create_plot_obj(self._ax)
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    def reinstantiate(func):
+        """Basic decorator to trigger reinstantiation of the bar container"""
+        def wrapper(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            if self._plot_obj is not None:
+                self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            return result
+        return wrapper
+
     def get_x(self):
             return self._x
 
+    @reinstantiate
     def set_x(self, x):
         self._x = x
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_height(self):
         return self._height
 
+    @reinstantiate
     def set_height(self, height):
         self._height = height
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_widths(self):
         return self._widths
 
+    @reinstantiate
     def set_widths(self, widths):
         self._widths = widths
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_width(self):
         return self._width
 
+    @reinstantiate
     def set_width(self, width):
         self._width = width
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_bottoms(self):
         return self._bottoms
 
+    @reinstantiate
     def set_bottoms(self, bottoms):
         self._bottoms = bottoms
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_bottom(self):
         return self._bottom
 
+    @reinstantiate
     def set_bottom(self, bottom):
         self._bottom = bottom
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_align(self):
         return self._align
 
+    @reinstantiate
     def set_align(self, align):
         self._align = align
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_colors(self):
         return self._colors
 
+    @reinstantiate
     def set_colors(self, colors):
         self._colors = colors
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_color(self):
         return self._color
 
+    @reinstantiate
     def set_color(self, color):
         self._color = color
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_edgecolors(self):
         return self._edgecolors
 
+    @reinstantiate
     def set_edgecolors(self, edgecolors):
         self._edgecolors = edgecolors
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_edgecolor(self):
         return self._edgecolor
 
+    @reinstantiate
     def set_edgecolor(self, edgecolor):
         self._edgecolor = edgecolor
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_linewidths(self):
         return self._linewidths
 
+    @reinstantiate
     def set_linewidths(self, linewidths):
         self._linewidths = linewidths
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_linewidth(self):
         return self._linewidth
 
+    @reinstantiate
     def set_linewidth(self, linewidth):
         self._linewidth = linewidth
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_tick_label(self):
         return self._tick_label
 
+    @reinstantiate
     def set_tick_label(self, tick_label):
         self._tick_label = tick_label
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xerr(self):
         return self._xerr
 
+    @reinstantiate
     def set_xerr(self, xerr):
         self._xerr = xerr
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_yerr(self):
         return self._yerr
 
+    @reinstantiate
     def set_yerr(self, yerr):
         self._yerr = yerr
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_ecolors(self):
         return self._ecolors
 
+    @reinstantiate
     def set_ecolors(self, ecolors):
         self._ecolors = ecolors
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_ecolor(self):
         return self._ecolor
 
+    @reinstantiate
     def set_ecolor(self, ecolor):
         self._ecolor = ecolor
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_capsize(self):
         return self._capsize
 
+    @reinstantiate
     def set_capsize(self, capsize):
         self._capsize = capsize
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_error_kw(self):
         return self._error_kw
 
+    @reinstantiate
     def set_error_kw(self, error_kw):
         self._error_kw = error_kw
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_log(self):
         return self._log
 
+    @reinstantiate
     def set_log(self, log):
         self._log = log
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_alpha(self):
         return self._alpha
 
+    @reinstantiate
     def set_alpha(self, alpha):
         self._alpha = alpha
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_label(self):
         return self._label
 
+    @reinstantiate
     def set_label(self, label):
         self._label = label
-        if self._plot_obj is not None:
-            self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     x = Property("QVariantList", get_x, set_x)
     height = Property("QVariantList", get_height, set_height)
@@ -276,11 +262,11 @@ class Bar(Base):
     tick_label = Property("QVariantList", get_tick_label, set_tick_label)
     xerr = Property("QVariantList", get_xerr, set_xerr)
     yerr = Property("QVariantList", get_yerr, set_yerr)
-    # ecolors = Property("QVariantList", get_ecolors, set_ecolors)
+    # ecolors = Property("QVariantList", get_ecolors, set_ecolors) # TODO colors would need to be provided as a list of RGB tuples
     ecolor = Property(str, get_ecolor, set_ecolor)
     capsize = Property(float, get_capsize, set_capsize)
     error_kw = Property("QVariantMap", get_error_kw, set_error_kw)
-    log = Property(bool, get_log, set_log)
+    # log = Property(bool, get_log, set_log) # TODO causes anomalies on the axis when changed
     alpha = Property(float, get_alpha, set_alpha)
     label = Property(str, get_label, set_label)
 
