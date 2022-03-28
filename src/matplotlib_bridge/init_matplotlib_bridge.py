@@ -4,13 +4,12 @@ from matplotlib_bridge.colorbar import Colorbar
 from matplotlib_bridge.factory import module_items
 from matplotlib_bridge import factory
 from matplotlib_bridge import plugin_loader
-# from matplotlib_bridge.image import Imshow
 
 def init():
     factory.register(Figure, "Matplotlib")
     factory.register(Axis, "Matplotlib")
+    factory.register(Axis, "Matplotlib", qml_component_name = "Axes")
     factory.register(Plot, "Matplotlib")
-    # factory.register(Imshow, "Matplotlib")
     factory.register(Colorbar, "Matplotlib")
 
 
