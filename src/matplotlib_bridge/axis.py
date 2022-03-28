@@ -1,340 +1,52 @@
-
-import sys
-import warnings
-
 from PySide2.QtQuick import QQuickItem
 from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer
-
-from matplotlib_backend_qtquick.backend_qtquickagg import (
-    FigureCanvasQtQuickAgg)
-from matplotlib.ticker import AutoLocator
-from matplotlib_bridge.artist import Artist
-from matplotlib_bridge.axis import _AxesBase
-
 from matplotlib_bridge.event import EventHandler, EventTypes
-from copy import copy
 
-from matplotlib_backend_qtquick.backend_qtquick import NavigationToolbar2QtQuick
-
-class Base(QObject):
-    def __init__(self, parent = None):
-        super().__init__(parent)
-        self._event_handler = None
-        self._plot_obj = None
-        self._visible = True
-
-    @property
-    def plot_object(self):
-        return self._plot_obj
-
-    def set_event_handler(self, event_handler):
-        self._event_handler = event_handler
-
-    def get_visible(self):
-        return self._visible
-
-    def set_visible(self, visible):
-        self._visible = visible
-        if self._plot_obj is not None:
-            self._plot_obj.set_visible(self._visible)
-            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-
-    visible = Property(bool, get_visible, set_visible)
-
-
-class Figure(FigureCanvasQtQuickAgg):
-    """Root object for all QML matplotlib objects. Every other object that is a wrapper for
-    Matplotlib must have a child relationship to an object of this class.
-    The Figure and all of it's component can be customized with code from the Figure level.
-    The first time something on those components can be called is in the onCompleted Event of the Figure instance.
-
-    In order to make sure the Figure is drawn, the onCOmpleted event must call Figure.init()::
-        Figure {
-            //Components here
-            Component.onCompleted: {
-                init()
-            }
-        }
-    """
-
-    figure_events = ['resize_event', 
-          'draw_event', 
-          'key_press_event', 
-          'key_release_event', 
-          'button_press_event', 
-          'button_release_event', 
-          'scroll_event', 
-          'motion_notify_event', 
-          'pick_event', 
-          'idle_event', 
-          'figure_enter_event', 
-          'figure_leave_event', 
-          'axes_enter_event', 
-          'axes_leave_event', 
-          'close_event']
-
-    def __init__(self, parent = None):
-        super().__init__(parent)
-        self._facecolor = "white"
-        self._rows = 1
-        self._columns = 1
-        self._short_timer_interval = 20
-        self._long_timer_interval = 100
-        self._event_handler = None
-        self._toolbar = NavigationToolbar2QtQuick(canvas = self.figure.canvas)
-        self._coordinates = [0, 0]
-        self._refresh_coordinates = False
-        self._coordinates_timer_refresh_rate = 50
-        self._constrained_layout = True
-
-        self._coordinates_timer = QTimer()
-        self._coordinates_timer.timeout.connect(self._emit_coordinates)
-        self._coordinates_timer.setInterval(self._coordinates_timer_refresh_rate)
-        self._coordinates_timer.setSingleShot(True)
-
-        self._motion_notify_event_id = None
-
-    @Slot()
-    def init(self):
-        """Clears the whole figure and iterates over every child that is of instance :class:`Plot`.
-        On each child the `init` function will be called providing the axis instance and the event_handler of the figure.
-        This function should be called in When the Figure Component is Completed in QML.
-        """
-        self.figure.clear()
-        self.figure.set_constrained_layout(self._constrained_layout)
-        self._event_handler = EventHandler(short_timer_interval = self._short_timer_interval, long_timer_interval = self._long_timer_interval)
-        for idx, child in enumerate(child for child in self.children() if isinstance(child, Plot)):
-            ax = self.figure.add_subplot(self._rows, self._columns, idx + 1)
-            ax.set_autoscale_on(True)
-            ax.autoscale_view(True,True,True)
-            child.init(ax, self._event_handler)           
-        
-        # This must register in the end because otherwise the plot will be drawn
-        # before the axis can rescale 
-        self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self.redraw)
-        self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self.redraw)
-        self._event_handler.register(EventTypes.FIGURE_DATA_CHANGED, self.redraw)
-
-        # connect the figure events
-        if self._refresh_coordinates:
-            self._motion_notify_event_id = self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
-        self.figure.canvas.mpl_connect("pick_event", self._on_pick)
-        self.figure.canvas.mpl_connect("button_press_event", self._on_click)
-
-    @Slot()
-    def registerToolbar(self):
-        """It might be beneficial to be able to register a custom Toolbar""" 
-        raise NotImplementedError("This has not been implemented yet")        
-
-    @Slot()
-    def home(self, *args):
-        self._toolbar.home(*args)
-
-    @Slot()
-    def back(self, *args):
-        self._toolbar.back(*args)
-
-    @Slot()
-    def forward(self, *args):
-        self._toolbar.forward(*args)
-
-    @Slot()
-    def pan(self, *args):
-        """Activate the pan tool."""
-        self._toolbar.pan(*args)
-
-    @Slot()
-    def zoom(self, *args):
-        """activate zoom tool."""
-        self._toolbar.zoom(*args)        
-
-    @Slot("QVariantMap")
-    def tightLayout(self, kwargs = {}):
-        """Calling the tight_layout method on the figure
-
-        kwargs can contain the following Keywords arguments
-        pad = 1.08, h_pad=None, w_pad=None, rect=None
-        """
-        self.figure.tight_layout(**kwargs)
-        if self._event_handler is not None:
-            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
-
-    @Slot("QVariantMap")
-    def subplotsAdjust(self, kwargs = {}):
-        self.figure.subplots_adjust(**kwargs)
-
-    def _on_motion(self, event):
-        """This is a handler registered on the ' motion_notify_event' to refresh the mouse coordinates
-        This event gets fired a lot and it is not necessary to emit all those events because that clogs
-        up the event loop. Start a timer thatz will refresh the coordinates every 50ms (20 times/s)
-        """
-        # TODO this might need to move on the axis if we want to have per axis coords
-        if self._coordinates_timer.isActive():
-            return
-        if event.ydata is None or event.xdata is None:
-            return
-        self._coordinates_timer.start()
-        self._coordinates = [float(event.xdata), float(event.ydata)]
-        self.coordinatesChanged.emit(self._coordinates)
-
-    def _emit_coordinates(self):
-        self.coordinatesChanged.emit(self._coordinates)
-    
-    def _on_pick(self, event):
-        print(event)
-
-    def _on_click(self, event):
-        """Emits the clicked event that can be subscribed via 'onClicked' in QML providing
-        The x and y coordinates of the mouse event"""
-        mouse_click = {
-            "x" : event.xdata,
-            "y" : event.ydata
-        }
-        self.clicked.emit(mouse_click)
-
-    def get_matplotlib_figure_object(self):
-        """The supported way of retrieving the wrapped Matplotlib figure object"""
-        return self.figure
-
-    def redraw(self):
-        self.figure.canvas.draw()
-
-    def set_facecolor(self, color: str):
-        self.figure.set_facecolor(color)
-        if self._event_handler is not None:
-            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
-
-    def get_facecolor(self):
-        return self._facecolor
-
-    def get_rows(self):
-        return self._rows
-
-    def set_rows(self, rows):
-        self._rows = rows
-
-    def get_columns(self):
-        return self._columns
-
-    def set_columns(self, columns):
-        self._columns = columns
-
-    def get_short_timer_interval(self):
-        return self._short_timer_interval
-
-    def set_short_timer_interval(self, interval):
-        self._short_timer_interval = interval
-        if self._event_handler is not None:
-            self._event_handler.set_short_timer_interval(self._short_timer_interval)
-
-    def get_long_timer_interval(self):
-        return self._long_timer_interval
-
-    def set_long_timer_interval(self, interval):
-        self._long_timer_interval = interval
-        if self._event_handler is not None:
-            self._event_handler.set_long_timer_interval(self._long_timer_interval)
-
-    def get_coordinates(self):
-        return self._coordinates
-
-    def get_refresh_coordinates(self):
-        return self._refresh_coordinates
-
-    def set_refresh_coordinates(self, refresh):
-        """Enable/Disable of the signal coordinates changed. Conenct the figure to the canvas motion notify event or disconnect it"""
-        self._refresh_coordinates = refresh
-        if self._motion_notify_event_id is None and self._refresh_coordinates:
-            self._motion_notify_event_id = self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
-        if self._motion_notify_event_id and not self._refresh_coordinates:
-            self.figure.canvas.mpl_disconnect(self._motion_notify_event_id)
-            self._motion_notify_event_id = None
-
-    def get_coordinates_refresh_rate(self):
-        return self._coordinates_timer_refresh_rate
-
-    def set_coordinates_refresh_rate(self, refresh_rate):
-        self._coordinates_timer_refresh_rate = refresh_rate
-        self._coordinates_timer.setInterval(self._coordinates_timer_refresh_rate)
-
-
-    def get_constrained_layout(self):
-        return self._constrained_layout
-
-    def set_constrained_layout(self, constrained_layout):
-        self._constrained_layout = constrained_layout
-        if self._event_handler is not None:
-            self.figure.set_constrained_layout(self._constrained_layout)
-            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
-
-    faceColorChanged = Signal(str)
-    coordinatesChanged = Signal("QVariantMap")
-    clicked = Signal("QVariantMap")
-
-    faceColor = Property(str, get_facecolor, set_facecolor, notify = faceColorChanged)
-    rows = Property(int, get_rows, set_rows)
-    columns = Property(int, get_columns, set_columns)
-    shortTimerInterval = Property(int, get_short_timer_interval, set_short_timer_interval)
-    longTimerInterval = Property(int, get_long_timer_interval, set_long_timer_interval)
-    coordinates = Property("QVariantList", get_coordinates, notify = coordinatesChanged)
-    refreshCoordinates = Property(bool, get_refresh_coordinates, set_refresh_coordinates)
-    coordinatesRefreshRate = Property(int, get_coordinates_refresh_rate, set_coordinates_refresh_rate)
-    constrainedLayout = Property(bool, get_constrained_layout, set_constrained_layout)
-
-class Plot(QQuickItem):
-    """Container to allow useful implementation of mutliple axis."""
-    def __init__(self, parent = None):
-        super().__init__(parent)
-        self._facecolor = "white"
-        self._ax = None
-
-    def init(self, ax, event_handler):
-        """Retrieves all children of type :class:`Axis` and calls the draw method on them
-        If the Plot object has multiple children it will hand them their own axis object """
-        self._ax = ax
-        self._event_handler = event_handler
-        ax.set_facecolor(self._facecolor)
-        axis_ = (child for child in self.children() if isinstance(child, Axis) or isinstance(child, _AxesBase))
-        for idx, axis in enumerate(axis_):
-            # The first axis defines the main attributes of the plot and thus needs to be handled differently
-            if idx == 0:
-                axis.init(ax, event_handler)
-                # check wether the axis object contains any labels to display
-                handles, labels = ax.get_legend_handles_labels()
-                if labels:
-                    ax.legend()
-                continue
-            new_ax = ax.twinx()
-            axis.init(new_ax, event_handler)
-            # need to check the new axis as well
-            # TODO this can be done with less code
-            handles, labels = new_ax.get_legend_handles_labels()
-            if labels:
-                new_ax.legend()
-
-    def get_facecolor(self):
-        return self._facecolor
-
-    def set_facecolor(self, color):
-        self._facecolor = color
-        if self._ax is not None:
-            self._ax.set_facecolor(self._facecolor)
-            self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
-
-    faceColor = Property(str, get_facecolor, set_facecolor)
-
-class Axis(QQuickItem):
-    """Wrapper for matplotlib.pyplot.Axes"""
+class _AxesBase(QQuickItem):
 
     SCALE = {"linear" : "linear", "log" : "log", "symlog" : "symlog", "logit" : "logit"}
+    
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self._xscale = "linear"
+        self._yscale = "linear"
+
+
+
+    def get_xscale(self):
+        return self._xscale
+
+    def set_xscale(self, xscale):
+        """Check if the provided scale is valid and provide linear as fallback if necessary"""
+        self._xscale = self.SCALE.get(xscale, "linear")
+        if self._ax is not None:
+            self._ax.set_xscale(self._xscale)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    def get_yscale(self):
+        return self._yscale
+
+    def set_yscale(self, yscale):
+        """Check if the provided scale is valid and provide linear as fallback if necessary"""
+        self._yscale = self.SCALE.get(yscale, "linear")
+        if self._ax is not None:
+            self._ax.set_yscale(self._yscale)
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+
+    xScale = Property(str, get_xscale, set_xscale)
+    yScale = Property(str, get_yscale, set_yscale)
+
+class Axis(_AxesBase):
+    """Wrapper for matplotlib.pyplot.Axes"""
+
 
     def __init__(self, parent = None):
         super().__init__(parent)
         self._ax = None
         self._legend = None
         self._event_handler = None
-        self._xscale = "linear"
-        self._yscale = "linear"
+        
         self._projection = "rectilinear"
         self._polar = False
         self._sharex = False
@@ -588,23 +300,7 @@ class Axis(QQuickItem):
         self._y_axis_minor_ticks = None
         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
-    def get_xscale(self):
-        return self._scale
 
-    def set_xscale(self, xscale):
-        """Check if the provided scale is valid and provide linear as fallback if necessary"""
-        self._xscale = self.SCALE.get(xscale, "linear")
-        if self._ax is not None:
-            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
-
-    def get_yscale(self):
-        return self._scale
-
-    def set_yscale(self, yscale):
-        """Check if the provided scale is valid and provide linear as fallback if necessary"""
-        self._yscale = self.SCALE.get(yscale, "linear")
-        if self._ax is not None:
-            self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_projection(self):
         return self._projection
@@ -853,8 +549,7 @@ class Axis(QQuickItem):
     #         self._legend.set_visible(self._legend_visible)
     #         self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
-    xScale = Property(str, get_xscale, set_xscale)
-    yScale = Property(str, get_yscale, set_yscale)
+    
     projection = Property(str, get_projection, set_projection) 
     polar = Property(bool, get_polar, set_polar)
     sharex = Property(bool, get_sharex, set_sharex)
