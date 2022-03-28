@@ -143,8 +143,8 @@ class Patch(Artist): # TODO SPAN
             self._plot_obj.set_joinstyle(joinstyle)
 
     antialiased = Property(bool, get_antialiased, set_antialiased)
-    edgecolor = Property(str, get_edgecolor, set_edgecolor)
-    facecolor = Property(str, get_facecolor, set_facecolor)
+    edgeColor = Property(str, get_edgecolor, set_edgecolor)
+    faceColor = Property(str, get_facecolor, set_facecolor)
     color = Property(str, get_color, set_color)
     linewidth = Property(float, get_linewidth, set_linewidth)
     linestyle = Property(str, get_linestyle, set_linestyle)
@@ -152,6 +152,11 @@ class Patch(Artist): # TODO SPAN
     fill = Property(bool, get_fill, set_fill)
     capstyle = Property(str, get_capstyle, set_capstyle)
     joinstyle = Property(str, get_joinstyle, set_joinstyle)
+
+    # Python syntax aliases
+    edgecolor = edgeColor
+    facecolor = faceColor
+    
 
 
 class Polygon(Patch):
