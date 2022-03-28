@@ -9,6 +9,7 @@ from matplotlib_backend_qtquick.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
 from matplotlib_bridge.artist import Artist
+from matplotlib_bridge.axis import _AxesBase
 
 from matplotlib_bridge.event import EventHandler, EventTypes
 from copy import copy
@@ -293,7 +294,7 @@ class Plot(QQuickItem):
         self._ax = ax
         self._event_handler = event_handler
         ax.set_facecolor(self._facecolor)
-        axis_ = (child for child in self.children() if isinstance(child, Axis))
+        axis_ = (child for child in self.children() if isinstance(child, Axis) or isinstance(child, _AxesBase))
         for idx, axis in enumerate(axis_):
             # The first axis defines the main attributes of the plot and thus needs to be handled differently
             if idx == 0:
