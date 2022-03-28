@@ -193,6 +193,13 @@ class Line2D(Artist):
 
 Line = Line2D
 
+class Scatter(Line2D):
+    """Shorthand for an efficient Scatter plot that is implemented via a Line2D object (much faster than a collection)"""
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.set_marker("o")
+        self.set_linestyle(" ")
+
 
 class HLine(Line2D):
     """ wrapper for matplotlib.axes.Axes.axhline """
@@ -305,5 +312,6 @@ class VLine(Line2D):
 
 def init(factory):
     factory.register(Line2D, "Matplotlib", qml_component_name = "Line")
+    factory.register(Scatter, "Matplotlib")
     factory.register(HLine, "Matplotlib")
     factory.register(VLine, "Matplotlib")
