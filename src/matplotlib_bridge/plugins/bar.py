@@ -259,7 +259,7 @@ class Bar(Base):
     edgecolor = Property(str, get_edgecolor, set_edgecolor)
     linewidths = Property("QVariantList", get_linewidths, set_linewidths)
     linewidth = Property(float, get_linewidth, set_linewidth)
-    tick_label = Property("QVariantList", get_tick_label, set_tick_label)
+    tickLabels = Property("QVariantList", get_tick_label, set_tick_label)
     xerr = Property("QVariantList", get_xerr, set_xerr)
     yerr = Property("QVariantList", get_yerr, set_yerr)
     # ecolors = Property("QVariantList", get_ecolors, set_ecolors) # TODO colors would need to be provided as a list of RGB tuples
