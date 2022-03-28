@@ -162,22 +162,33 @@ class Line2D(Artist):
     color = Property(str, get_color, set_color)
     c = color
     marker = Property(str, get_marker, set_marker)
-    markersize = Property(float, get_markersize, set_markersize)
-    markeredgewidth = Property(float, get_markeredgewidth, set_markeredgewidth)
-    markeredgecolor = Property(str, get_markeredgecolor, set_markeredgecolor)
-    markerfacecolor = Property(str, get_markerfacecolor, set_markerfacecolor)
-    markerfacecoloralt = Property(str, get_markerfacecoloralt, set_markerfacecoloralt)
+    markerSize = Property(float, get_markersize, set_markersize)
+    markerEdgeWidth = Property(float, get_markeredgewidth, set_markeredgewidth)
+    markerEdgeColor = Property(str, get_markeredgecolor, set_markeredgecolor)
+    markerFaceColor = Property(str, get_markerfacecolor, set_markerfacecolor)
+    markerFaceColorAlt = Property(str, get_markerfacecoloralt, set_markerfacecoloralt)
     fillstyle = Property(str, get_fillstyle, set_fillstyle)
     antialiased = Property(bool, get_antialiased, set_antialised)
     dashCapstyle = Property(str, get_dash_capstyle, set_dash_capstyle)
     solidCapstyle = Property(str, get_solid_capstyle, set_solid_capstyle)
     dashJoinstyle = Property(str, get_dash_joinstyle, set_dash_joinstyle)
     solidJoinstyle = Property(str, get_solid_joinstyle, set_solid_joinstyle)
-    pickradius = Property(float, get_pickradius, set_pickradius)
+    pickRadius = Property(float, get_pickradius, set_pickradius)
     drawstyle = Property(str, get_drawstyle, set_drawstyle)
     markevery = Property(int, get_markevery, set_markevery)
     xData = Property("QVariantList", get_xdata, set_xdata)
     yData = Property("QVariantList", get_ydata, set_ydata)
+
+    # Python like aliases
+    markersize = markerSize
+    markeredgewidth = markerEdgeWidth
+    markeredgecolor = markerEdgeColor
+    markerfacecolor = markerFaceColor
+    markerfacecoloralt = markerFaceColorAlt
+    solidcapstyle = solidCapstyle
+    dashjoinstyle = dashJoinstyle
+    solidjoinstyle = solidJoinstyle
+    pickradius = pickRadius
 
 
 Line = Line2D
@@ -191,6 +202,11 @@ class HLine(Line2D):
         self._y = 0
         self._xmin = 0
         self._xmax = 1
+        
+        # In case the properties aren't being set, set them here
+        self.set_y(self._y)
+        self.set_xmin(self._xmin)
+        self.set_xmax(self._xmax)
 
     def init(self, ax):
         """Apply the yaxis transform to the Line2D object in order to stick it to the axis edges"""
@@ -200,7 +216,7 @@ class HLine(Line2D):
 
     def get_y(self):
         ydata = self.get_ydata()
-        if len(ydata) < 0:
+        if len(ydata) > 0:
             return self._y
         return ydata[0]
 
@@ -210,7 +226,7 @@ class HLine(Line2D):
 
     def get_xmin(self):
         xdata = self.get_xdata()
-        if len(xdata) < 0:
+        if len(xdata) > 0:
             return self._xmin
         return xdata[0]
 
@@ -220,7 +236,7 @@ class HLine(Line2D):
 
     def get_xmax(self):
         xdata = self.get_xdata()
-        if len(xdata) < 0:
+        if len(xdata) > 0:
             return self._xmax
         return xdata[1]
 
@@ -241,6 +257,11 @@ class VLine(Line2D):
         self._ymin = 0
         self._ymax = 1
 
+        # In case the properties aren't being set, set them here
+        self.set_x(self._x)
+        self.set_ymin(self._ymin)
+        self.set_ymax(self._ymax)
+
     def init(self, ax):
         """Apply the xaxis transform to the Line2D object in order to stick it to the axis edges"""
         transform = ax.get_xaxis_transform(which='grid')
@@ -249,7 +270,7 @@ class VLine(Line2D):
 
     def get_x(self):
         xdata = self.get_xdata()
-        if len(xdata) < 0:
+        if len(xdata) > 0:
             return self._y
         return xdata[0]
 
@@ -259,7 +280,7 @@ class VLine(Line2D):
 
     def get_ymin(self):
         ydata = self.get_ydata()
-        if len(ydata) < 0:
+        if len(ydata) > 0:
             return self._xmin
         return ydata[0]
 
@@ -269,7 +290,7 @@ class VLine(Line2D):
 
     def get_ymax(self):
         ydata = self.get_ydata()
-        if len(ydata) < 0:
+        if len(ydata) > 0:
             return self._ymax
         return ydata[1]
 
