@@ -37,6 +37,7 @@ class PlotObject2D(Base):
         self._label = label
         if self._plot_obj is not None:
             self._plot_obj.set_label(self._label)
+            self.labelChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_alpha(self):
@@ -46,6 +47,7 @@ class PlotObject2D(Base):
         self._alpha = alpha
         if self._plot_obj is not None:
             self._plot_obj.set_alpha(self._alpha)
+            self.alphaChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_color(self):
@@ -55,6 +57,7 @@ class PlotObject2D(Base):
         self._color = color
         if self._plot_obj is not None:
             self._plot_obj.set_color(self._color)
+            self.colorChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     
@@ -62,6 +65,9 @@ class PlotObject2D(Base):
     def init(self, ax):
         raise NotImplementedError("This method needs to be implemented by the programmer!")
 
+    alphaChanged = Signal()
+    colorChanged = Signal()
+    labelChanged = Signal()
 
     alpha = Property(float, get_alpha, set_alpha)
     color = Property(str, get_color, set_color)
@@ -111,6 +117,7 @@ class Text(PlotObject2D):
         self._fontsize = fontsize
         if self._plot_obj is not None:
             self._plot_obj.set_fontsize(self._fontsize)
+            self.fontSizeChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     # TODO does nothing atm must be fixed
@@ -132,6 +139,7 @@ class Text(PlotObject2D):
         self._fontstyle = fontstyle
         if self._plot_obj is not None:
             self._plot_obj.set_fontstyle(self._fontstyle)
+            self.fontStyleChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     # TODO doesn't do anything
@@ -155,6 +163,7 @@ class Text(PlotObject2D):
         self._fontweight = fontweight
         if self._plot_obj is not None:
             self._plot_obj.set_fontweight(self._fontweight)
+            self.fontWeightChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_fontfamily(self):
@@ -167,6 +176,7 @@ class Text(PlotObject2D):
         self._fontfamily = fontfamily
         if self._plot_obj is not None:
             self._plot_obj.set_fontfamily(self._fontfamily)
+            self.fontFamilyChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     # TODO doesn't do anything
@@ -187,6 +197,12 @@ class Text(PlotObject2D):
         if self._plot_obj is not None:
             self._plot_obj.set_rotation(self._rotation)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    fontSizeChanged = Signal()
+    fontStyleChanged = Signal()
+    fontWeightChanged = Signal()
+    fontFamilyChanged = Signal()
+    rotationChanged = Signal()
 
     fontSize = Property(float, get_fontsize, set_fontsize)
     #fontStretch = Property(int, get_fontstretch, set_fontstretch)

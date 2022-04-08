@@ -6,6 +6,10 @@ from matplotlib_bridge.plot_objects import Axis
 
 
 class Annotation(Text):
+    """Wrapper for Matplotlib.axes.Axes.annotate
+    This class utilizes it's own event handler to reinstantiate the plot object whenever the correct modification
+    of the given plot object hasn't been implemented yet"""
+    
     COORDINATE_SYSTEMS = ("figure points", "figure pixels", "figure fraction", "subfigure points",
         "subfigure pixels", "subfigure fraction", "axes points", "axes pixels", "axes fraction",
         "data", "polar")
@@ -47,6 +51,7 @@ class Annotation(Text):
         self._text = text
         if self._plot_obj is not None:
             self._plot_obj.set_text(self._text)
+            self.textChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_xy(self):
@@ -56,7 +61,8 @@ class Annotation(Text):
         if self._xy == self._xytext:
             self.set_xytext(xy)
         self._xy = xy
-        if self._plot_obj is not None:            
+        if self._plot_obj is not None:
+            self.xyChanged.emit()
             self._annotation_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
         
     def get_xytext(self):
@@ -76,6 +82,7 @@ class Annotation(Text):
         self._xycoords = xycoords
         if self._plot_obj is not None:
             self._plot_obj.set_anncoords(self._xycoords)
+            self.xyCoordsChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
     def get_arrowprops(self):
@@ -83,8 +90,15 @@ class Annotation(Text):
 
     def set_arrowprops(self, arrowprops):
         self._arrowprops = arrowprops
-        if self._plot_obj is not None:            
+        if self._plot_obj is not None:
+            self.arrowPropsChanged.emit()       
             self._annotation_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+
+    textChanged = Signal()
+    xyChanged = Signal()
+    xyTextChanged = Signal()
+    xyCoordsChanged = Signal()
+    arrowPropsChanged = Signal()
 
     text = Property(str, get_text, set_text)
     xy = Property("QVariantList", get_xy, set_xy)
