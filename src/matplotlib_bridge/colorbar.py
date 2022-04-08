@@ -111,6 +111,7 @@ class Colorbar(Base):
         self._orientation = orientation
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.orientationChanged.emit()
     
     def get_label(self):
         return self._label
@@ -118,6 +119,7 @@ class Colorbar(Base):
     def set_label(self, label):
         self._label = label
         self._apply_label_settings()
+        self.labelChanged.emit()
 
     def get_location(self):
         return self._location
@@ -126,6 +128,7 @@ class Colorbar(Base):
         self._location = location
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.locationChanged.emit()
 
     def get_fraction(self):
         return self._fraction_of_original_axis
@@ -134,6 +137,7 @@ class Colorbar(Base):
         self._fraction_of_original_axis = fraction
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.fractionChanged.emit()
 
     def get_shrink(self):
         return self._shrink
@@ -142,6 +146,7 @@ class Colorbar(Base):
         self._shrink = shrink
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.shrinkChanged.emit()
 
     def get_aspect(self):
         return self._aspect
@@ -150,6 +155,7 @@ class Colorbar(Base):
         self._aspect = aspect
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.aspectChanged.emit()
 
     def get_drawedges(self):
         return self._drawedges
@@ -158,6 +164,7 @@ class Colorbar(Base):
         self._drawedges = drawedges
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.drawEdgesChanged.emit()
 
     def get_filled(self):
         return self._filled
@@ -166,6 +173,7 @@ class Colorbar(Base):
         self._filled = filled
         if self._plot_obj is not None:
             self._cbar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.filledChanged.emit()
 
     def get_tickcolor(self):
         return self._tick_color
@@ -174,6 +182,7 @@ class Colorbar(Base):
         self._tick_color = tickcolor
         if self._plot_obj is not None:
             self._cax.tick_params(color = self._tick_color)
+            self.tickColorChanged.emit()
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
     def get_tick_label_color(self):
@@ -183,6 +192,7 @@ class Colorbar(Base):
         self._tick_label_color = color
         if self._plot_obj is not None:
             self._cax.tick_params(labelcolor = self._tick_label_color)
+            self.tickLabelColorChanged.emit()
             self._event_handler.schedule(EventTypes.AXIS_DATA_CHANGED)
 
 
@@ -192,6 +202,7 @@ class Colorbar(Base):
     def set_label_location(self, location):
         self._label_location = location
         self._apply_label_settings()
+        self.labelLocationChanged.emit()
 
     def get_label_color(self):
         return self._label_color
@@ -199,6 +210,7 @@ class Colorbar(Base):
     def set_label_color(self, label_color):
         self._label_color = label_color
         self._apply_label_settings()
+        self.labelColorChanged.emit()
 
     def get_label_fontsize(self):
         return self._label_font_size
@@ -206,6 +218,21 @@ class Colorbar(Base):
     def set_label_font_size(self, font_size):
         self._label_font_size = font_size
         self._apply_label_settings()
+        self.labelFontSizeChanged.emit()
+
+    orientationChanged = Signal()
+    labelChanged = Signal()
+    locationChanged = Signal()
+    fractionChanged = Signal()
+    shrinkChanged = Signal()
+    aspectChanged = Signal()
+    drawEdgesChanged = Signal()
+    filledChanged = Signal()
+    tickColorChanged = Signal()
+    tickLabelColorChanged = Signal()
+    labelLocationChanged = Signal()
+    labelColorChanged = Signal()
+    labelFontSizeChanged = Signal()
 
 
     orientation = Property(str, get_orientation, set_orientation)
