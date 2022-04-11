@@ -37,6 +37,7 @@ class _ImageBase(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_data(self._x)
             self.schedule_plot_update()
+            self.xChanged.emit()
 
     def get_interpolation(self):
         if self._plot_obj is None:
@@ -48,12 +49,14 @@ class _ImageBase(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_interpolation(self._interpolation)
             self.schedule_plot_update()
+            self.interpolationChanged.emit()
 
     def get_origin(self):
         return self._origin
 
     def set_origin(self, origin): # TODO check how to set it during runtime
         self._origin = origin
+        # self.originChanged.emit()
 
     def get_resample(self):
         if self._plot_obj is None:
@@ -65,6 +68,7 @@ class _ImageBase(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_resample(self._resample)
             self.schedule_plot_update()
+            self.resampleChanged.emit()
 
     def get_filternorm(self):
         if self._plot_obj is None:
@@ -76,6 +80,7 @@ class _ImageBase(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_filternorm(filternorm)
             self.schedule_plot_update()
+            self.filternormChanged.emit()
 
     def get_filterrad(self):
         if self._plot_obj is None:
@@ -87,6 +92,7 @@ class _ImageBase(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_filterrad(self._filterrad)
             self.schedule_plot_update()
+            self.filterradChanged.emit()
 
     def get_interpolation_stage(self):
         return self._interpolation_stage
@@ -96,6 +102,14 @@ class _ImageBase(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_interpolation_stage(self._interpolation_stage)
             self.schedule_plot_update()
+            self.interpolationChanged.emit()
+
+    xChanged = Signal()
+    interpolationChanged = Signal()
+    originChanged = Signal()
+    resampleChanged = Signal()
+    filternormChanged = Signal()
+    filterradChanged = Signal()
 
     x = Property("QVariantList", get_x, set_x)
     interpolation = Property(str, get_interpolation, set_interpolation)
@@ -126,5 +140,8 @@ class AxesImage(_ImageBase):
         if self._plot_obj is not None:
             self._plot_obj.set_extent(self._extent)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.extentChanged.emit()
+
+    extentChanged = Signal()
 
     extent = Property("QVariantList", get_extent, set_extent)
