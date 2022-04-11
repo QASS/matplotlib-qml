@@ -26,6 +26,7 @@ class SpanBase(Polygon):
                 xy[4][1] = self._ymin
             self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
+            self.yMinChanged.emit()
 
     def get_ymax(self):
         return self._ymax
@@ -40,6 +41,7 @@ class SpanBase(Polygon):
             xy[2][1] = self._ymax
             self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
+            self.yMaxChanged.emit()
 
     def get_xmin(self):
         return self._xmin
@@ -55,6 +57,7 @@ class SpanBase(Polygon):
                 xy[4][0] = self._xmin
             self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
+            self.xMinChanged.emit()
 
     def get_xmax(self):
         return self._xmax
@@ -68,6 +71,12 @@ class SpanBase(Polygon):
             xy[3][0] = self._xmax
             #self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
+            self.xMaxChanged.emit()
+
+    yMinChanged = Signal()
+    yMaxChanged = Signal()
+    xMinChanged = Signal()
+    xMaxChanged = Signal()
 
     yMin = Property(float, get_ymin, set_ymin)
     yMax = Property(float, get_ymax, set_ymax)
