@@ -292,6 +292,7 @@ class HLine(Line2D):
     def set_y(self, y):
         self._y = y
         self.set_ydata([self._y, self._y])
+        self.yChanged.emit()
 
     def get_xmin(self):
         xdata = self.get_xdata()
@@ -302,6 +303,7 @@ class HLine(Line2D):
     def set_xmin(self, xmin):
         self._xmin = xmin
         self.set_xdata([self._xmin, self._xmax])
+        self.xMinChanged.emit()
 
     def get_xmax(self):
         xdata = self.get_xdata()
@@ -312,6 +314,11 @@ class HLine(Line2D):
     def set_xmax(self, xmax):
         self._xmax = xmax
         self.set_xdata([self._xmin, self._xmax])
+        self.xMaxChanged.emit()
+
+    yChanged = Signal()
+    xMinChanged = Signal()
+    xMaxChanged = Signal()
 
     y = Property(float, get_y, set_y)
     xMin = Property(float, get_xmin, set_xmin)
@@ -346,6 +353,7 @@ class VLine(Line2D):
     def set_x(self, x):
         self._x = x
         self.set_xdata([self._x, self._x])
+        self.xChanged.emit()
 
     def get_ymin(self):
         ydata = self.get_ydata()
@@ -356,6 +364,7 @@ class VLine(Line2D):
     def set_ymin(self, ymin):
         self._ymin = ymin
         self.set_ydata([self._ymin, self._ymax])
+        self.yMinChanged.emit()
 
     def get_ymax(self):
         ydata = self.get_ydata()
@@ -366,6 +375,11 @@ class VLine(Line2D):
     def set_ymax(self, ymax):
         self._ymax = ymax
         self.set_ydata([self._ymin, self._ymax])
+        self.yMaxChanged.emit()
+
+    xChanged = Signal()
+    yMinChanged = Signal()
+    yMaxChanged = Signal()
 
     x = Property(float, get_x, set_x)
     yMin = Property(float, get_ymin, set_ymin)
