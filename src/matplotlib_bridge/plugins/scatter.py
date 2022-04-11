@@ -68,9 +68,9 @@ class ScatterCollection(PathCollection):
         if self._plot_obj is not None:
             if len(self._x ) == len(self._y):
                 self._adjust_offset()
+                self.schedule_plot_update()
                 self.xChanged.emit()
                 self.xDataChanged.emit()
-                self.schedule_plot_update()
 
     def get_y(self):
         if isinstance(self._y, np.ndarray):
@@ -82,9 +82,9 @@ class ScatterCollection(PathCollection):
         if self._plot_obj is not None:
             if len(self._x ) == len(self._y):
                 self._adjust_offset()
+                self.schedule_plot_update()
                 self.yChanged.emit()
                 self.yDataChanged.emit()
-                self.schedule_plot_update()
 
     def get_marker(self):
         return self._marker
@@ -97,12 +97,14 @@ class ScatterCollection(PathCollection):
             marker_path = marker_obj.get_path().transformed(marker_obj.get_transform())
             self.set_paths((marker_path,))
             self.schedule_plot_update()
+            self.markerChanged.emit()
 
 
     xChanged = Signal()
     yChanged = Signal()
-    xDataChanged = xChanged
-    yDataChanged = yChanged
+    xDataChanged = Signal()
+    yDataChanged = Signal()
+    markerChanged = Signal()
 
     x = Property("QVariantList", get_x, set_x, notify = xChanged)
     xData = x
