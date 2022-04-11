@@ -12,7 +12,7 @@ class Bar(Base):
      """
 
     def __init__(self, parent = None):
-        super().__init__(parent)
+        super().__init__(parent) # TODO vmin vmax
         self._x = []
         self._height = []
         self._widths = None
@@ -76,175 +76,211 @@ class Bar(Base):
         self._create_plot_obj(self._ax)
         self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
-    def reinstantiate(func):
-        """Basic decorator to trigger reinstantiation of the bar container"""
-        def wrapper(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            if self._plot_obj is not None:
-                self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
-            return result
-        return wrapper
+    def reinstantiate(emit_signal = None):
+        """Returns a function (decorator)
+        
+        :param emit_signal: The signal name that should be emitted after the reinstantiation has been triggered
+        :type emit_signal: string
+        """
+        def _reinstantiate(func):
+            """Basic decorator to trigger reinstantiation of the bar container"""
+            def wrapper(self, *args, **kwargs):
+                result = func(self, *args, **kwargs)
+                if self._plot_obj is not None:
+                    self._bar_event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+                    # now check if a signal should be emitted and fetch it from the object
+                    if emit_signal is not None:
+                        try:
+                            signal = getattr(self, emit_signal)
+                        except:
+                            raise ValueError(f"Signal {emit_signal} doesn't exist")
+                        signal.emit()
+                return result
+            return wrapper
+        return _reinstantiate
 
     def get_x(self):
             return self._x
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "xChanged")
     def set_x(self, x):
         self._x = x
 
     def get_height(self):
         return self._height
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "heightChanged")
     def set_height(self, height):
         self._height = height
 
     def get_widths(self):
         return self._widths
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "widthsChanged")
     def set_widths(self, widths):
         self._widths = widths
 
     def get_width(self):
         return self._width
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "widthChanged")
     def set_width(self, width):
         self._width = width
 
     def get_bottoms(self):
         return self._bottoms
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "bottomsChanged")
     def set_bottoms(self, bottoms):
         self._bottoms = bottoms
 
     def get_bottom(self):
         return self._bottom
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "bottomChanged")
     def set_bottom(self, bottom):
         self._bottom = bottom
 
     def get_align(self):
         return self._align
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "alignChanged")
     def set_align(self, align):
         self._align = align
 
     def get_colors(self):
         return self._colors
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "colorsChanged")
     def set_colors(self, colors):
         self._colors = colors
 
     def get_color(self):
         return self._color
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "colorChanged")
     def set_color(self, color):
         self._color = color
 
     def get_edgecolors(self):
         return self._edgecolors
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "edgecolorsChanged")
     def set_edgecolors(self, edgecolors):
         self._edgecolors = edgecolors
 
     def get_edgecolor(self):
         return self._edgecolor
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "edgecolorChanged")
     def set_edgecolor(self, edgecolor):
         self._edgecolor = edgecolor
 
     def get_linewidths(self):
         return self._linewidths
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "linewidthsChanged")
     def set_linewidths(self, linewidths):
         self._linewidths = linewidths
 
     def get_linewidth(self):
         return self._linewidth
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "linewidthChanged")
     def set_linewidth(self, linewidth):
         self._linewidth = linewidth
 
     def get_tick_label(self):
         return self._tick_label
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "tickLabelsChanged")
     def set_tick_label(self, tick_label):
         self._tick_label = tick_label
 
     def get_xerr(self):
         return self._xerr
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "xerrChanged")
     def set_xerr(self, xerr):
         self._xerr = xerr
 
     def get_yerr(self):
         return self._yerr
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "yerrChanged")
     def set_yerr(self, yerr):
         self._yerr = yerr
 
     def get_ecolors(self):
         return self._ecolors
 
-    @reinstantiate
+    @reinstantiate(emit_signal = None)
     def set_ecolors(self, ecolors):
         self._ecolors = ecolors
 
     def get_ecolor(self):
         return self._ecolor
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "ecolorChanged")
     def set_ecolor(self, ecolor):
         self._ecolor = ecolor
 
     def get_capsize(self):
         return self._capsize
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "capsizeChanged")
     def set_capsize(self, capsize):
         self._capsize = capsize
 
     def get_error_kw(self):
         return self._error_kw
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "error_kwChanged")
     def set_error_kw(self, error_kw):
         self._error_kw = error_kw
 
     def get_log(self):
         return self._log
 
-    @reinstantiate
+    @reinstantiate(emit_signal = None)
     def set_log(self, log):
         self._log = log
 
     def get_alpha(self):
         return self._alpha
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "alphaChanged")
     def set_alpha(self, alpha):
         self._alpha = alpha
 
     def get_label(self):
         return self._label
 
-    @reinstantiate
+    @reinstantiate(emit_signal = "labelChanged")
     def set_label(self, label):
         self._label = label
+
+    xChanged = Signal()
+    heightChanged = Signal()
+    widthsChanged = Signal()
+    widthChanged = Signal()
+    bottomsChanged = Signal()
+    bottomChanged = Signal()
+    alignChanged = Signal()
+    colorsChanged = Signal()
+    colorChanged = Signal()
+    edgecolorsChanged = Signal()
+    edgecolorChanged = Signal()
+    linewidthsChanged = Signal()
+    linewidthChanged = Signal()
+    tickLabelsChanged = Signal()
+    xerrChanged = Signal()
+    yerrChanged = Signal()
+    ecolorChanged = Signal()
+    capsizeChanged = Signal()
+    error_kwChanged = Signal()
+    alphaChanged = Signal()
+    labelChanged = Signal()
 
     x = Property("QVariantList", get_x, set_x)
     height = Property("QVariantList", get_height, set_height)
