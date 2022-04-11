@@ -60,6 +60,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_edgecolor(edgecolors)
             self.schedule_plot_update()
+            self.markerEdgeColorsChanged.emit()
 
     def get_edgecolor(self):
         if self._plot_obj is None:
@@ -71,6 +72,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_edgecolor(edgecolor)
             self.schedule_plot_update()
+            self.markerEdgeColorChanged.emit()
 
     def get_facecolors(self):
         if self._plot_obj is None:
@@ -81,6 +83,7 @@ class Collection(Artist, ScalarMappable):
         """In matplotlib it is possible to provide one color for the whole collection or a list of colors
         This setter can be used to provide a list of colors"""
         self._plot_obj.set_facecolor(facecolors)
+        self.schedule_plot_update()        
     
     def get_facecolor(self):
         if self._plot_obj is None:
@@ -100,6 +103,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_linewidth(linewidths)
             self.schedule_plot_update()
+            self.linewidthsChanged.emit()
 
     def get_linewidth(self):
         if self._plot_obj is None:
@@ -111,6 +115,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_linewidth(linewidth)
             self.schedule_plot_update()
+            self.linewidthChanged.emit()
 
     def get_linestyle(self):
         if self._plot_obj is None:
@@ -122,6 +127,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_linestyle(self._linestyles)
             self.schedule_plot_update()
+            self.linestyleChanged.emit()
 
     def get_pickradius(self):
         if self._plot_obj is None:
@@ -142,6 +148,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_hatch(hatch)
             self.schedule_plot_update()
+            self.hatchChanged.emit()
 
     def get_capstyle(self):
         if self._plot_obj is None:
@@ -173,6 +180,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_color(color)
             self.schedule_plot_update()
+            self.colorChanged.emit()
 
     def get_colors(self):
         """By default return the facecolor"""
@@ -188,6 +196,18 @@ class Collection(Artist, ScalarMappable):
             self.set_array(colors)
             # self.set_array
             self.schedule_plot_update()
+            self.colorsChanged.emit()
+            self.cChanged.emit()
+
+    colorsChanged = Signal()
+    cChanged = Signal()
+    colorChanged = Signal()
+    markerEdgeColorsChanged = Signal()
+    markerEdgeColorChanged = Signal()
+    linewidthsChanged = Signal()
+    linewidthChanged = Signal()
+    linestyleChanged = Signal()
+    hatchChanged = Signal()
 
     colors = Property("QVariantList", get_colors, set_colors)
     c = colors
@@ -216,6 +236,8 @@ class _CollectionWithSizes(Collection):
         if self._plot_obj is not None:
             self._plot_obj.set_sizes(sizes)
             self.schedule_plot_update()
+            self.markerSizesChanged.emit()
+            self.sChanged.emit()
 
     def get_size(self):
         if self._plot_obj is None or self._sizes is None:
@@ -230,6 +252,12 @@ class _CollectionWithSizes(Collection):
         if self._plot_obj is not None and self._sizes is None:
             self._plot_obj.set_sizes((size,))
             self.schedule_plot_update()
+            self.markerSizeChanged.emit()
+            
+
+    markerSizesChanged = Signal()
+    sChanged = Signal()
+    markerSizeChanged = Signal()
 
     markerSizes = Property("QVariantList", get_sizes, set_sizes)
     s = markerSizes
@@ -268,5 +296,8 @@ class PolyCollection(_CollectionWithSizes):
             self._plot_obj.set_verts(self._verts)
             self.schedule_plot_update()
 
+    # No signal here since verts won't become a valid property for now
+    
     verts = Property("QVariantList", get_verts, set_verts)
+
 
