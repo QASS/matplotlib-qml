@@ -1,5 +1,5 @@
 from matplotlib import rcParams
-from PySide2.QtCore import Property
+from PySide2.QtCore import Property, Signal
 from matplotlib.lines import Line2D as MatplotlibLine2D
 
 from matplotlib_bridge.artist import Artist
@@ -23,6 +23,7 @@ class Line2D(Artist):
     def set_linewidth(self, linewidth):
         self._plot_obj.set_linewidth(linewidth)
         self.schedule_plot_update()
+        self.linewidthChanged.emit()
 
     def get_linestyle(self):
         return self._plot_obj.get_linestyle() # or self._plot_obj.get_linestyle()
@@ -30,13 +31,16 @@ class Line2D(Artist):
     def set_linestyle(self, linestyle):
         self._plot_obj.set_linestyle(linestyle)
         self.schedule_plot_update()
+        self.linestyleChanged.emit()
 
     def get_color(self):
-        return self._color # or self._plot_obj.get_color()
+        return self._plot_obj.get_color()
 
     def set_color(self, color):
         self._plot_obj.set_color(color)
         self.schedule_plot_update()
+        self.colorChanged.emit()
+        self.cChanged.emit()
     
     def get_marker(self):
         return self._plot_obj.get_marker() # or self._plot_obj.get_marker # TODO check if thats true
@@ -44,6 +48,7 @@ class Line2D(Artist):
     def set_marker(self, marker):
         self._plot_obj.set_marker(marker)
         self.schedule_plot_update()
+        self.markerChanged.emit()
 
     def get_markersize(self):
         return self._plot_obj.get_markersize()
@@ -51,6 +56,8 @@ class Line2D(Artist):
     def set_markersize(self, markersize):
         self._plot_obj.set_markersize(markersize)
         self.schedule_plot_update()
+        self.markerSizeChanged.emit()
+        self.markersizeChanged.emit()
 
     def get_markeredgewidth(self):
         return self._plot_obj.get_markeredgewidth() # or self._plot_obj.get_markeredgewidth # TODO check if true
@@ -58,6 +65,8 @@ class Line2D(Artist):
     def set_markeredgewidth(self, markeredgewidth):
         self._plot_obj.set_markeredgewidth(markeredgewidth)
         self.schedule_plot_update()
+        self.markerEdgeWidthChanged.emit()
+        self.markeredgewidthChanged.emit()
 
     def get_markeredgecolor(self):
         return self._plot_obj.get_markeredgecolor() # or self._plot_obj.get_markeredgecolor()
@@ -65,6 +74,8 @@ class Line2D(Artist):
     def set_markeredgecolor(self, markeredgecolor):
         self._plot_obj.set_markeredgecolor(markeredgecolor)
         self.schedule_plot_update()
+        self.markerEdgeColorChanged.emit()
+        self.markeredgecolorChanged.emit()
 
     def get_markerfacecolor(self):
         return self._plot_obj.get_markerfacecolor() # or self._plot_obj.get_markerfacecolor # TODO check if true
@@ -72,6 +83,8 @@ class Line2D(Artist):
     def set_markerfacecolor(self, markerfacecolor):
         self._plot_obj.set_markerfacecolor(markerfacecolor)
         self.schedule_plot_update()
+        self.markerFaceColorChanged.emit()
+        self.markerfacecolorChanged.emit()
 
     def get_markerfacecoloralt(self):
         return self._plot_obj.get_markerfacecoloralt()
@@ -79,6 +92,8 @@ class Line2D(Artist):
     def set_markerfacecoloralt(self, markerfacecoloralt):
         self._plot_obj.set_markerfacecoloralt(markerfacecoloralt)
         self.schedule_plot_update()
+        self.markerFaceColorAltChanged.emit()
+        self.markerfacecoloraltChanged.emit()
 
     def get_fillstyle(self):
         return self._plot_obj.get_fillstyle() # or self._plot_obj.get_fillstyle # TODO check if true
@@ -86,6 +101,7 @@ class Line2D(Artist):
     def set_fillstyle(self, fillstyle):
         self._plot_obj.set_fillstyle(fillstyle)
         self.schedule_plot_update()
+        self.fillstyleChanged.emit()
 
     def get_antialiased(self):
         return self._plot_obj.get_antialiased
@@ -93,6 +109,7 @@ class Line2D(Artist):
     def set_antialised(self, antialiased):
         self._plot_obj.set_antialiased(antialiased)
         self.schedule_plot_update()
+        self.antialiasedChanged.emit()
 
     def get_dash_capstyle(self):
         return self._plot_obj.get_dash_capstyle()
@@ -100,6 +117,7 @@ class Line2D(Artist):
     def set_dash_capstyle(self, dash_capstyle):
         self._plot_obj.set_dash_capstyle(dash_capstyle)
         self.schedule_plot_update()
+        self.dashCapstyleChanged.emit()
 
     def get_solid_capstyle(self):
         return self._plot_obj.get_solid_capstyle()
@@ -107,6 +125,8 @@ class Line2D(Artist):
     def set_solid_capstyle(self, solid_capstyle):
         self._plot_obj.set_solid_capstyle(solid_capstyle)
         self.schedule_plot_update()
+        self.solidCapstyleChanged.emit()
+        self.solidcapstyleChanged.emit()
 
     def get_dash_joinstyle(self):
         return self._plot_obj.get_dash_joinstlye()
@@ -114,18 +134,24 @@ class Line2D(Artist):
     def set_dash_joinstyle(self, dash_joinstyle):
         self._plot_obj.set_dash_joinstyle(dash_joinstyle)
         self.schedule_plot_update()
+        self.dashJoinstyleChanged.emit()
+        self.dashjoinstyleChanged.emit()
 
     def get_solid_joinstyle(self):
         return self._plot_obj.get_solid_joinstyle() # or self._plot_obj.get_solid_joinstyle
 
     def set_solid_joinstyle(self, solid_joinstyle):
         self._plot_obj.set_solid_joinstyle(solid_joinstyle)
+        self.solidJoinstyleChanged.emit()
+        self.solidjoinstyleChanged.emit()
 
     def get_pickradius(self):
         return self._plot_obj.get_pickradius # or self._plot_obj.get_pickradius
 
     def set_pickradius(self, pickradius):
         self._plot_obj.set_pickradius(pickradius)
+        self.pickRadiusChanged.emit()
+        self.pickradiusChanged.emit()
 
     def get_drawstyle(self):
         return self._plot_obj.get_drawstyle() # or self._plot_obj.get_drawstyle()
@@ -133,6 +159,7 @@ class Line2D(Artist):
     def set_drawstyle(self, drawstyle):
         self._plot_obj.set_drawstyle(drawstyle)
         self.schedule_plot_update()
+        self.drawstyleChanged.emit()
 
     def get_markevery(self):
         return self._plot_obj.get_markevery() # or self._plot_obj.get_markevery()
@@ -140,6 +167,7 @@ class Line2D(Artist):
     def set_markevery(self, markevery):
         self._plot_obj.set_markevery(markevery)
         self.schedule_plot_update()
+        self.markeveryChanged.emit()
 
     def get_xdata(self):
         return self._plot_obj.get_xdata() # # or self._plot_obj.get_xdata()
@@ -147,6 +175,7 @@ class Line2D(Artist):
     def set_xdata(self, xdata):
         self._plot_obj.set_xdata(xdata)
         self.schedule_plot_update()
+        self.xDataChanged.emit()
 
     def get_ydata(self):
         return self._plot_obj.get_ydata() # or self._plot_obj.get_ydata()
@@ -154,7 +183,40 @@ class Line2D(Artist):
     def set_ydata(self, ydata):
         self._plot_obj.set_ydata(ydata)
         self.schedule_plot_update()
+        self.yDataChanged.emit()
         
+    linewidthChanged = Signal()
+    linestyleChanged = Signal()
+    colorChanged = Signal()
+    cChanged = Signal()
+    markerChanged = Signal()
+    markerSizeChanged = Signal()
+    markerEdgeWidthChanged = Signal()
+    markerEdgeColorChanged = Signal()
+    markerFaceColorChanged = Signal()
+    markerFaceColorAltChanged = Signal()
+    fillstyleChanged = Signal()
+    antialiasedChanged = Signal()
+    dashCapstyleChanged = Signal()
+    solidCapstyleChanged = Signal()
+    dashJoinstyleChanged = Signal()
+    solidJoinstyleChanged = Signal()
+    pickRadiusChanged = Signal()
+    drawstyleChanged = Signal()
+    markeveryChanged = Signal()
+    xDataChanged = Signal()
+    yDataChanged = Signal()
+
+    ### ALIAS ###
+    markersizeChanged = Signal()
+    markeredgewidthChanged = Signal()
+    markeredgecolorChanged = Signal()
+    markerfacecolorChanged = Signal()
+    markerfacecoloraltChanged = Signal()
+    solidcapstyleChanged = Signal()
+    dashjoinstyleChanged = Signal()
+    solidjoinstyleChanged = Signal()
+    pickradiusChanged = Signal()
 
 
     linewidth = Property(float, get_linewidth, set_linewidth)
@@ -179,7 +241,7 @@ class Line2D(Artist):
     xData = Property("QVariantList", get_xdata, set_xdata)
     yData = Property("QVariantList", get_ydata, set_ydata)
 
-    # Python like aliases
+    ### ALIAS ###
     markersize = markerSize
     markeredgewidth = markerEdgeWidth
     markeredgecolor = markerEdgeColor
