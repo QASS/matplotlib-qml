@@ -93,6 +93,7 @@ class Figure(FigureCanvasQtQuickAgg):
         self._coordinates_timer.setSingleShot(True)
 
         self._motion_notify_event_id = None
+        self._children = dict() # hashmap of the qml objectnames of the children
 
     @Slot()
     def init(self):
@@ -107,7 +108,7 @@ class Figure(FigureCanvasQtQuickAgg):
             ax = self.figure.add_subplot(self._rows, self._columns, idx + 1)
             ax.set_autoscale_on(True)
             ax.autoscale_view(True,True,True)
-            child.init(ax, self._event_handler)           
+            child.init(ax, self._event_handler, self)           
         
         # This must register in the end because otherwise the plot will be drawn
         # before the axis can rescale 
@@ -186,6 +187,32 @@ class Figure(FigureCanvasQtQuickAgg):
             "y" : event.ydata
         }
         self.clicked.emit(mouse_click)
+
+    def register_child(self, child):
+        """registers a child by it's objectName property to the children of the figure. 
+        The registered children can be retrieved later with the get_child() method"""
+        self._children[child.objectName().lower()] = child
+
+    def get_child(self, name):
+        """Returns the instance of the wrapper object with the provided name. 
+        The name is the objectName property defined in QML during the init phase of the figure
+        
+        :param name: The objectName of the object. Not case sensitive.
+        :type name: String
+        """
+        return self._children.get(name.lower(), None)
+    
+    get_object = get_child # alias
+
+    # def get_child(self, name):
+    #     """Searches for the a component recursively"""
+    #     def dfs(name, obj):
+    #         for child in obj.children():
+    #             if child.objectName().lower() == name.lower():
+    #                 return child
+    #             return dfs(name, child)
+    #     return dfs(name, self)
+
 
     def get_matplotlib_figure_object(self):
         """The supported way of retrieving the wrapped Matplotlib figure object"""
@@ -283,24 +310,25 @@ class Plot(QQuickItem):
         self._facecolor = "white"
         self._ax = None
 
-    def init(self, ax, event_handler):
+    def init(self, ax, event_handler, figure_wrapper):
         """Retrieves all children of type :class:`Axis` and calls the draw method on them
         If the Plot object has multiple children it will hand them their own axis object """
         self._ax = ax
         self._event_handler = event_handler
+        figure_wrapper.register_child(self)
         ax.set_facecolor(self._facecolor)
         axis_ = (child for child in self.children() if isinstance(child, Axis) or isinstance(child, _AxesBase))
         for idx, axis in enumerate(axis_):
             # The first axis defines the main attributes of the plot and thus needs to be handled differently
             if idx == 0:
-                axis.init(ax, event_handler)
+                axis.init(ax, event_handler, figure_wrapper)
                 # check wether the axis object contains any labels to display
                 handles, labels = ax.get_legend_handles_labels()
                 if labels:
                     ax.legend()
                 continue
             new_ax = ax.twinx()
-            axis.init(new_ax, event_handler)
+            axis.init(new_ax, event_handler, figure_wrapper)
             # need to check the new axis as well
             # TODO this can be done with less code
             handles, labels = new_ax.get_legend_handles_labels()
@@ -361,7 +389,7 @@ class Axis(QQuickItem):
         self._qml_children = [] # References to all the wrapper objects
 
 
-    def init(self, ax, event_handler):
+    def init(self, ax, event_handler, figure_wrapper):
         """Iterate over every children and call the plot method on those children
         The children define how they are plotted and are provided with an axis object
         they can modify. The QML children will be plotted first.
@@ -374,21 +402,23 @@ class Axis(QQuickItem):
         self._event_handler.register(EventTypes.PLOT_DATA_CHANGED, self._refresh)
         # Register for changes to the axis object
         self._event_handler.register(EventTypes.AXIS_DATA_CHANGED, self._apply_axis_settings)
+        figure_wrapper.register_child(self)
         self._ax = ax
         # plot all children
-        self._init_children(ax, event_handler)
+        self._init_children(ax, event_handler, figure_wrapper)
 
         # apply all the axis settings
         self._apply_axis_settings()
         
 
 
-    def _init_children(self, ax, event_handler):
+    def _init_children(self, ax, event_handler, figure_wrapper):
         children = (child for child in self.children() if isinstance(child, Base) or isinstance(child, Artist)) # TODO change to PlotBase
         for child in children:
             # set the handler on the child
             child.set_event_handler(event_handler)
             child.init(ax)
+            figure_wrapper.register_child(child)
             self._qml_children.append(child)
 
     def _apply_axis_settings(self):
