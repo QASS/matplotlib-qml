@@ -119,12 +119,7 @@ class Figure(FigureCanvasQtQuickAgg):
         if self._refresh_coordinates:
             self._motion_notify_event_id = self.figure.canvas.mpl_connect("motion_notify_event", self._on_motion)
         self.figure.canvas.mpl_connect("pick_event", self._on_pick)
-        self.figure.canvas.mpl_connect("button_press_event", self._on_click)
-
-    @Slot()
-    def registerToolbar(self):
-        """It might be beneficial to be able to register a custom Toolbar""" 
-        raise NotImplementedError("This has not been implemented yet")        
+        self.figure.canvas.mpl_connect("button_press_event", self._on_click)     
 
     @Slot()
     def home(self, *args):
