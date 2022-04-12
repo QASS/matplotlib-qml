@@ -1,5 +1,6 @@
 from PySide2.QtCore import QObject, Signal, Slot, Property
 from matplotlib_bridge.patches import Polygon
+from matplotlib_bridge.utils import numpy_compatibility
 
 class SpanBase(Polygon):
     """Base class for the HSpan and VSpan which implements the Polygon behaviour"""
@@ -10,6 +11,7 @@ class SpanBase(Polygon):
         self._xmin = 0
         self._xmax = 0
 
+    @numpy_compatibility
     def get_ymin(self):
         return self._ymin
 
@@ -28,6 +30,7 @@ class SpanBase(Polygon):
             self.schedule_plot_update()
             self.yMinChanged.emit()
 
+    @numpy_compatibility
     def get_ymax(self):
         return self._ymax
 
@@ -43,6 +46,7 @@ class SpanBase(Polygon):
             self.schedule_plot_update()
             self.yMaxChanged.emit()
 
+    @numpy_compatibility
     def get_xmin(self):
         return self._xmin
 
@@ -59,6 +63,7 @@ class SpanBase(Polygon):
             self.schedule_plot_update()
             self.xMinChanged.emit()
 
+    @numpy_compatibility
     def get_xmax(self):
         return self._xmax
 

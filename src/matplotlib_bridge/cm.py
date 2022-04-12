@@ -3,6 +3,7 @@ from PySide2.QtCore import QObject, Property, Signal
 import numpy as np
 
 from matplotlib_bridge.event import EventTypes
+from matplotlib_bridge.utils import numpy_compatibility
 
 class ScalarMappable:
     """This class is the wrapper for matplotlib.cm.ScalarMappable. It uses a `_plot_obj` attribute which 
@@ -59,6 +60,7 @@ class ScalarMappable:
         if self._plot_obj is not None:
             self._plot_obj.set_norm(norm)            
 
+    @numpy_compatibility
     def get_vmin(self):
         return self._vmin
 
@@ -70,6 +72,7 @@ class ScalarMappable:
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
             self.vMinChanged.emit()
 
+    @numpy_compatibility
     def get_vmax(self):
         return self._vmax
 

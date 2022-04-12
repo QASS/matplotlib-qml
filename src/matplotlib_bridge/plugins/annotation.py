@@ -2,6 +2,7 @@ from PySide2.QtCore import Signal, Slot, Property
 from matplotlib_bridge.graphs_2d import Text
 from matplotlib_bridge.event import EventTypes, EventHandler
 from matplotlib_bridge.plot_objects import Axis
+from matplotlib_bridge.utils import numpy_compatibility
 
 
 
@@ -9,7 +10,7 @@ class Annotation(Text):
     """Wrapper for Matplotlib.axes.Axes.annotate
     This class utilizes it's own event handler to reinstantiate the plot object whenever the correct modification
     of the given plot object hasn't been implemented yet"""
-    
+
     COORDINATE_SYSTEMS = ("figure points", "figure pixels", "figure fraction", "subfigure points",
         "subfigure pixels", "subfigure fraction", "axes points", "axes pixels", "axes fraction",
         "data", "polar")
@@ -54,6 +55,7 @@ class Annotation(Text):
             self.textChanged.emit()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
 
+    @numpy_compatibility
     def get_xy(self):
         return self._xy
 
@@ -73,6 +75,7 @@ class Annotation(Text):
         if self._plot_obj is not None:
             pass
 
+    @numpy_compatibility
     def get_xycoords(self):
         return self._xycoords
 

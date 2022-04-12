@@ -4,6 +4,7 @@ from matplotlib.lines import Line2D as MatplotlibLine2D
 
 from matplotlib_bridge.artist import Artist
 from matplotlib_bridge.event import EventTypes
+from matplotlib_bridge.utils import numpy_compatibility
 
 
 class Line2D(Artist):
@@ -169,6 +170,7 @@ class Line2D(Artist):
         self.schedule_plot_update()
         self.markeveryChanged.emit()
 
+    @numpy_compatibility
     def get_xdata(self):
         return self._plot_obj.get_xdata() # # or self._plot_obj.get_xdata()
 
@@ -177,6 +179,7 @@ class Line2D(Artist):
         self.schedule_plot_update()
         self.xDataChanged.emit()
 
+    @numpy_compatibility
     def get_ydata(self):
         return self._plot_obj.get_ydata() # or self._plot_obj.get_ydata()
 
@@ -283,6 +286,7 @@ class HLine(Line2D):
         self._plot_obj.set_transform(transform)
         super().init(ax)
 
+    @numpy_compatibility
     def get_y(self):
         ydata = self.get_ydata()
         if len(ydata) > 0:
@@ -294,6 +298,7 @@ class HLine(Line2D):
         self.set_ydata([self._y, self._y])
         self.yChanged.emit()
 
+    @numpy_compatibility
     def get_xmin(self):
         xdata = self.get_xdata()
         if len(xdata) > 0:
@@ -305,6 +310,7 @@ class HLine(Line2D):
         self.set_xdata([self._xmin, self._xmax])
         self.xMinChanged.emit()
 
+    @numpy_compatibility
     def get_xmax(self):
         xdata = self.get_xdata()
         if len(xdata) > 0:
@@ -344,6 +350,7 @@ class VLine(Line2D):
         self._plot_obj.set_transform(transform)
         super().init(ax)
 
+    @numpy_compatibility
     def get_x(self):
         xdata = self.get_xdata()
         if len(xdata) > 0:
@@ -355,6 +362,7 @@ class VLine(Line2D):
         self.set_xdata([self._x, self._x])
         self.xChanged.emit()
 
+    @numpy_compatibility
     def get_ymin(self):
         ydata = self.get_ydata()
         if len(ydata) > 0:
@@ -366,6 +374,7 @@ class VLine(Line2D):
         self.set_ydata([self._ymin, self._ymax])
         self.yMinChanged.emit()
 
+    @numpy_compatibility
     def get_ymax(self):
         ydata = self.get_ydata()
         if len(ydata) > 0:

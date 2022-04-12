@@ -2,7 +2,7 @@ from PySide2.QtCore import QObject, Signal, Slot, Property
 
 from matplotlib_bridge.event import EventHandler, EventTypes
 from matplotlib_bridge.plot_objects import Base
-
+from matplotlib_bridge.utils import numpy_compatibility
 
 class Bar(Base):
     """ Wrapper for matplotlib.axes.Axes.bar
@@ -99,6 +99,7 @@ class Bar(Base):
             return wrapper
         return _reinstantiate
 
+    @numpy_compatibility
     def get_x(self):
             return self._x
 
@@ -106,6 +107,7 @@ class Bar(Base):
     def set_x(self, x):
         self._x = x
 
+    @numpy_compatibility
     def get_height(self):
         return self._height
 
@@ -113,6 +115,7 @@ class Bar(Base):
     def set_height(self, height):
         self._height = height
 
+    @numpy_compatibility
     def get_widths(self):
         return self._widths
 
@@ -120,6 +123,7 @@ class Bar(Base):
     def set_widths(self, widths):
         self._widths = widths
 
+    @numpy_compatibility
     def get_width(self):
         return self._width
 
@@ -127,6 +131,7 @@ class Bar(Base):
     def set_width(self, width):
         self._width = width
 
+    @numpy_compatibility
     def get_bottoms(self):
         return self._bottoms
 
@@ -134,6 +139,7 @@ class Bar(Base):
     def set_bottoms(self, bottoms):
         self._bottoms = bottoms
 
+    @numpy_compatibility
     def get_bottom(self):
         return self._bottom
 
@@ -148,6 +154,7 @@ class Bar(Base):
     def set_align(self, align):
         self._align = align
 
+    @numpy_compatibility
     def get_colors(self):
         return self._colors
 
@@ -155,6 +162,7 @@ class Bar(Base):
     def set_colors(self, colors):
         self._colors = colors
 
+    @numpy_compatibility
     def get_color(self):
         return self._color
 
@@ -162,6 +170,7 @@ class Bar(Base):
     def set_color(self, color):
         self._color = color
 
+    @numpy_compatibility
     def get_edgecolors(self):
         return self._edgecolors
 
@@ -169,6 +178,7 @@ class Bar(Base):
     def set_edgecolors(self, edgecolors):
         self._edgecolors = edgecolors
 
+    @numpy_compatibility
     def get_edgecolor(self):
         return self._edgecolor
 
@@ -176,6 +186,7 @@ class Bar(Base):
     def set_edgecolor(self, edgecolor):
         self._edgecolor = edgecolor
 
+    @numpy_compatibility
     def get_linewidths(self):
         return self._linewidths
 
@@ -183,6 +194,7 @@ class Bar(Base):
     def set_linewidths(self, linewidths):
         self._linewidths = linewidths
 
+    @numpy_compatibility
     def get_linewidth(self):
         return self._linewidth
 
@@ -197,6 +209,7 @@ class Bar(Base):
     def set_tick_label(self, tick_label):
         self._tick_label = tick_label
 
+    @numpy_compatibility
     def get_xerr(self):
         return self._xerr
 
@@ -204,6 +217,7 @@ class Bar(Base):
     def set_xerr(self, xerr):
         self._xerr = xerr
 
+    @numpy_compatibility
     def get_yerr(self):
         return self._yerr
 
@@ -225,6 +239,7 @@ class Bar(Base):
     def set_ecolor(self, ecolor):
         self._ecolor = ecolor
 
+    @numpy_compatibility
     def get_capsize(self):
         return self._capsize
 
@@ -246,6 +261,7 @@ class Bar(Base):
     def set_log(self, log):
         self._log = log
 
+    @numpy_compatibility
     def get_alpha(self):
         return self._alpha
 

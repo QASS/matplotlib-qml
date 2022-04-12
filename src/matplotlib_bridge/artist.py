@@ -1,6 +1,7 @@
 from PySide2.QtCore import QObject, Property, Signal
 
 from matplotlib_bridge.event import EventTypes
+from matplotlib_bridge.utils import numpy_compatibility
 
 class Artist(QObject):
     """Wrapper class for matplotlib.artist.Artist
@@ -80,6 +81,7 @@ class Artist(QObject):
             self._plot_obj.set_visible(self._visible)
             self.visibleChanged.emit()
 
+    @numpy_compatibility
     def get_alpha(self):
         return self._alpha # or self._plot_obj.get_alpha
 
@@ -113,6 +115,7 @@ class Artist(QObject):
             self._plot_obj.set_label(self._label)
             self.labelChanged.emit()
 
+    @numpy_compatibility
     def get_zorder(self):
         return self._zorder # or self._plot_obj.get_zorder()
 

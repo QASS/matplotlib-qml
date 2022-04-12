@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib_bridge.collections import PathCollection
 from matplotlib_bridge.cm import ScalarMappable
 from matplotlib_bridge.event import EventHandler
+from matplotlib_bridge.utils import numpy_compatibility
 
 
 
@@ -58,9 +59,8 @@ class ScatterCollection(PathCollection):
         offsets = np.hstack((x, y))
         self._plot_obj.set_offsets(offsets)
     
+    @numpy_compatibility
     def get_x(self):
-        if isinstance(self._x, np.ndarray):
-            return self._x.tolist()
         return self._x
 
     def set_x(self, x):
@@ -72,9 +72,8 @@ class ScatterCollection(PathCollection):
                 self.xChanged.emit()
                 self.xDataChanged.emit()
 
+    @numpy_compatibility
     def get_y(self):
-        if isinstance(self._y, np.ndarray):
-            return self._y.tolist()
         return self._y
 
     def set_y(self, y):

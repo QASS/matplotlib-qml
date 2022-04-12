@@ -3,6 +3,7 @@ import numpy as np
 
 from matplotlib_bridge.collections import PolyCollection
 from matplotlib_bridge.event import EventHandler, EventTypes
+from matplotlib_bridge.utils import numpy_compatibility
 
 
 # https://matplotlib.org/3.5.1/api/_as_gen/matplotlib.axes.Axes.fill_between.html
@@ -71,6 +72,7 @@ class FillBetween(PolyCollection):
         # TODO if "where" changed we might need to create more Polys, if it doesn't we can modify the existing ones
          pass
 
+    @numpy_compatibility
     def get_x(self):
         return self._x
 
@@ -78,6 +80,7 @@ class FillBetween(PolyCollection):
     def set_x(self, x):
         self._x = x
 
+    @numpy_compatibility
     def get_y1(self):
         return self._y1
 
@@ -85,6 +88,7 @@ class FillBetween(PolyCollection):
     def set_y1(self, y1):
         self._y1 = y1
 
+    @numpy_compatibility
     def get_y2(self):
         return self._y2
 
@@ -92,6 +96,7 @@ class FillBetween(PolyCollection):
     def set_y2(self, y2):
         self._y2 = y2
 
+    @numpy_compatibility
     def get_where(self):
         return self._where
 
