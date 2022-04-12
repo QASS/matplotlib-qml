@@ -1,6 +1,7 @@
-from PySide2.QtCore import QObject, Property
+from PySide2.QtCore import QObject, Property, Signal
 
 from matplotlib_bridge.event import EventTypes
+from matplotlib_bridge.utils import numpy_compatibility
 
 class Artist(QObject):
     """Wrapper class for matplotlib.artist.Artist
@@ -19,7 +20,7 @@ class Artist(QObject):
         # self._clipbox = None # thats some sort of object and probably not usable in QML
         # self._clippath = None
         self._clipon = True
-        self._label = ''
+        self._label = None
         self._zorder = 0 # TODO check default
         self._picker = None
         # self._contains = None
@@ -78,7 +79,9 @@ class Artist(QObject):
         self._visible = visible
         if self._plot_obj is not None:
             self._plot_obj.set_visible(self._visible)
+            self.visibleChanged.emit()
 
+    @numpy_compatibility
     def get_alpha(self):
         return self._alpha # or self._plot_obj.get_alpha
 
@@ -86,6 +89,7 @@ class Artist(QObject):
         self._alpha = alpha
         if self._plot_obj is not None:
             self._plot_obj.set_alpha(self._alpha)
+            self.alphaChanged.emit()
 
     # def get_clipbox(self):
     #     return self._clipbox # self._plot_obj.get_clippbox from the original artist // or the clipbox property
@@ -100,6 +104,7 @@ class Artist(QObject):
         self._clipon = clipon
         if self._plot_obj is not None:
             self._plot_obj.set_clip_on(self._clipon)
+            self.cliponChanged.emit()
 
     def get_label(self):
         return self._label # or self._plot_obj.get_label()
@@ -108,7 +113,9 @@ class Artist(QObject):
         self._label = label
         if self._plot_obj is not None:
             self._plot_obj.set_label(self._label)
+            self.labelChanged.emit()
 
+    @numpy_compatibility
     def get_zorder(self):
         return self._zorder # or self._plot_obj.get_zorder()
 
@@ -116,6 +123,7 @@ class Artist(QObject):
         self._zorder = zorder
         if self._plot_obj is not None:
             self._plot_obj.set_zorder(self._zorder)
+            self.zOrderChanged.emit()
 
     def get_picker(self):
         return self._picker # or self._plot_obj.get_picker()
@@ -124,6 +132,14 @@ class Artist(QObject):
         self._picker = picker
         if self._plot_obj is not None:
             self._plot_obj.set_picker(self._picker)
+            self.pickerChanged.emit()
+
+    visibleChanged = Signal()
+    alphaChanged = Signal()
+    cliponChanged = Signal()
+    labelChanged = Signal()
+    zOrderChanged = Signal()
+    pickerChanged = Signal()
 
     visible = Property(bool, get_visible, set_visible)
     alpha = Property(float, get_alpha, set_alpha)

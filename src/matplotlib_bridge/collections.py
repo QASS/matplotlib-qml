@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib_bridge.artist import Artist
 from matplotlib_bridge.cm import ScalarMappable
 from matplotlib_bridge.event import EventHandler, EventTypes
+from matplotlib_bridge.utils import numpy_compatibility
 
 # TODO updates to decorator
 # TODO add callback function to artist for plot updates
@@ -48,6 +49,7 @@ class Collection(Artist, ScalarMappable):
         kwargs["hatch"] = self._hatch
         return kwargs
 
+    @numpy_compatibility
     def get_edgecolors(self):
         if self._plot_obj is None:
             return self._edgecolors
@@ -60,7 +62,9 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_edgecolor(edgecolors)
             self.schedule_plot_update()
+            self.markerEdgeColorsChanged.emit()
 
+    @numpy_compatibility
     def get_edgecolor(self):
         if self._plot_obj is None:
             return self._edgecolor
@@ -71,7 +75,9 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_edgecolor(edgecolor)
             self.schedule_plot_update()
+            self.markerEdgeColorChanged.emit()
 
+    @numpy_compatibility
     def get_facecolors(self):
         if self._plot_obj is None:
             return self._facecolors[0]
@@ -81,7 +87,9 @@ class Collection(Artist, ScalarMappable):
         """In matplotlib it is possible to provide one color for the whole collection or a list of colors
         This setter can be used to provide a list of colors"""
         self._plot_obj.set_facecolor(facecolors)
+        self.schedule_plot_update()        
     
+    @numpy_compatibility
     def get_facecolor(self):
         if self._plot_obj is None:
             return self._facecolors
@@ -90,6 +98,7 @@ class Collection(Artist, ScalarMappable):
     def set_facecolor(self, facecolor):
         self._plot_obj.set_facecolor(facecolor)
 
+    @numpy_compatibility
     def get_linewidths(self):
         if self._plot_obj is None:
             return self._linewidths
@@ -100,7 +109,9 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_linewidth(linewidths)
             self.schedule_plot_update()
+            self.linewidthsChanged.emit()
 
+    @numpy_compatibility
     def get_linewidth(self):
         if self._plot_obj is None:
             return self._linewidth
@@ -111,6 +122,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_linewidth(linewidth)
             self.schedule_plot_update()
+            self.linewidthChanged.emit()
 
     def get_linestyle(self):
         if self._plot_obj is None:
@@ -122,6 +134,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_linestyle(self._linestyles)
             self.schedule_plot_update()
+            self.linestyleChanged.emit()
 
     def get_pickradius(self):
         if self._plot_obj is None:
@@ -142,6 +155,7 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_hatch(hatch)
             self.schedule_plot_update()
+            self.hatchChanged.emit()
 
     def get_capstyle(self):
         if self._plot_obj is None:
@@ -161,6 +175,7 @@ class Collection(Artist, ScalarMappable):
         self._plot_obj.set_joinstyle(joinstyle)
         self.schedule_plot_update()
 
+    @numpy_compatibility
     def get_color(self):
         if self._plot_obj is None:
             return self._edgecolors
@@ -173,7 +188,9 @@ class Collection(Artist, ScalarMappable):
         if self._plot_obj is not None:
             self._plot_obj.set_color(color)
             self.schedule_plot_update()
+            self.colorChanged.emit()
 
+    @numpy_compatibility
     def get_colors(self):
         """By default return the facecolor"""
         return self._plot_obj.get_color() # returns the edgecolors under the hood
@@ -188,6 +205,18 @@ class Collection(Artist, ScalarMappable):
             self.set_array(colors)
             # self.set_array
             self.schedule_plot_update()
+            self.colorsChanged.emit()
+            self.cChanged.emit()
+
+    colorsChanged = Signal()
+    cChanged = Signal()
+    colorChanged = Signal()
+    markerEdgeColorsChanged = Signal()
+    markerEdgeColorChanged = Signal()
+    linewidthsChanged = Signal()
+    linewidthChanged = Signal()
+    linestyleChanged = Signal()
+    hatchChanged = Signal()
 
     colors = Property("QVariantList", get_colors, set_colors)
     c = colors
@@ -205,7 +234,7 @@ class _CollectionWithSizes(Collection):
         self._sizes = None
         self._size = 20
 
-
+    @numpy_compatibility
     def get_sizes(self):
         if self._plot_obj is None:
             return self._sizes
@@ -216,7 +245,10 @@ class _CollectionWithSizes(Collection):
         if self._plot_obj is not None:
             self._plot_obj.set_sizes(sizes)
             self.schedule_plot_update()
+            self.markerSizesChanged.emit()
+            self.sChanged.emit()
 
+    @numpy_compatibility
     def get_size(self):
         if self._plot_obj is None or self._sizes is None:
             return self._size
@@ -230,6 +262,12 @@ class _CollectionWithSizes(Collection):
         if self._plot_obj is not None and self._sizes is None:
             self._plot_obj.set_sizes((size,))
             self.schedule_plot_update()
+            self.markerSizeChanged.emit()
+            
+
+    markerSizesChanged = Signal()
+    sChanged = Signal()
+    markerSizeChanged = Signal()
 
     markerSizes = Property("QVariantList", get_sizes, set_sizes)
     s = markerSizes
@@ -268,5 +306,8 @@ class PolyCollection(_CollectionWithSizes):
             self._plot_obj.set_verts(self._verts)
             self.schedule_plot_update()
 
+    # No signal here since verts won't become a valid property for now
+    
     verts = Property("QVariantList", get_verts, set_verts)
+
 

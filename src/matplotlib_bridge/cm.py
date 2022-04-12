@@ -1,8 +1,9 @@
 # Scalar Mappable
-from PySide2.QtCore import QObject, Property
+from PySide2.QtCore import QObject, Property, Signal
 import numpy as np
 
 from matplotlib_bridge.event import EventTypes
+from matplotlib_bridge.utils import numpy_compatibility
 
 class ScalarMappable:
     """This class is the wrapper for matplotlib.cm.ScalarMappable. It uses a `_plot_obj` attribute which 
@@ -48,6 +49,7 @@ class ScalarMappable:
         if self._plot_obj is not None:
             self._plot_obj.set_cmap(cmap)
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.cMapChanged.emit()
 
     def get_norm(self):
         if self._plot_obj is None:
@@ -58,6 +60,7 @@ class ScalarMappable:
         if self._plot_obj is not None:
             self._plot_obj.set_norm(norm)            
 
+    @numpy_compatibility
     def get_vmin(self):
         return self._vmin
 
@@ -67,7 +70,9 @@ class ScalarMappable:
             self._plot_obj.set_clim(self._vmin, self._vmax)
             self._colorbar.draw_all()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.vMinChanged.emit()
 
+    @numpy_compatibility
     def get_vmax(self):
         return self._vmax
 
@@ -77,12 +82,21 @@ class ScalarMappable:
             self._plot_obj.set_clim(self._vmin, self._vmax)
             self._colorbar.draw_all()
             self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.vMaxChanged.emit()
 
     def get_colorbar(self):
         return self._colorbar
 
     def set_colorbar(self, colorbar):
         self._colorbar = colorbar
+        if self._plot_obj is not None:
+            self._event_handler.schedule(EventTypes.PLOT_DATA_CHANGED)
+            self.colorbarChanged.emit()
+
+    cMapChanged = Signal()
+    vMinChanged = Signal()
+    vMaxChanged = Signal()
+    colorbarChanged = Signal()
 
     cMap = Property(str, get_cmap, set_cmap)
     vMin = Property(float, get_vmin, set_vmin)

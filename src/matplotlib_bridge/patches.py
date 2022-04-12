@@ -1,10 +1,11 @@
-from PySide2.QtCore import Property
+from PySide2.QtCore import Property, Signal
 from matplotlib.patches import Polygon
 
 from matplotlib_bridge.artist import Artist
 
 
-class Patch(Artist): # TODO SPAN
+class Patch(Artist):
+    """Wrapper for Matplotlib.patches.Patch"""
     def __init__(self, parent=None):
         super().__init__(parent)
         self._antialiased = None
@@ -20,6 +21,7 @@ class Patch(Artist): # TODO SPAN
 
     @property
     def kwargs(self):
+        """The keyword arguments that can be used in this class and the subclasses for calling methods/functions"""
         kwargs = super().kwargs
         kwargs["antialiased"] = self._antialiased
         kwargs["edgecolor"] = self._edgecolor
@@ -43,6 +45,7 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_antialiased(self._antialiased)
             self.schedule_plot_update()
+            self.antialiasedChanged.emit()
 
     def get_edgecolor(self):
         if self._plot_obj is None:
@@ -54,6 +57,8 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_edgecolor(self._edgecolor)
             self.schedule_plot_update()
+            self.edgeColorChanged.emit()
+            self.edgecolorChanged.emit()
 
     def get_facecolor(self):
         if self._plot_obj is None:
@@ -65,6 +70,8 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_facecolor(self._facecolor)
             self.schedule_plot_update()
+            self.faceColorChanged.emit()
+            self.facecolorChanged.emit()
 
     def get_color(self):
         if self._plot_obj is None:
@@ -76,6 +83,7 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_color(self._color)
             self.schedule_plot_update()
+            self.colorChanged.emit()
 
     def get_linewidth(self):
         if self._plot_obj is None:
@@ -87,6 +95,7 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_linewidth(self._linewidth)
             self.schedule_plot_update()
+            self.linewidthChanged.emit()
 
     def get_linestyle(self):
         if self._plot_obj is None:
@@ -98,6 +107,7 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_linestyle(self._linestyle)
             self.schedule_plot_update()
+            self.linestyleChanged.emit()
 
     def get_hatch(self):
         if self._plot_obj is None:
@@ -108,6 +118,7 @@ class Patch(Artist): # TODO SPAN
         self._hatch = hatch
         if self._plot_obj is not None:
             self._plot_obj.set_hatch(self._hatch)
+            self.hatchChanged.emit()
 
     def get_fill(self):
         if self._plot_obj is None:
@@ -119,6 +130,7 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_fill(self._fill)
             self.schedule_plot_update()
+            self.fillChanged.emit()
 
     def get_capstyle(self):
         if self._plot_obj is None:
@@ -130,6 +142,7 @@ class Patch(Artist): # TODO SPAN
         if self._plot_obj is not None:
             self._plot_obj.set_capstyle(self._capstyle)
             self.schedule_plot_update()
+            self.capstyleChanged.emit()
 
 
     def get_joinstyle(self):
@@ -141,6 +154,24 @@ class Patch(Artist): # TODO SPAN
         self._joinstyle = joinstyle
         if self._plot_obj is not None:
             self._plot_obj.set_joinstyle(joinstyle)
+            self.schedule_plot_update()
+            self.joinstyleChanged.emit()
+
+    antialiasedChanged = Signal()
+    edgeColorChanged = Signal()
+    faceColorChanged = Signal()
+    colorChanged = Signal()
+    linewidthChanged = Signal()
+    linestyleChanged = Signal()
+    hatchChanged = Signal()
+    fillChanged = Signal()
+    capstyleChanged = Signal()
+    joinstyleChanged = Signal()
+
+    ### ALIASES ###
+    edgecolorChanged = Signal()
+    facecolorChanged = Signal()
+
 
     antialiased = Property(bool, get_antialiased, set_antialiased)
     edgeColor = Property(str, get_edgecolor, set_edgecolor)
@@ -180,6 +211,9 @@ class Polygon(Patch):
         self._closed = closed
         if self._plot_obj is not None:
             self._plot_obj.set_closed(self._closed)
+            self.closedChanged.emit()
+
+    closedChanged = Signal()
 
     closed = Property(bool, get_closed, set_closed)
 

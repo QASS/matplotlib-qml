@@ -65,9 +65,14 @@ class ClassGenerator:
 				f"self._{prop} = {prop}",
 				"if self._plot_obj is not None:",
 				self._indent + f"self._plot_obj.set_{prop}(self._{prop})",
-				self._indent + "self.schedule_plot_update()"
+				self._indent + "self.schedule_plot_update()",
+				self._indent + f"self.{prop}Changed.emit()"
 			)
 			self.add_function(f"set_{prop}", ("self", prop), *lines)
+
+		# write the signals
+		for prop in config["properties"].keys():
+			self._script += self._indentation_level * self._indent + f"{prop}Changed = Signal()" + self.NEW_LINE
 
 		# write the properties
 		for prop in config["properties"].keys():
@@ -88,11 +93,24 @@ class ClassGenerator:
 if __name__ == "__main__":
 
 	config = {
-		"name": "HLine",
+		"name": "Wedge(Patch)",
 		"properties": {
-			"y": 0,
-			"xmin": 0.0,
-			"xmax": 1.0
+			"orientation": [],
+			"label": None,
+			"location": None,
+			"fraction": None,
+			"shrink": None,
+			"pctdistance": 0.6,
+			"shadow": False,
+			"labeldistance": 1.1,
+			"startangle": None,
+			"radius": None,
+			"counterclock": True,
+			"wedgeprops": None,
+			"textprops": None,
+			"center": (0, 0),
+			"frame": False,
+			"rotatelabels": False
 		}
 	}
 

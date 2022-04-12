@@ -1,10 +1,10 @@
-from PySide2.QtCore import Property
+from PySide2.QtCore import Property, Signal
 
 from matplotlib_bridge.image import AxesImage
 from matplotlib_bridge.cm import ScalarMappable
 
 class Imshow(AxesImage):
-	
+    
     def __init__(self, parent=None):
         super().__init__(parent)
         self._aspect = "equal"
@@ -31,6 +31,9 @@ class Imshow(AxesImage):
         if self._ax is not None:
             self._ax.set_aspect(self._aspect)
             self.schedule_plot_update()
+            self.aspectChanged.emit()
+
+    aspectChanged = Signal()
 
     aspect = Property(str, get_aspect, set_aspect)
 

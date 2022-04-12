@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib_bridge.collections import PathCollection
 from matplotlib_bridge.cm import ScalarMappable
 from matplotlib_bridge.event import EventHandler
+from matplotlib_bridge.utils import numpy_compatibility
 
 
 
@@ -58,9 +59,8 @@ class ScatterCollection(PathCollection):
         offsets = np.hstack((x, y))
         self._plot_obj.set_offsets(offsets)
     
+    @numpy_compatibility
     def get_x(self):
-        if isinstance(self._x, np.ndarray):
-            return self._x.tolist()
         return self._x
 
     def set_x(self, x):
@@ -68,13 +68,12 @@ class ScatterCollection(PathCollection):
         if self._plot_obj is not None:
             if len(self._x ) == len(self._y):
                 self._adjust_offset()
+                self.schedule_plot_update()
                 self.xChanged.emit()
                 self.xDataChanged.emit()
-                self.schedule_plot_update()
 
+    @numpy_compatibility
     def get_y(self):
-        if isinstance(self._y, np.ndarray):
-            return self._y.tolist()
         return self._y
 
     def set_y(self, y):
@@ -82,9 +81,9 @@ class ScatterCollection(PathCollection):
         if self._plot_obj is not None:
             if len(self._x ) == len(self._y):
                 self._adjust_offset()
+                self.schedule_plot_update()
                 self.yChanged.emit()
                 self.yDataChanged.emit()
-                self.schedule_plot_update()
 
     def get_marker(self):
         return self._marker
@@ -97,12 +96,14 @@ class ScatterCollection(PathCollection):
             marker_path = marker_obj.get_path().transformed(marker_obj.get_transform())
             self.set_paths((marker_path,))
             self.schedule_plot_update()
+            self.markerChanged.emit()
 
 
     xChanged = Signal()
     yChanged = Signal()
-    xDataChanged = xChanged
-    yDataChanged = yChanged
+    xDataChanged = Signal()
+    yDataChanged = Signal()
+    markerChanged = Signal()
 
     x = Property("QVariantList", get_x, set_x, notify = xChanged)
     xData = x
