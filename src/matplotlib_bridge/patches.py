@@ -4,7 +4,8 @@ from matplotlib.patches import Polygon
 from matplotlib_bridge.artist import Artist
 
 
-class Patch(Artist): # TODO SPAN
+class Patch(Artist):
+    """Wrapper for Matplotlib.patches.Patch"""
     def __init__(self, parent=None):
         super().__init__(parent)
         self._antialiased = None
@@ -20,6 +21,7 @@ class Patch(Artist): # TODO SPAN
 
     @property
     def kwargs(self):
+        """The keyword arguments that can be used in this class and the subclasses for calling methods/functions"""
         kwargs = super().kwargs
         kwargs["antialiased"] = self._antialiased
         kwargs["edgecolor"] = self._edgecolor
