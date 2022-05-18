@@ -500,7 +500,7 @@ class Axis(QQuickItem):
         """Resets an axis. This will reset only the graphs added by the interface and redraw the
         Plot objects defined as children of the Axis in QML"""
         # get all children plot objects
-        qml_plot_objects = [qml_child.plot_object for qml_child in self._qml_children]
+        qml_plot_objects = [qml_child._plot_obj for qml_child in self._qml_children]
         # check containers
         for container in copy(self._ax.containers):
             if container in qml_plot_objects:
