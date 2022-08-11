@@ -5,7 +5,7 @@ import warnings
 from PySide2.QtQuick import QQuickItem
 from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer
 
-from matplotlib_backend_qtquick.backend_qtquickagg import (
+from matplotlib_backend_pyside2.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
 from matplotlib.ticker import AutoLocator
 from matplotlib_bridge.artist import Artist
@@ -14,7 +14,7 @@ from matplotlib_bridge.axis import _AxesBase
 from matplotlib_bridge.event import EventHandler, EventTypes
 from copy import copy
 
-from matplotlib_backend_qtquick.backend_qtquick import NavigationToolbar2QtQuick
+from matplotlib_backend_pyside2.backend_qtquick import NavigationToolbar2QtQuick
 
 class Base(QObject):
     def __init__(self, parent = None):
