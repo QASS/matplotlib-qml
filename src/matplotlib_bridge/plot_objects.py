@@ -3,7 +3,8 @@ import sys
 import warnings
 
 from PySide2.QtQuick import QQuickItem
-from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer
+from PySide2.QtCore import QObject, Signal, Slot, Property, QTimer, Qt
+from PySide2.QtGui import QColor, QPen
 
 from matplotlib_backend_pyside2.backend_qtquickagg import (
     FigureCanvasQtQuickAgg)
@@ -57,6 +58,15 @@ class Figure(FigureCanvasQtQuickAgg):
         }
     """
 
+    zoom_rect_linestyles = {
+        "dashed": Qt.DashLine,
+        "dotted": Qt.DotLine,
+        "solid": Qt.SolidLine,
+        "dash-dot": Qt.DashDotLine,
+        "dash-dot-dot": Qt.DashDotDotLine
+    }
+
+
     figure_events = ['resize_event', 
           'draw_event', 
           'key_press_event', 
@@ -86,6 +96,9 @@ class Figure(FigureCanvasQtQuickAgg):
         self._refresh_coordinates = False
         self._coordinates_timer_refresh_rate = 50
         self._constrained_layout = True
+        self._zoom_rect_color = "black"
+        self._zoom_rect_linewidth = 1
+        self._zoom_rect_linestyle =  Qt.DotLine
 
         self._coordinates_timer = QTimer()
         self._coordinates_timer.timeout.connect(self._emit_coordinates)
@@ -204,15 +217,22 @@ class Figure(FigureCanvasQtQuickAgg):
     
     get_object = get_child # alias
 
-    # def get_child(self, name):
-    #     """Searches for the a component recursively"""
-    #     def dfs(name, obj):
-    #         for child in obj.children():
-    #             if child.objectName().lower() == name.lower():
-    #                 return child
-    #             return dfs(name, child)
-    #     return dfs(name, self)
+    def drawRectangle(self, rect):
+        """Overload to define the color for the zoom rectangle
 
+        :param rect: list of points for rect bounding box
+        :type rect: list, tuple
+        """
+        if rect is not None:
+            def _draw_rect_callback(painter):
+                pen = QPen(QColor(self._zoom_rect_color), self._zoom_rect_linewidth / self.dpi_ratio, self._zoom_rect_linestyle)
+                painter.setPen(pen)
+                painter.drawRect(*(pt / self.dpi_ratio for pt in rect))
+        else:
+            def _draw_rect_callback(painter):
+                return
+        self._draw_rect_callback = _draw_rect_callback
+        self.update()
 
     def get_matplotlib_figure_object(self):
         """The supported way of retrieving the wrapped Matplotlib figure object"""
@@ -289,6 +309,25 @@ class Figure(FigureCanvasQtQuickAgg):
             self.figure.set_constrained_layout(self._constrained_layout)
             self._event_handler.schedule(EventTypes.FIGURE_DATA_CHANGED)
 
+    def get_zoom_rect_color(self):
+        return self._zoom_rect_color
+
+    def set_zoom_rect_color(self, color):
+        self._zoom_rect_color = color
+
+    def get_zoom_rect_linewidth(self):
+        return self._zoom_rect_linewidth
+
+    def set_zoom_rect_linewidth(self, linewidth):
+        self._zoom_rect_linewidth = linewidth
+
+    def get_zoom_rect_linestyle(self):
+        return self._zoom_rect_linestyle
+
+    def set_zoom_rect_linestyle(self, linestyle):
+        qt_linestyle = self.zoom_rect_linestyles.get(linestyle, Qt.DotLine)
+        self._zoom_rect_linestyle = qt_linestyle
+
     faceColorChanged = Signal(str)
     coordinatesChanged = Signal("QVariantMap")
     clicked = Signal("QVariantMap")
@@ -302,6 +341,9 @@ class Figure(FigureCanvasQtQuickAgg):
     refreshCoordinates = Property(bool, get_refresh_coordinates, set_refresh_coordinates)
     coordinatesRefreshRate = Property(int, get_coordinates_refresh_rate, set_coordinates_refresh_rate)
     constrainedLayout = Property(bool, get_constrained_layout, set_constrained_layout)
+    zoomRectColor = Property(str, get_zoom_rect_color, set_zoom_rect_color)
+    zoomRectWidth = Property(int, get_zoom_rect_linewidth, set_zoom_rect_linewidth)
+    zoomRectLinestyle = Property(str, get_zoom_rect_linestyle, set_zoom_rect_linestyle)
 
 class Plot(QQuickItem):
     """Container to allow useful implementation of mutliple axis."""
