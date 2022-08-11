@@ -3,7 +3,6 @@ requires = [
     "setuptools>=42",
 	"matplotlib>=3.3.3",
 	"numpy>=1.19.5",
-	"matplotlib_backend_qtquick>=0.0.8",
 	"PySide2",
     "wheel"
 ]
