@@ -23,7 +23,10 @@ Install the wheel in your environment (sometimes you have to explicitly say `pip
 pip install <path/to/wheel>
 ```
 
-This should also install the required dependencies `matplotlib_backend_qtquick`, `matplotlib`, `PySide2` and `numpy`.<br>
+This should also install the required dependencies , `matplotlib`, `PySide2` and `numpy`.<br>
+
+This project relies on the PySide2 backend which can be downloaded from here: [matplotlib_backend_pyside2](doc/README.mdhttps://git.qass.net/qml-applications/matplotlib_backend_pyside2/-/packages/34).
+
 **Thats it.**
 
 # Quickstart
