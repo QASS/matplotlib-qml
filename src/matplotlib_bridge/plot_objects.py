@@ -107,6 +107,7 @@ class Figure(FigureCanvasQtQuickAgg):
 
         self._motion_notify_event_id = None
         self._children = dict() # hashmap of the qml objectnames of the children
+        self._axes = []
 
     @Slot()
     def init(self):
@@ -138,6 +139,8 @@ class Figure(FigureCanvasQtQuickAgg):
     @Slot()
     def home(self, *args):
         self._toolbar.home(*args)
+        for axes in self._axes:
+            axes._apply_auto_scale(axes._autoscale)
 
     @Slot()
     def back(self, *args):
@@ -172,6 +175,16 @@ class Figure(FigureCanvasQtQuickAgg):
     def subplotsAdjust(self, kwargs = {}):
         self.figure.subplots_adjust(**kwargs)
 
+    @property
+    def plot_items(self):
+        """Returns a dictionary of all plot items. The keys are the objectNames of the children"""
+        return self._children
+
+    @property
+    def axes(self):
+        """Returns a list of Axes wrapper objects that are registered at the figure"""
+        return self._axes
+
     def _on_motion(self, event):
         """This is a handler registered on the ' motion_notify_event' to refresh the mouse coordinates
         This event gets fired a lot and it is not necessary to emit all those events because that clogs
@@ -200,6 +213,10 @@ class Figure(FigureCanvasQtQuickAgg):
             "y" : event.ydata
         }
         self.clicked.emit(mouse_click)
+
+    def _register_axes(self, ax):
+        """Register a matplotlib Axes object to the figure"""
+        self._axes.append(ax)
 
     def register_child(self, child):
         """registers a child by it's objectName property to the children of the figure. 
@@ -448,6 +465,8 @@ class Axis(QQuickItem):
         self._ax = ax
         # plot all children
         self._init_children(ax, event_handler, figure_wrapper)
+        # register at figure
+        figure_wrapper._register_axes(self)
 
         # apply all the axis settings
         self._apply_axis_settings()
