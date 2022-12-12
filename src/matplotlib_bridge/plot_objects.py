@@ -175,6 +175,12 @@ class Figure(FigureCanvasQtQuickAgg):
     def subplotsAdjust(self, kwargs = {}):
         self.figure.subplots_adjust(**kwargs)
 
+    @Slot()
+    def reset(self):
+        """Reset all Axes objects that are registered at the figure"""
+        for ax in self._axes:
+            ax.reset()
+
     @property
     def plot_items(self):
         """Returns a dictionary of all plot items. The keys are the objectNames of the children"""
@@ -567,6 +573,11 @@ class Axis(QQuickItem):
             if container in qml_plot_objects:
                 continue
             container.remove()
+        # check patches
+        for patch in copy(self._ax.patches):
+            if patch in qml_plot_objects:
+                continue
+            patch.remove()
         # check images
         for image in copy(self._ax.images):
             if image in qml_plot_objects:
