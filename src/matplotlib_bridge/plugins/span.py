@@ -1,4 +1,5 @@
 from PySide2.QtCore import QObject, Signal, Slot, Property
+import numpy as np
 from matplotlib_bridge.patches import Polygon
 from matplotlib_bridge.utils import numpy_compatibility
 
@@ -11,6 +12,10 @@ class SpanBase(Polygon):
         self._xmin = 0
         self._xmax = 0
 
+    def _get_polygon_coordinates(self):
+        xy = np.array([self._xmin, self._ymin, self._xmin, self._ymax, self._xmax, self._ymax, self._xmax, self._ymin])
+        return xy.reshape((4, 2))
+
     @numpy_compatibility
     def get_ymin(self):
         return self._ymin
@@ -22,10 +27,13 @@ class SpanBase(Polygon):
         if self._plot_obj is not None:
             # Modify the reference of xy which also modifies the property xy
             xy = self._plot_obj.get_xy()
-            xy[0][1] = self._ymin
-            xy[3][1] = self._ymin
-            if self._plot_obj.get_closed():
-                xy[4][1] = self._ymin
+            if xy.shape != (4, 2):
+                xy = self._get_polygon_coordinates()
+            else:
+                xy[0][1] = self._ymin
+                xy[3][1] = self._ymin
+            # if self._plot_obj.get_closed():
+            #     xy[4][1] = self._ymin
             self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
             self.yMinChanged.emit()
@@ -40,8 +48,11 @@ class SpanBase(Polygon):
         if self._plot_obj is not None:
             # Modify the reference of xy which also modifies the property xy
             xy = self._plot_obj.get_xy()
-            xy[1][1] = self._ymax
-            xy[2][1] = self._ymax
+            if xy.shape != (4, 2):
+                xy = self._get_polygon_coordinates()
+            else:
+                xy[1][1] = self._ymax
+                xy[2][1] = self._ymax
             self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
             self.yMaxChanged.emit()
@@ -55,10 +66,13 @@ class SpanBase(Polygon):
         if self._plot_obj is not None:
             # Modify the reference of xy which also modifies the property xy
             xy = self._plot_obj.get_xy()
-            xy[0][0] = self._xmin
-            xy[1][0] = self._xmin
-            if self._plot_obj.get_closed():
-                xy[4][0] = self._xmin
+            if xy.shape != (4, 2):
+                xy = self._get_polygon_coordinates()
+            else:
+                xy[0][0] = self._xmin
+                xy[1][0] = self._xmin
+            # if self._plot_obj.get_closed():
+            #     xy[4][0] = self._xmin
             self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
             self.xMinChanged.emit()
@@ -72,8 +86,11 @@ class SpanBase(Polygon):
         if self._plot_obj is not None:
             # Modify the reference of xy which also modifies the property xy
             xy = self._plot_obj.get_xy()
-            xy[2][0] = self._xmax
-            xy[3][0] = self._xmax
+            if xy.shape != (4, 2):
+                xy = self._get_polygon_coordinates()
+            else:
+                xy[2][0] = self._xmax
+                xy[3][0] = self._xmax
             #self._plot_obj.set_xy(xy)
             self.schedule_plot_update()
             self.xMaxChanged.emit()
