@@ -567,6 +567,11 @@ class Axis(QQuickItem):
             if container in qml_plot_objects:
                 continue
             container.remove()
+        # check patches
+        for patch in copy(self._ax.patches):
+            if patch in qml_plot_objects:
+                continue
+            patch.remove()
         # check images
         for image in copy(self._ax.images):
             if image in qml_plot_objects:
