@@ -175,6 +175,12 @@ class Figure(FigureCanvasQtQuickAgg):
     def subplotsAdjust(self, kwargs = {}):
         self.figure.subplots_adjust(**kwargs)
 
+    @Slot()
+    def reset(self):
+        """Reset all Axes objects that are registered at the figure"""
+        for ax in self._axes:
+            ax.reset()
+
     @property
     def plot_items(self):
         """Returns a dictionary of all plot items. The keys are the objectNames of the children"""
