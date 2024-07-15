@@ -1,0 +1,82 @@
+site_name: Matplotlib Bridge
+nav:
+  - Home: index.md
+  - Getting started:
+    - Installation: installation.md
+    - Quickstart: quickstart.md
+  - Components:
+    - Architecture: architecture.md
+    - Figure: components/figure.md
+    - Plot: components/plot.md
+    - Axes: components/axes.md
+    - Line: components/line.md
+    - Scatter: components/scatter.md
+    - ScatterCollection: components/scatter_collection.md
+    - Bar: components/bar.md
+    - Imshow: components/imshow.md
+    - Colorbar: components/colorbar.md
+    - FillBetween: components/fill_between.md
+    - HLine: components/hline.md
+    - VLine: components/vline.md
+    - HSpan: components/hspan.md
+    - VSpan: components/vspan.md
+    - Annotation: components/annotation.md
+  - Base Classes:
+    - Overview: base_classes/overview.md
+    - Artist: base_classes/artist.md
+    - AxesImage: base_classes/axes_image.md
+    - Collection: base_classes/collection.md
+    - CollectionWithSizes: base_classes/collection_with_sizes.md
+    - ImageBase: base_classes/image_base.md
+    - PolyCollection: base_classes/poly_collection.md
+    - Polygon: base_classes/polygon.md
+    - Scalar Mappable: base_classes/scalar_mappable.md
+  - Contribution:
+    - Contribution Guide: contribution.md
+    - Write a plugin: write_plugin.md
+theme:
+  name: material
+  features:
+    - navigation.path
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    # - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline 
+        name: Switch to dark mode
+      primary: blue
+      accent: purple 
+    - scheme: slate 
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode    
+      primary: blue
+      accent: white
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
