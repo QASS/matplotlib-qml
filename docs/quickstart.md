@@ -1,40 +1,7 @@
-# What is this project?
-
-This project is about creating an easy to use interface to use matplotlib plots inside QML with the QML-like syntax. 
-
-**Check out the [Documentation](http://qml-applications.gitlab_pages.qass.net/matplotlib-bridge)!**
-
-
-# Installation guide
-
-It's always advisable to create a python-virutal-environment beforehand.
-```shell
-py -m venv <name_of_venv>
-```
-Then activate the venv.
-**Windows:**
-```shell
-venv/Scripts/activate
-```
-
-Download the latest wheel (Download Mirror will be provided soon<sup>TM</sup>). It should look like `matplotlib_bridge-<version>...`.
-Install the wheel in your environment (sometimes you have to explicitly say `pip3` for Python 3.*):
-```shell
-pip install <path/to/wheel>
-```
-
-This should also install the required dependencies , `matplotlib`, `PySide2` and `numpy`.<br>
-
-This project relies on the PySide2 backend which can be downloaded from here: [matplotlib_backend_pyside2](doc/README.mdhttps://git.qass.net/qml-applications/matplotlib_backend_pyside2/-/packages/34).
-
-**Thats it.**
-
 # Quickstart
 
-## Analyzer4D
-Coming soon<sup>TM</sup>
+Create a minimal example for creating a `QGuiApplication` using QML:
 
-## For testing or using outside the Analyzer4D
 In your project directory create two files `main.py` and `main.qml`.
 **main.py:**
 ```py
@@ -184,3 +151,7 @@ Window {
 
 ```
 
+Now execute the `main.py` file:
+```shell
+py main.py
+```
