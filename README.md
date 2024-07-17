@@ -7,7 +7,7 @@ This project is about creating an easy to use interface to use matplotlib plots 
 
 ## Installation guide
 
-Just download from PyPy:
+Just download from pypi:
 
 ```sh
 pip install matplotlib-qml
