@@ -2,7 +2,7 @@
 
 This project is about creating an easy to use interface to use matplotlib plots inside QML with the QML-like syntax. 
 
-**Check out the [Documentation](https://qass.github.io/matplotlib-qml-bindings/)!**
+**Check out the [Documentation](https://qass.github.io/matplotlib-qml/)!**
 
 
 ## Installation guide
