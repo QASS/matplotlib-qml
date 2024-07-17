@@ -1,5 +1,5 @@
 [project]
-name = "matplotlib-qml"
+name = "matplotlib-qml-bindings"
 version = "1.0"
 authors = [
   { name="Nicklas Osmers", email="nosmers@qass.net" },
