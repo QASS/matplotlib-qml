@@ -1,6 +1,6 @@
 # Architecture
 
-The matplotlib uses components that it registers as QML-Objects that can then be used as templates.
+The matplotlib bindings use components that are registered as QML-Objects that can then be used as templates.
 
 All components wrap a matplotlib [Artist](https://matplotlib.org/stable/api/artist_api.html) object. It's possible to modify the artist directly by reaching through the wrapper object to get the original matplotlib object. This is not recommended because the wrapper objects keeps the state due to how the initialization in QML works and applies it on the wrapped `Artist`.
 

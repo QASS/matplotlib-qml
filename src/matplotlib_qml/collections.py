@@ -2,10 +2,10 @@ from matplotlib.collections import PathCollection as MatplotlibPathCollection
 from PySide2.QtCore import Property, Slot, Signal
 import numpy as np
 
-from matplotlib_bridge.artist import Artist
-from matplotlib_bridge.cm import ScalarMappable
-from matplotlib_bridge.event import EventHandler, EventTypes
-from matplotlib_bridge.utils import numpy_compatibility
+from .artist import Artist
+from .cm import ScalarMappable
+from .event import EventHandler, EventTypes
+from .utils import numpy_compatibility
 
 # TODO updates to decorator
 # TODO add callback function to artist for plot updates

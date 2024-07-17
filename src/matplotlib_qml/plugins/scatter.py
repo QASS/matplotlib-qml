@@ -3,10 +3,10 @@ from PySide2.QtCore import QObject, Signal, Slot, Property
 from matplotlib.markers import MarkerStyle
 import numpy as np
 
-from matplotlib_bridge.collections import PathCollection
-from matplotlib_bridge.cm import ScalarMappable
-from matplotlib_bridge.event import EventHandler
-from matplotlib_bridge.utils import numpy_compatibility
+from matplotlib_qml.collections import PathCollection
+from matplotlib_qml.cm import ScalarMappable
+from matplotlib_qml.event import EventHandler
+from matplotlib_qml.utils import numpy_compatibility
 
 
 

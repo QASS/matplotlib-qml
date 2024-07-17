@@ -296,10 +296,22 @@ The methods can be used inside of python scripts but not inside QML
 
 ### get_child(name) // get_object(name) {#get_child}
 This can be used to retrieve a plot object that is a child of the figure by the `objectName` property it had during the init phase of the figure. This way you don't need to provide a full path to all of your plot objects in the python operator. The name parameter is not case sensitive.<br>
+Note that the `QmlConnectorIF` is an interface that is solely provided in the context of working in the [Analyzer4D](https://qass.net/software) software.
 **Example**
 ```py
 qml_connector = QmlConnectorIF()
 fig = qml_connector.getObject(FIGURE_PATH)
 foo_plot_obj = fig.get_child("foo")
+```
+
+### get_matplotlib_figure_object {#get_matplotlib_figure_object}
+
+Returns the wrapped matplotlib figure object. This can be used to do anything, that this package does not yet provide like 3D-plots.
+
+**Example**
+
+```py
+# get the qml figure reference
+matplotlib_figure = qml_figure.get_matplotlib_figure_object()
 ```
 

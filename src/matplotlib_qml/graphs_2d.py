@@ -4,8 +4,8 @@ from copy import copy
 
 import numpy as np
 
-from matplotlib_bridge.plot_objects import Base, Figure, Axis
-from matplotlib_bridge.event import EventTypes, EventHandler
+from .plot_objects import Base, Figure, Axis
+from .event import EventTypes, EventHandler
 
 
 

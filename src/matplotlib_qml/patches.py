@@ -1,7 +1,7 @@
 from PySide2.QtCore import Property, Signal
 from matplotlib.patches import Polygon
 
-from matplotlib_bridge.artist import Artist
+from .artist import Artist
 
 
 class Patch(Artist):

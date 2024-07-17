@@ -1,7 +1,8 @@
-site_name: Matplotlib Bridge
+site_name: Matplotlib QML
 nav:
   - Home: index.md
   - Getting started:
+    - How to read this documentation: read_the_docs.md
     - Installation: installation.md
     - Quickstart: quickstart.md
   - Components:

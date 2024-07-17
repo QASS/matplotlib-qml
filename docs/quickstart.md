@@ -1,5 +1,15 @@
 # Quickstart
 
+If you want to include the bindings in your project to use matplotlib in qml you only need to add these two lines before you initialize your application:
+
+```py
+import matplotlib_qml
+
+matplotlib_qml.init()
+```
+
+## Example application
+
 Create a minimal example for creating a `QGuiApplication` using QML:
 
 In your project directory create two files `main.py` and `main.qml`.
@@ -10,16 +20,15 @@ from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QUrl
 
-import matplotlib_bridge
+import matplotlib_qml
 from pathlib import Path
-
 
 
 def main():
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
 
-    matplotlib_bridge.init()
+    matplotlib_qml.init()
 
     qml_file = Path(__file__).parent / "main.qml"
     engine.load(QUrl.fromLocalFile(str(qml_file.resolve())))

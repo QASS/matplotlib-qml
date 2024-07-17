@@ -1,9 +1,30 @@
+[project]
+name = "matplotlib-qml"
+version = "1.0"
+authors = [
+  { name="Nicklas Osmers", email="nosmers@qass.net" },
+]
+description = "Bindings to use matplotlib components in a QML-like syntax inside of QML-components"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy>=1.19.5",
+    "matplotlib>=3.3.3",
+    "PySide2", 
+    "matplotlib_backend_pyside2",
+]
+
+[project.urls]
+Homepage = "https://github.com/QASS/matplotlib-qml"
+
 [build-system]
 requires = [
     "setuptools>=42",
-	"matplotlib>=3.3.3",
-	"numpy>=1.19.5",
-	"PySide2",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"

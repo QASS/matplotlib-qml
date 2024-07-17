@@ -1,7 +1,7 @@
 from PySide2.QtCore import QObject, Property, Signal
 
-from matplotlib_bridge.event import EventTypes
-from matplotlib_bridge.utils import numpy_compatibility
+from .event import EventTypes
+from .utils import numpy_compatibility
 
 class Artist(QObject):
     """Wrapper class for matplotlib.artist.Artist

@@ -1,7 +1,7 @@
 from PySide2.QtCore import QObject, Signal, Slot, Property
 import numpy as np
-from matplotlib_bridge.patches import Polygon
-from matplotlib_bridge.utils import numpy_compatibility
+from matplotlib_qml.patches import Polygon
+from matplotlib_qml.utils import numpy_compatibility
 
 class SpanBase(Polygon):
     """Base class for the HSpan and VSpan which implements the Polygon behaviour"""

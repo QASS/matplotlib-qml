@@ -2,9 +2,9 @@
 from PySide2.QtCore import Signal, Slot, Property
 import numpy as np
 
-from matplotlib_bridge.artist import Artist
-from matplotlib_bridge.cm import ScalarMappable
-from matplotlib_bridge.event import EventTypes
+from .artist import Artist
+from .cm import ScalarMappable
+from .event import EventTypes
 
 class _ImageBase(Artist, ScalarMappable):
     """Every image needs to have an axis it can sit on so we need to keep track of the internal state in the wrapper

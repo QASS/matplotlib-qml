@@ -6,8 +6,8 @@ from PySide2.QtQuick import QQuickItem
 from matplotlib.colorbar import Colorbar as MatplotlibColorbar
 from matplotlib.colorbar import make_axes
 
-from matplotlib_bridge.plot_objects import Base 
-from matplotlib_bridge.event import EventHandler, EventTypes
+from .plot_objects import Base 
+from .event import EventHandler, EventTypes
 
 # Matplotlib source code: https://github.com/matplotlib/matplotlib/blob/v3.5.1/lib/matplotlib/colorbar.py
 
