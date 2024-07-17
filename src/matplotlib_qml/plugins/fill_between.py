@@ -1,9 +1,9 @@
 from PySide2.QtCore import QObject, Signal, Slot, Property
 import numpy as np
 
-from matplotlib_bridge.collections import PolyCollection
-from matplotlib_bridge.event import EventHandler, EventTypes
-from matplotlib_bridge.utils import numpy_compatibility
+from matplotlib_qml.collections import PolyCollection
+from matplotlib_qml.event import EventHandler, EventTypes
+from matplotlib_qml.utils import numpy_compatibility
 
 
 # https://matplotlib.org/3.5.1/api/_as_gen/matplotlib.axes.Axes.fill_between.html

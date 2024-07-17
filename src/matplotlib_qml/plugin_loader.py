@@ -1,7 +1,7 @@
 import importlib
 import os
 from typing import List, Callable
-from matplotlib_bridge import factory
+from matplotlib_qml import factory
 
 
 def import_module(module_name: str):
@@ -21,7 +21,7 @@ def get_plugins():
 		if module.startswith("__") or ".py" not in module:
 			continue
 		# append to module list and strip file ending
-		modules.append("matplotlib_bridge.plugins." + module[:-3])
+		modules.append("matplotlib_qml.plugins." + module[:-3])
 	return modules
 
 def load_plugins(plugins: List[str]):

@@ -2,9 +2,9 @@ from matplotlib import rcParams
 from PySide2.QtCore import Property, Signal
 from matplotlib.lines import Line2D as MatplotlibLine2D
 
-from matplotlib_bridge.artist import Artist
-from matplotlib_bridge.event import EventTypes
-from matplotlib_bridge.utils import numpy_compatibility
+from matplotlib_qml.artist import Artist
+from matplotlib_qml.event import EventTypes
+from matplotlib_qml.utils import numpy_compatibility
 
 
 class Line2D(Artist):

@@ -2,40 +2,41 @@
 
 This project is about creating an easy to use interface to use matplotlib plots inside QML with the QML-like syntax. 
 
-**Check out the [Documentation](http://qml-applications.gitlab_pages.qass.net/matplotlib-bridge)!**
+**Check out the [Documentation](https://qass.github.io/matplotlib-qml-bindings/)!**
 
 
-# Installation guide
+## Installation guide
 
-It's always advisable to create a python-virutal-environment beforehand.
-```shell
-py -m venv <name_of_venv>
-```
-Then activate the venv.
-**Windows:**
-```shell
-venv/Scripts/activate
+Just download from PyPy:
+
+```sh
+pip install matplotlib-qml
 ```
 
-Download the latest wheel (Download Mirror will be provided soon<sup>TM</sup>). It should look like `matplotlib_bridge-<version>...`.
-Install the wheel in your environment (sometimes you have to explicitly say `pip3` for Python 3.*):
-```shell
-pip install <path/to/wheel>
+or install with a terminal in the repository:
+
+```sh
+pip install -e .
 ```
 
-This should also install the required dependencies , `matplotlib`, `PySide2` and `numpy`.<br>
+**If your are installing this package on an [Optimizer4D](https://qass.net/optimizer4d), make sure to add the `--no-deps` flag to the installation to not overwrite the local PySide2 installation.
 
-This project relies on the PySide2 backend which can be downloaded from here: [matplotlib_backend_pyside2](doc/README.mdhttps://git.qass.net/qml-applications/matplotlib_backend_pyside2/-/packages/34).
+## Quickstart
 
-**Thats it.**
+If you want to include the bindings in your project to use matplotlib in qml you only need to add these two lines before you initialize your application:
 
-# Quickstart
+```py
+import matplotlib_qml
 
-## Analyzer4D
-Coming soon<sup>TM</sup>
+matplotlib_qml.init()
+```
 
-## For testing or using outside the Analyzer4D
+This will register all plugins for qml.
+
+## Example app
+
 In your project directory create two files `main.py` and `main.qml`.
+
 **main.py:**
 ```py
 import sys
@@ -43,16 +44,14 @@ from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QUrl
 
-import matplotlib_bridge
+import matplotlib_qml
 from pathlib import Path
-
-
 
 def main():
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
 
-    matplotlib_bridge.init()
+    matplotlib_qml.init()
 
     qml_file = Path(__file__).parent / "main.qml"
     engine.load(QUrl.fromLocalFile(str(qml_file.resolve())))

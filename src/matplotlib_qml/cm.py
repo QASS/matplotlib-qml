@@ -2,8 +2,8 @@
 from PySide2.QtCore import QObject, Property, Signal
 import numpy as np
 
-from matplotlib_bridge.event import EventTypes
-from matplotlib_bridge.utils import numpy_compatibility
+from .event import EventTypes
+from .utils import numpy_compatibility
 
 class ScalarMappable:
     """This class is the wrapper for matplotlib.cm.ScalarMappable. It uses a `_plot_obj` attribute which 

@@ -1,7 +1,7 @@
 from PySide2.QtCore import Property, Signal
 
-from matplotlib_bridge.image import AxesImage
-from matplotlib_bridge.cm import ScalarMappable
+from matplotlib_qml.image import AxesImage
+from matplotlib_qml.cm import ScalarMappable
 
 class Imshow(AxesImage):
     

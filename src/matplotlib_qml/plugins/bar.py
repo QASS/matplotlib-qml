@@ -1,8 +1,8 @@
 from PySide2.QtCore import QObject, Signal, Slot, Property
 
-from matplotlib_bridge.event import EventHandler, EventTypes
-from matplotlib_bridge.plot_objects import Base
-from matplotlib_bridge.utils import numpy_compatibility
+from matplotlib_qml.event import EventHandler, EventTypes
+from matplotlib_qml.plot_objects import Base
+from matplotlib_qml.utils import numpy_compatibility
 
 class Bar(Base):
     """ Wrapper for matplotlib.axes.Axes.bar
