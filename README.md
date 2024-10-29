@@ -10,7 +10,7 @@ This project is about creating an easy to use interface to use matplotlib plots 
 Just download from pypi:
 
 ```sh
-pip install matplotlib-qml
+pip install matplotlib-qml-bindings
 ```
 
 or install with a terminal in the repository:
