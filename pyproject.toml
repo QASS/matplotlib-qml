@@ -1,6 +1,6 @@
 [project]
 name = "matplotlib-qml-bindings"
-version = "1.0"
+version = "1.0.1"
 authors = [
   { name="Nicklas Osmers", email="nosmers@qass.net" },
 ]
@@ -15,6 +15,7 @@ classifiers = [
 dependencies = [
     "numpy>=1.19.5",
     "matplotlib>=3.3.3",
+    "matplotlib<3.7",
     "PySide2", 
     "matplotlib_backend_pyside2",
 ]
