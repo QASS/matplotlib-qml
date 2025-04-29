@@ -10,7 +10,7 @@ This project is about creating an easy to use interface to use matplotlib plots 
 Just download from pypi:
 
 ```sh
-pip install matplotlib-qml-bindings
+pip install matplotlib-qml-bindings[pyside2]
 ```
 
 or install with a terminal in the repository:
@@ -19,7 +19,8 @@ or install with a terminal in the repository:
 pip install -e .
 ```
 
-**If your are installing this package on an [Optimizer4D](https://qass.net/optimizer4d), make sure to add the `--no-deps` flag to the installation to not overwrite the local PySide2 installation.
+> [!IMPORTANT] 
+>If your are installing this package on an [Optimizer4D](https://qass.net/optimizer4d), make sure to leave out the `[pyside2]` dependencies. Otherwise you will overwrite the local PySide2 installation and break the Analyzer4D software.
 
 ## Quickstart
 

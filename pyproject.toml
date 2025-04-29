@@ -1,6 +1,6 @@
 [project]
 name = "matplotlib-qml-bindings"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
   { name="Nicklas Osmers", email="nosmers@qass.net" },
 ]
@@ -16,9 +16,11 @@ dependencies = [
     "numpy>=1.19.5",
     "matplotlib>=3.3.3",
     "matplotlib<3.7",
-    "PySide2", 
     "matplotlib_backend_pyside2==0.0.10",
 ]
+
+[project.optional-dependencies]
+pyside2 = ["PySide2"]
 
 [project.urls]
 Homepage = "https://github.com/QASS/matplotlib-qml"
