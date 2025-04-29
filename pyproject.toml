@@ -16,11 +16,11 @@ dependencies = [
     "numpy>=1.19.5",
     "matplotlib>=3.3.3",
     "matplotlib<3.7",
-    "matplotlib_backend_pyside2==0.0.10",
+    "matplotlib_backend_pyside2==0.0.11",
 ]
 
 [project.optional-dependencies]
-pyside2 = ["PySide2"]
+pyside2 = ["matplotlib_backend_pyside2[pyside2]"]
 
 [project.urls]
 Homepage = "https://github.com/QASS/matplotlib-qml"
