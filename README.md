@@ -20,7 +20,7 @@ pip install -e .
 ```
 
 > [!IMPORTANT] 
->If your are installing this package on an [Optimizer4D](https://qass.net/optimizer4d), make sure to leave out the `[pyside2]` dependencies. Otherwise you will overwrite the local PySide2 installation and break the Analyzer4D software.
+>If you are installing this package on an [Optimizer4D](https://qass.net/optimizer4d), make sure to leave out the `[pyside2]` dependencies. Otherwise you will overwrite the local PySide2 installation and break the Analyzer4D software.
 
 ## Quickstart
 
